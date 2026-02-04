@@ -45,7 +45,7 @@ public class RazorpayValidationService implements ProviderValidationPort{
         RazorpayExternalRequest request =
                 requestFactory.build(fundAccount);
 
-        rzpClient.validate(request);
+        rzpClient.validateFundAccount(request);
 
         throw new UnsupportedOperationException(
                 "Razorpay response mapping not implemented yet");

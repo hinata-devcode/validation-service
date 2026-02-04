@@ -7,10 +7,13 @@ import lombok.Data;
 @Data
 @Builder
 public class FundAccount {
-	@JsonProperty("account_type")
-	private String accountType;
-	@JsonProperty("bank_account")
-	private BankAccount bankAccount;
-	@JsonProperty("contact")
-	private Contact contact;
+	
+	private final String accountType;
+	
+	private final BankAccount bankAccount;
+	
+	private final Contact contact;
+	
+	private final Vpa vpa;
+	
 }

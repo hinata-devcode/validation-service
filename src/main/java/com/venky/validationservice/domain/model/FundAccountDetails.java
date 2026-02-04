@@ -29,4 +29,9 @@ public class FundAccountDetails {
 	public boolean isVpa() {
 		return vpa != null;
 	}
+
+	public String getReferenceId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

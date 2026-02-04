@@ -1,5 +1,7 @@
 package com.venky.validationservice.integration.razorpay;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
@@ -12,6 +14,6 @@ public class Contact {
 	private String email;
 	private String contact;
 	private String type;
-	@JsonProperty("reference_id")
 	private String referenceId;
+	private Map<String, String> notes;
 }

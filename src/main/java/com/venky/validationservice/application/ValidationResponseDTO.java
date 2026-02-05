@@ -1,36 +1,25 @@
 package com.venky.validationservice.application;
 
-import com.venky.validationservice.domain.model.ConfidenceLevel;
-import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.model.ValidationStatus;
+import com.venky.validationservice.integration.common.ValidationExecutionResult;
+
 
 public class ValidationResponseDTO {
 
-	private final ValidationStatus status;
-	private final ConfidenceLevel confidenceLevel;
-	private final ProviderValidationDetails providerDetails;
+    private final ValidationExecutionResult executionResult;
 
-	ValidationResponseDTO(ValidationStatus status, ConfidenceLevel confidenceLevel,
-			ProviderValidationDetails providerDetails) {
+    public ValidationResponseDTO(ValidationExecutionResult executionResult) {
+        this.executionResult = executionResult;
+    }
 
-		this.status = status;
-		this.confidenceLevel = confidenceLevel;
-		this.providerDetails = providerDetails;
-	}
+    public static ValidationResponseDTO from(
+            ValidationExecutionResult executionResult) {
 
-	public static ValidationResponseDTO from(ValidationResult result, ProviderValidationDetails providerDetails) {
-		return new ValidationResponseDTO(result.getStatus(), result.getConfidenceLevel(), providerDetails);
-	}
+        return new ValidationResponseDTO(executionResult);
+    }
 
-	public ValidationStatus getStatus() {
-		return status;
-	}
-
-	public ConfidenceLevel getConfidenceLevel() {
-		return confidenceLevel;
-	}
-
-	public ProviderValidationDetails getProviderDetails() {
-		return providerDetails;
-	}
+    public ValidationExecutionResult getExecutionResult() {
+        return executionResult;
+    }
 }
+

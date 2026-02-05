@@ -3,7 +3,11 @@ package com.venky.validationservice.domain.service;
 import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationResult;
-import com.venky.validationservice.integration.common.ProviderValidationResult;
+import com.venky.validationservice.exception.FailureOrigin;
+import com.venky.validationservice.exception.ValidationExecutionException;
+import com.venky.validationservice.integration.common.ValidationExecutionResult;
+import com.venky.validationservice.integration.common.ValidationState;
+import com.venky.validationservice.integration.razorpay.RzpException;
 
 public class ValidationDomainService {
 
@@ -13,33 +17,23 @@ public class ValidationDomainService {
 		this.providerPort = providerPort;
 	}
 
-	   public ValidationExecutionResult validate(FundAccountDetails details) {
+	public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
+		try {
 
-	        // Call provider
-	        ProviderValidationResult providerResult =
-	                providerPort.validate(details);
+			// Call provider
+			ValidationExecutionResult execution = providerPort.validate(details, null);
 
-	        ProviderValidationResponse response =
-	                providerResult.getDecisionData();
+			return execution;
 
-	        // Apply domain rules
-	        ValidationResult validationResult;
+		}
 
-	        if (!response.isSuccess()) {
-	            validationResult = ValidationResult.failure();
-	        } else if (response.getNameMatchScore() >= 90) {
-	            validationResult =
-	                    ValidationResult.success(ConfidenceLevel.HIGH);
-	        } else {
-	            validationResult =
-	                    ValidationResult.success(ConfidenceLevel.MEDIUM);
-	        }
+		catch (RzpException ex) {
+			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
+					ex);
 
-	        // Return BOTH
-	        return new ValidationExecutionResult(
-	                validationResult,
-	                providerResult.getProviderDetails()
-	        );
-	    }
+		} catch (RuntimeException ex) {
+			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex);
+		}
+	}
 
 }

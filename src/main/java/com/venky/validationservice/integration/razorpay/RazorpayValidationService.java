@@ -8,7 +8,10 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.exception.*;
-import com.venky.validationservice.integration.common.ProviderValidationResult;
+import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.integration.common.Provider;
+import com.venky.validationservice.integration.common.ValidationExecutionResult;
+import com.venky.validationservice.integration.common.ValidationState;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,18 +41,25 @@ public class RazorpayValidationService implements ProviderValidationPort{
     }
 
     @Override
-    public ProviderValidationResult validate(FundAccountDetails details) {
+    public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
 
         FundAccount fundAccount =
                 fundAccountFactory.createFundAccountDetails(details);
 
         RazorpayExternalRequest request =
                 requestFactory.build(fundAccount);
-
+        
+        RazorpayResponse response =
         rzpClient.validateFundAccount(request);
+        
+        validationState.setProvider(Provider.RAZORPAY);
+        validationState.setProviderReferenceId(response.getValidationId());
+        validationState.setExecutionStatus(ExecutionStatus.PENDING);
 
-        throw new UnsupportedOperationException(
-                "Razorpay response mapping not implemented yet");
+        return new ValidationExecutionResult(
+                validationState,
+                Optional.empty()
+        );
     }
 }
 

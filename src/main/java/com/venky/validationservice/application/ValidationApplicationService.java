@@ -9,7 +9,8 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.domain.service.ValidationDomainService;
-import com.venky.validationservice.domain.service.ValidationExecutionResult;
+import com.venky.validationservice.integration.common.ValidationExecutionResult;
+import com.venky.validationservice.integration.common.ValidationState;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ValidationApplicationService {
 
 	  public ValidationResponseDTO validateBankAccount(
 	            BankAccountRequestDTO bankDto,
-	            UserDetailsDTO userDto) {
+	            UserDetailsDTO userDto, ValidationState validationState) {
 
 	        // Build domain input
 	        FundAccountDetails details = FundAccountDetails.builder()
@@ -41,14 +42,10 @@ public class ValidationApplicationService {
 	                .build();
 
 	        ValidationExecutionResult executionResult =
-	                domainService.validate(details);
+	                domainService.validate(details,validationState);
 
 	        // Build API response
-	        return new ValidationResponseDTO(
-	                executionResult.getValidationResult().getStatus(),
-	                executionResult.getValidationResult().getConfidenceLevel(),
-	                executionResult.getProviderDetails()
-	        );
+	        return new ValidationResponseDTO(executionResult);
 	    }
 
 	public ValidationResult validateVpa(@Valid VpaRequestDTO request, @Valid UserDetailsDTO detailsDTO) {

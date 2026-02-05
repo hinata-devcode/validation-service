@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.venky.validationservice.application.ValidationApplicationService;
+import com.venky.validationservice.application.ValidationRequestIdGenerator;
 import com.venky.validationservice.application.ValidationResponseDTO;
 import com.venky.validationservice.controller.dto.BankAccountRequestDTO;
 import com.venky.validationservice.controller.dto.UserDetailsDTO;
 import com.venky.validationservice.controller.dto.VpaRequestDTO;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
+import com.venky.validationservice.integration.common.ValidationState;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +25,18 @@ import lombok.RequiredArgsConstructor;
 public class ValidationController {
 
 	private final ValidationApplicationService validationService;
+	private final ValidationRequestIdGenerator uuidGenerator;
 
 	@PostMapping("/bank-account")
 	// @Valid triggers the Gatekeeper (DTO) automatically
 	public ResponseEntity<ValidationResponseDTO> validateBank(@Valid @RequestBody BankAccountRequestDTO request, @Valid @RequestBody UserDetailsDTO userDetails) {
 
+		 String requestId = uuidGenerator.generate();
+
+		  ValidationState validationState =
+		            new ValidationState(requestId);
 		// If we reach here, the data is safe and valid format.
-		ValidationResponseDTO response = validationService.validateBankAccount(request,userDetails);
+		ValidationResponseDTO response = validationService.validateBankAccount(request,userDetails,validationState);
 		return ResponseEntity.ok(response);
 	}
 	

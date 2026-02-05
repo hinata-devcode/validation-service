@@ -7,6 +7,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -45,11 +48,11 @@ public class RzpClient {
 
             return response.getBody();
 
-        } catch (Exception ex) {
-            // Intentionally simple placeholder
-            return RazorpayResponse.error(
-                    "Error handling not implemented yet"
-            );
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw new RzpException("Razorpay API error", ex);
+
+        } catch (ResourceAccessException ex) {
+            throw new RzpException("Razorpay API timeout", ex);
         }
     }
 }

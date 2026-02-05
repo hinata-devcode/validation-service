@@ -1,7 +1,5 @@
 package com.venky.validationservice.exception;
 
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,13 +8,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(InvalidInputException.class)
-	public ResponseEntity<Map<String, String>> handleInvalidInput(InvalidInputException e) {
-		return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-	}
+    @ExceptionHandler(ValidationExecutionException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExecutionException(
+            ValidationExecutionException ex) {
 
-	@ExceptionHandler(SystemBusyException.class)
-	public ResponseEntity<Map<String, String>> handleSystemBusy(SystemBusyException e) {
-		return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of("error", e.getMessage()));
-	}
+        if (ex.getFailureOrigin() == FailureOrigin.EXTERNAL_PROVIDER) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_GATEWAY)
+                    .body(new ErrorResponse(
+                            "VALIDATION_TEMPORARILY_UNAVAILABLE",
+                            "Validation service is temporarily unavailable"
+                    ));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(
+                        "INTERNAL_ERROR",
+                        "Something went wrong"
+                ));
+    }
 }
+

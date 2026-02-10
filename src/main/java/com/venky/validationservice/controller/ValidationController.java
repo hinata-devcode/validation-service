@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.util.UUID;
 import com.venky.validationservice.application.ValidationApplicationService;
 import com.venky.validationservice.application.ValidationRequestIdGenerator;
 import com.venky.validationservice.application.ValidationResponseDTO;
@@ -31,7 +31,7 @@ public class ValidationController {
 	// @Valid triggers the Gatekeeper (DTO) automatically
 	public ResponseEntity<ValidationResponseDTO> validateBank(@Valid @RequestBody BankAccountRequestDTO request, @Valid @RequestBody UserDetailsDTO userDetails) {
 
-		 String requestId = uuidGenerator.generate();
+		UUID requestId = uuidGenerator.generate();
 
 		  ValidationState validationState =
 		            new ValidationState(requestId);

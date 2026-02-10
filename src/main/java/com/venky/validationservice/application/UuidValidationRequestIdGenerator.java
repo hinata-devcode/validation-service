@@ -9,8 +9,8 @@ public class UuidValidationRequestIdGenerator
         implements ValidationRequestIdGenerator {
 
     @Override
-    public String generate() {
-        return UUID.randomUUID().toString();
+    public UUID generate() {
+        return UUID.randomUUID();
     }
 }
 

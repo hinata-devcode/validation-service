@@ -45,7 +45,7 @@ public class ValidationApplicationService {
 	                domainService.validate(details,validationState);
 
 	        // Build API response
-	        return new ValidationResponseDTO(executionResult);
+	        return ValidationResponseDTO.from(executionResult);
 	    }
 
 	public ValidationResult validateVpa(@Valid VpaRequestDTO request, @Valid UserDetailsDTO detailsDTO) {

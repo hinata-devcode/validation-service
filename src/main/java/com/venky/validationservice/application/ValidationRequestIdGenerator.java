@@ -1,5 +1,7 @@
 package com.venky.validationservice.application;
 
+import java.util.UUID;
+
 public interface ValidationRequestIdGenerator {
-	String generate();
+	 UUID generate();
 }

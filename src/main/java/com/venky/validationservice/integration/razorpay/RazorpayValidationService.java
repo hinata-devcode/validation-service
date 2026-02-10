@@ -12,6 +12,8 @@ import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
+import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
+import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,41 +27,49 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class RazorpayValidationService implements ProviderValidationPort{
+public class RazorpayValidationService implements ProviderValidationPort {
 
-    private final RzpFundAccountFactory fundAccountFactory;
-    private final RzpRequestFactory requestFactory;
-    private final RzpClient rzpClient;
+	private final RzpFundAccountFactory fundAccountFactory;
+	private final RzpRequestFactory requestFactory;
+	private final RzpClient rzpClient;
+	private final ProviderValidationEventPersistenceService eventPersistence;
+	private final ValidationPersistenceService validationPersistenceService;
 
-    public RazorpayValidationService(
-            RzpFundAccountFactory fundAccountFactory,
-            RzpRequestFactory requestFactory,
-            RzpClient rzpClient) {
-        this.fundAccountFactory = fundAccountFactory;
-        this.requestFactory = requestFactory;
-        this.rzpClient = rzpClient;
-    }
+	public RazorpayValidationService(RzpFundAccountFactory fundAccountFactory, RzpRequestFactory requestFactory,
+			RzpClient rzpClient, ProviderValidationEventPersistenceService eventPersistenceService,
+			ValidationPersistenceService validationPersistenceService) {
+		this.fundAccountFactory = fundAccountFactory;
+		this.requestFactory = requestFactory;
+		this.rzpClient = rzpClient;
+		this.eventPersistence = eventPersistenceService;
+		this.validationPersistenceService = validationPersistenceService;
+	}
 
-    @Override
-    public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
+	@Override
+	public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
 
-        FundAccount fundAccount =
-                fundAccountFactory.createFundAccountDetails(details);
+		FundAccount fundAccount = fundAccountFactory.createFundAccountDetails(details);
 
-        RazorpayExternalRequest request =
-                requestFactory.build(fundAccount);
-        
-        RazorpayResponse response =
-        rzpClient.validateFundAccount(request);
-        
-        validationState.setProvider(Provider.RAZORPAY);
-        validationState.setProviderReferenceId(response.getValidationId());
-        validationState.setExecutionStatus(ExecutionStatus.PENDING);
+		RazorpayExternalRequest request = requestFactory.build(fundAccount);
 
-        return new ValidationExecutionResult(
-                validationState,
-                Optional.empty()
-        );
-    }
+		RazorpayResponse response = rzpClient.validateFundAccount(request);
+
+		validationState.setProvider(Provider.RAZORPAY);
+		validationState.setProviderReferenceId(response.getValidationId());
+		validationState.setExecutionStatus(ExecutionStatus.PENDING);
+
+		String favId = response.getValidationId();
+
+		eventPersistence.recordApiResponse(validationState.getValidationRequestId(), Provider.RAZORPAY, favId,
+				response.toEventPayload());
+
+		// this is for my DB
+		validationPersistenceService.markRequestPending(validationState.getValidationRequestId(),
+				Provider.RAZORPAY.toString(), favId);
+
+		// this is for my domain layer/UI return state
+		validationState.markPending(Provider.RAZORPAY, favId);
+
+		return new ValidationExecutionResult(validationState, Optional.empty());
+	}
 }
-

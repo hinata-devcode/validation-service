@@ -14,7 +14,6 @@ public class ValidationResponseDTO {
 
     public static ValidationResponseDTO from(
             ValidationExecutionResult executionResult) {
-
         return new ValidationResponseDTO(executionResult);
     }
 

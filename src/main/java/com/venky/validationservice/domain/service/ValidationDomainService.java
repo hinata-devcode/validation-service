@@ -8,20 +8,25 @@ import com.venky.validationservice.exception.ValidationExecutionException;
 import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
 import com.venky.validationservice.integration.razorpay.RzpException;
+import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 public class ValidationDomainService {
 
 	private final ProviderValidationPort providerPort;
+	private final ValidationPersistenceService validationPersistenceService;
 
-	public ValidationDomainService(ProviderValidationPort providerPort) {
+	public ValidationDomainService(ProviderValidationPort providerPort, ValidationPersistenceService validationPersistenceService) {
 		this.providerPort = providerPort;
+		this.validationPersistenceService = validationPersistenceService;
 	}
 
 	public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
 		try {
 
 			// Call provider
-			ValidationExecutionResult execution = providerPort.validate(details, null);
+			
+			validationPersistenceService.createValidationRequest(validationState.getValidationRequestId());
+			ValidationExecutionResult execution = providerPort.validate(details, validationState);
 
 			return execution;
 

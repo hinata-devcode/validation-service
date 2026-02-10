@@ -1,20 +1,20 @@
 package com.venky.validationservice.integration.common;
 
-import com.venky.validationservice.domain.model.ConfidenceLevel;
+import java.util.UUID;
 
 public class ValidationState {
 
-    private final String validationRequestId;
+    private final UUID validationRequestId;
     private Provider provider;
     private String providerReferenceId;
     private ExecutionStatus executionStatus;
 
-    public ValidationState(String validationRequestId) {
-        this.validationRequestId = validationRequestId;
+    public ValidationState(UUID requestId) {
+        this.validationRequestId = requestId;
         this.setExecutionStatus(ExecutionStatus.INITIATED);
     }
 
-	public String getValidationRequestId() {
+	public UUID getValidationRequestId() {
 		return validationRequestId;
 	}
 
@@ -40,6 +40,12 @@ public class ValidationState {
 
 	public void setExecutionStatus(ExecutionStatus executionStatus) {
 		this.executionStatus = executionStatus;
+	}
+
+	public void markPending(Provider provider, String favId) {
+		this.provider = provider;
+		this.providerReferenceId = favId;
+		this.executionStatus = ExecutionStatus.PENDING;
 	}
 
     

@@ -29,11 +29,22 @@ public class ProviderValidationEventEntity {
     @Column(name = "event_type", nullable = false)
     private ProviderEventType eventType; // API_RESPONSE / WEBHOOK
 
-    @Column(name = "raw_payload", columnDefinition = "json")
+    
+	@Column(name = "raw_payload", columnDefinition = "json")
     private String rawPayload; // store full payload safely
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean processed = false;
+    private EventProcessingStatus status=EventProcessingStatus.PENDING;
+    
+    @Column(name="retry_count")
+    private int retryCount;
+
+    @Column(name="last_error")
+    private String lastError;
+    
+    @Column(name = "next_retry_at")
+    private Instant nextRetryAt;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -55,17 +66,89 @@ public class ProviderValidationEventEntity {
     }
 
 
-	public void markProcessed() {
-		this.processed=true;
+	public void markCompleted() {
+		this.status=EventProcessingStatus.COMPLETED;
 	}
 
-	public UUID getProviderReferenceId() {
-		return validationRequestId;
+	public String getProviderReferenceId() {
+		return providerReferenceId;
 	}
 
 	public String getRawPayload() {
 		return rawPayload;
 	}
+	
+	public ProviderEventType getEventType() {
+		return eventType;
+	}
 
-    
+	public Long getId() {
+		return id;
+	}
+
+	public UUID getValidationRequestId() {
+		return validationRequestId;
+	}
+
+	public Provider getProvider() {
+		return provider;
+	}
+
+	public EventProcessingStatus getStatus() {
+		return status;
+	}
+
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	public String getLastError() {
+		return lastError;
+	}
+
+	public void setLastError(String lastError) {
+		this.lastError = lastError;
+	}
+
+	public Instant getNextRetryAt() {
+		return nextRetryAt;
+	}
+
+	public void setNextRetryAt(Instant nextRetryAt) {
+		this.nextRetryAt = nextRetryAt;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public void setEventType(ProviderEventType eventType) {
+		this.eventType = eventType;
+	}
+	
+	public void markProcessing() {
+	    this.status = EventProcessingStatus.PROCESSING;
+	}
+
+	public void markFailed() {
+	    this.status = EventProcessingStatus.FAILED;
+	}
+
+	public void markPending() {
+	    this.status = EventProcessingStatus.PENDING;
+	}
+
+	public void markSkipped() {
+	    this.status = EventProcessingStatus.SKIPPED;
+	}
+
+	public void setRetryCount(int retry) {
+		this.retryCount=retry;
+	}
+
+
 }

@@ -8,12 +8,14 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.application.worker.ProviderResult;
+import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.razorpay.webhook.RazorpayWebhookSanitizer;
+import com.venky.validationservice.integration.webhook.ProviderEventParser;
 
 
 @Component
-public class RazorpayWebhookParser {
+public class RazorpayWebhookParser implements ProviderEventParser{
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final RazorpayWebhookSanitizer sanitizer;
@@ -22,7 +24,9 @@ public class RazorpayWebhookParser {
         this.sanitizer = sanitizer;
     }
 
-    public RazorpayWebhookResult parse(String rawPayload) {
+	@Override
+	public ProviderResult parseWebhook(String rawPayload) {
+
         try {
             JsonNode root = mapper.readTree(rawPayload);
             JsonNode entity =
@@ -47,7 +51,7 @@ public class RazorpayWebhookParser {
                 });
             }
 
-            return new RazorpayWebhookResult(
+            return new ProviderResult(
                     favId,
                     status,
                     attributes,
@@ -57,5 +61,16 @@ public class RazorpayWebhookParser {
         } catch (Exception e) {
             throw new IllegalStateException("Invalid webhook payload", e);
         }
-    }
+    
+	}
+
+	@Override
+	public ProviderResult parseApiResponse(String payload) {
+		return null;
+	}
+
+	@Override
+	public Provider getProvider() {
+		return Provider.RAZORPAY;
+	}
 }

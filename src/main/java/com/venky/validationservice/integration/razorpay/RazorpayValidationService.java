@@ -31,12 +31,12 @@ public class RazorpayValidationService implements ProviderValidationPort {
 
 	private final RzpFundAccountFactory fundAccountFactory;
 	private final RzpRequestFactory requestFactory;
-	private final RzpClient rzpClient;
+	private final RazorpayClient rzpClient;
 	private final ProviderValidationEventPersistenceService eventPersistence;
 	private final ValidationPersistenceService validationPersistenceService;
 
 	public RazorpayValidationService(RzpFundAccountFactory fundAccountFactory, RzpRequestFactory requestFactory,
-			RzpClient rzpClient, ProviderValidationEventPersistenceService eventPersistenceService,
+			RazorpayClient rzpClient, ProviderValidationEventPersistenceService eventPersistenceService,
 			ValidationPersistenceService validationPersistenceService) {
 		this.fundAccountFactory = fundAccountFactory;
 		this.requestFactory = requestFactory;

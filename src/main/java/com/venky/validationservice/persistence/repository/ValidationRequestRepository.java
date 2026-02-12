@@ -2,6 +2,11 @@ package com.venky.validationservice.persistence.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +15,24 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 public interface ValidationRequestRepository
         extends JpaRepository<ValidationRequestEntity, UUID> {
 
-    Optional<ValidationRequestEntity> findByProviderReferenceId(UUID providerReferenceId);
+//	@Query("""
+//		    SELECT v FROM ValidationRequestEntity v
+//		    WHERE v.providerReferenceId = :providerReferenceId
+//		""")
+//	Optional<ValidationRequestEntity> findByProviderReferenceId(@Param("providerReferenceId")String providerReferenceId);
+	
+	Optional<ValidationRequestEntity> findByProviderReferenceId(String providerReferenceId);
+	
+	@Query("""
+		    SELECT v FROM ValidationRequestEntity v
+		    WHERE v.executionStatus = :status
+		      AND (v.lastStatusCheckAt IS NULL 
+		           OR v.lastStatusCheckAt <= :threshold)
+		""")
+		List<ValidationRequestEntity> findRequestsForPolling(
+		        @Param("status") String status,
+		        @Param("threshold") Instant threshold
+		);
+
 }
 

@@ -13,12 +13,12 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class RzpClient {
+public class RazorpayClient {
 
     private final RestTemplate restTemplate;
     private final RazorpayProperties properties;
 
-    public RzpClient(RestTemplate restTemplate, RazorpayProperties properties) {
+    public RazorpayClient(RestTemplate restTemplate, RazorpayProperties properties) {
         this.restTemplate = restTemplate;
         this.properties = properties;
     }
@@ -55,4 +55,9 @@ public class RzpClient {
             throw new RzpException("Razorpay API timeout", ex);
         }
     }
+
+	public String fetchStatus(String providerReferenceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

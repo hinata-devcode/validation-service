@@ -1,15 +1,15 @@
-package com.venky.validationservice.integration.razorpay;
+package com.venky.validationservice.application.worker;
 
 import java.util.Map;
 
-public class RazorpayWebhookResult {
+public class ProviderResult {
 
 	private final String providerReferenceId; // fav_xxx
 	private final String providerStatus; // completed / failed (RAW)
 	private final Map<String, String> attributes; // name_match_score, account_status
 	private final String sanitizedRawPayload; // for storage only
 
-	public RazorpayWebhookResult(String providerReferenceId, String providerStatus, Map<String, String> attributes,
+	public ProviderResult(String providerReferenceId, String providerStatus, Map<String, String> attributes,
 			String sanitizedRawPayload) {
 		this.providerReferenceId = providerReferenceId;
 		this.providerStatus = providerStatus;

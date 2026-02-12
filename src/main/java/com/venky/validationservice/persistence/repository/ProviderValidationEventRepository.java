@@ -20,15 +20,17 @@ public interface ProviderValidationEventRepository
             String providerReferenceId
     );
 
-	List<ProviderValidationEventEntity> findByProcessedFalseOrderByCreatedAtAsc();
+	//List<ProviderValidationEventEntity> findByProcessedFalseOrderByCreatedAtAsc();
 
-	@Query("""
-			SELECT e FROM ProviderValidationEventEntity e
-			WHERE e.processed = false
-			ORDER BY e.createdAt
-			LIMIT 1
-			FOR UPDATE SKIP LOCKED;
-			""")
+    @Query(value = """
+    	    SELECT *
+    	    FROM provider_validation_event
+    	    WHERE status = 'PENDING'
+    	      AND (next_retry_at IS NULL OR next_retry_at <= NOW())
+    	    ORDER BY created_at
+    	    LIMIT 1
+    	    FOR UPDATE SKIP LOCKED
+    	""", nativeQuery = true)
 	Optional<ProviderValidationEventEntity> findNextUnprocessed();
 }
 

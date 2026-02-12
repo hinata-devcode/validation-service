@@ -2,14 +2,14 @@ package com.venky.validationservice.domain.service;
 
 import org.springframework.stereotype.Service;
 
+import com.venky.validationservice.application.worker.ProviderResult;
 import com.venky.validationservice.domain.model.DomainDecision;
 import com.venky.validationservice.integration.razorpay.DecisionStatus;
-import com.venky.validationservice.integration.razorpay.RazorpayWebhookResult;
 
 @Service
 public class ValidationDecisionService {
 
-    public DomainDecision decide(RazorpayWebhookResult result) {
+    public DomainDecision decide(ProviderResult result) {
 
         String accountStatus =
             result.getAttributes().get("account_status");

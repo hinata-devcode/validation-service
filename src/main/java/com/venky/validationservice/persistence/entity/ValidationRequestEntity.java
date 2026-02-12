@@ -34,14 +34,19 @@ public class ValidationRequestEntity {
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+    
+    @Column(name = "last_status_checkAt")
+    private Instant lastStatusCheckAt;
+
 
     protected ValidationRequestEntity() {}
 
     public ValidationRequestEntity(UUID id, String executionStatus) {
-        this.id = id;
+        this.id=id;
         this.executionStatus = executionStatus;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
+        this.lastStatusCheckAt=Instant.now();
     }
 
 	public void setProvider(String provider) {
@@ -77,6 +82,44 @@ public class ValidationRequestEntity {
 	    this.confidenceLevel = confidenceLevel;
 	    this.updatedAt = Instant.now();
 	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public String getProvider() {
+		return provider;
+	}
+
+	public String getProviderReferenceId() {
+		return providerReferenceId;
+	}
+
+	public String getDecisionStatus() {
+		return decisionStatus;
+	}
+
+	public String getConfidenceLevel() {
+		return confidenceLevel;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public Instant getLastStatusCheckAt() {
+		return lastStatusCheckAt;
+	}
+
+	public void setLastStatusCheckAt(Instant now) {
+		this.lastStatusCheckAt=now;
+	}
+	
+	
 
 
     // getters & setters

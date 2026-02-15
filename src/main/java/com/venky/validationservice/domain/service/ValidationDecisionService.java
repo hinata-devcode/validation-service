@@ -25,6 +25,6 @@ public class ValidationDecisionService {
         String confidence =
             nameMatch != null ? nameMatch : "UNKNOWN";
 
-        return new DomainDecision(decision.name(), confidence);
+        return new DomainDecision(decision, confidence);
     }
 }

@@ -25,7 +25,7 @@ public class RecoveryScheduler {
 
 		for (ValidationRequestEntity vr : stuck) {
 
-			int updated = validationRequestRepository.markProcessingIfInitiated(vr.getId());
+			int updated = validationRequestRepository.markProcessingIfInitiated(vr.getValidationRequestId());
 
 			if (updated == 0) {
 				continue;

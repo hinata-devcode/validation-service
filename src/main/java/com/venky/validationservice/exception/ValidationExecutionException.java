@@ -12,7 +12,12 @@ public class ValidationExecutionException extends RuntimeException {
         this.failureOrigin = failureOrigin;
     }
 
-    public FailureOrigin getFailureOrigin() {
+    public ValidationExecutionException(String message, FailureOrigin failureOrigin) {
+		super(message);
+		this.failureOrigin=failureOrigin;
+	}
+
+	public FailureOrigin getFailureOrigin() {
         return failureOrigin;
     }
 }

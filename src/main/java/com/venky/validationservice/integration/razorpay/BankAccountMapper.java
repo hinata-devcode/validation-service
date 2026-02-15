@@ -4,7 +4,7 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 
 public class BankAccountMapper {
 	
-	public BankAccount createBankAccount(FundAccountDetails accountDetails) {
+	public static BankAccount createBankAccount(FundAccountDetails accountDetails) {
 		return BankAccount.builder()
 				          .name(accountDetails.getBeneficiaryName())
 				          .ifsc(accountDetails.getIfsc())

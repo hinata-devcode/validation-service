@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.DomainDecision;
+import com.venky.validationservice.domain.model.ValidationStatus;
+import com.venky.validationservice.domain.service.DomainDecisionMapper;
 import com.venky.validationservice.domain.service.ValidationDecisionService;
 import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
@@ -40,16 +43,17 @@ public class EventWorker {
 	private final ProviderValidationResultService providerValidationResultService;
 	private final ProviderValidationEventPersistenceService eventPersistenceService;
 	private final Map<Provider, ProviderEventParser> parserMap;
+	private final DomainDecisionMapper domainDecisionMapper;
 
 	public EventWorker(ValidationPersistenceService validationPersistence,
 			ValidationDecisionService validationDecisionService,
 			ProviderValidationResultService providerValidationResultService,
-			ProviderValidationEventPersistenceService eventPersistenceService, List<ProviderEventParser> parsers) {
+			ProviderValidationEventPersistenceService eventPersistenceService, List<ProviderEventParser> parsers, DomainDecisionMapper domainDecisionMapper) {
 		this.validationPersistence = validationPersistence;
 		this.validationDecisionService = validationDecisionService;
 		this.providerValidationResultService = providerValidationResultService;
 		this.eventPersistenceService = eventPersistenceService;
-
+		this.domainDecisionMapper = domainDecisionMapper;
 		this.parserMap = parsers.stream()
 				.collect(Collectors.toMap(ProviderEventParser::getProvider, Function.identity()));
 	}
@@ -118,7 +122,7 @@ public class EventWorker {
 
 				validationPersistence.updateValidationEntity(request);
 
-				providerValidationResultService.store(request.getId(), event.getProvider().name(),
+				providerValidationResultService.store(request.getValidationRequestId(), event.getProvider().name(),
 						providerResult.getProviderReferenceId(), providerResult);
 
 				event.markCompleted();
@@ -128,13 +132,19 @@ public class EventWorker {
 			}
 
 			DomainDecision decision = validationDecisionService.decide(providerResult);
+			
+			ValidationStatus validationStatus =
+					domainDecisionMapper.mapValidationStatus(decision.getDecision());
 
-			request.complete(decision.getDecision(), decision.getConfidence());
+			ConfidenceLevel confidenceLevel =
+					domainDecisionMapper.mapConfidenceLevel(decision.getConfidence());
+
+			request.complete(validationStatus, confidenceLevel);
 
 			validationPersistence.updateValidationEntity(request);
 			eventPersistenceService.markCompleted(event);
 
-			providerValidationResultService.store(request.getId(), event.getProvider().name(),
+			providerValidationResultService.store(request.getValidationRequestId(), event.getProvider().name(),
 					event.getProviderReferenceId().toString(), providerResult);
 
 		}

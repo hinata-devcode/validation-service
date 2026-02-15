@@ -4,7 +4,7 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 
 public class ContactMapper {
 
-	public Contact createContact(FundAccountDetails accountDetails) {
+	public static Contact createContact(FundAccountDetails accountDetails) {
 		return Contact.builder().name(normalize(accountDetails.getBeneficiaryName()))
 				.email(normalize(accountDetails.getEmail()))
 				// .type(normalize(accountDetails.getContactType()))
@@ -13,7 +13,7 @@ public class ContactMapper {
 				.build();
 	}
 
-	private String normalize(String value) {
+	private static String normalize(String value) {
 		return (value == null || value.isBlank()) ? null : value;
 	}
 

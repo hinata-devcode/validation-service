@@ -19,7 +19,7 @@ public class ProviderValidationEventEntity {
     private UUID validationRequestId; // nullable (webhook-before-API case)
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "provider",nullable = false)
     private Provider provider;
 
     @Column(name = "provider_reference_id", nullable = false)
@@ -34,7 +34,7 @@ public class ProviderValidationEventEntity {
     private String rawPayload; // store full payload safely
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status",nullable = false)
     private EventProcessingStatus status=EventProcessingStatus.PENDING;
     
     @Column(name="retry_count")

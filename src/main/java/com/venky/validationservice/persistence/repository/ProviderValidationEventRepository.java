@@ -12,13 +12,13 @@ import com.venky.validationservice.persistence.entity.ProviderValidationEventEnt
 public interface ProviderValidationEventRepository
         extends JpaRepository<ProviderValidationEventEntity, Long> {
 
-    List<ProviderValidationEventEntity> findByProcessedFalse();
+   // List<ProviderValidationEventEntity> findByProcessedFalse();
     
-    Optional<ProviderValidationEventEntity>
-    findTopByProviderAndProviderReferenceIdOrderByCreatedAtDesc(
-            Provider provider,
-            String providerReferenceId
-    );
+//    Optional<ProviderValidationEventEntity>
+//    findTopByProviderAndProviderReferenceIdOrderByCreatedAtDesc(
+//            Provider provider,
+//            String providerReferenceId
+//    );
 
 	//List<ProviderValidationEventEntity> findByProcessedFalseOrderByCreatedAtAsc();
 

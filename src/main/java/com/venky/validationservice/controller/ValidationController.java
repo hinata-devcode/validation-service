@@ -1,6 +1,8 @@
 package com.venky.validationservice.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import com.venky.validationservice.application.ValidationResponseDTO;
 import com.venky.validationservice.controller.dto.BankAccountRequestDTO;
 import com.venky.validationservice.controller.dto.UserDetailsDTO;
 import com.venky.validationservice.controller.dto.VpaRequestDTO;
+import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.integration.common.ValidationState;
@@ -41,11 +44,28 @@ public class ValidationController {
 	}
 	
 	@PostMapping("/vpa")
-    public ResponseEntity<ValidationResult> validateVpa(
+    public ResponseEntity<ValidationResponseDTO> validateVpa(
             @Valid @RequestBody VpaRequestDTO request,@Valid @RequestBody UserDetailsDTO detailsDTO) {
     
-        ValidationResult response = validationService.validateVpa(request,detailsDTO);  
+		UUID requestId = uuidGenerator.generate();
+
+		  ValidationState validationState =
+		            new ValidationState(requestId);
+		  
+		  ValidationResponseDTO response = validationService.validateVpa(request,detailsDTO,validationState);  
         return ResponseEntity.ok(response);
     }
+	
+	 @GetMapping("/{validationRequestId}")
+	    public ResponseEntity<ValidationQueryResponse> getValidation(
+	            @PathVariable UUID validationRequestId) {
+
+	        //log.info("Received validation status request for id={}", validationRequestId);
+
+	        ValidationQueryResponse response =
+	        		validationService.getValidation(validationRequestId);
+
+	        return ResponseEntity.ok(response);
+	    }
 
 }

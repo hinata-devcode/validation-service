@@ -23,6 +23,8 @@ public class RazorpayClient {
 	private final RestTemplate restTemplate;
 	private final RazorpayProperties properties;
 	private final RetryExecutor retryExecutor;
+	private final int maxAttempts=3;
+	private final int initialDelay=2;
 
 	public RazorpayClient(RestTemplate restTemplate, RazorpayProperties properties, RetryExecutor retryExecutor) {
 		this.restTemplate = restTemplate;
@@ -31,7 +33,7 @@ public class RazorpayClient {
 	}
 
 	public RazorpayResponse validateFundAccount(RazorpayExternalRequest request) {
-		return retryExecutor.execute(() -> createValidationRequest(request), 3, Duration.ofSeconds(2));
+		return retryExecutor.execute(() -> createValidationRequest(request), maxAttempts, Duration.ofSeconds(initialDelay));
 	}
 
 	public String fetchStatus(String providerReferenceId) {

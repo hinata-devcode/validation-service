@@ -17,12 +17,5 @@ public class ValidationResult {
 		this.confidenceLevel = confidenceLevel;
 	}
 
-	public static ValidationResult success(ConfidenceLevel level) {
-		return new ValidationResult(ValidationStatus.SUCCESS, level);
-	}
-
-	public static ValidationResult failure() {
-		return new ValidationResult(ValidationStatus.FAILED, null);
-	}
 
 }

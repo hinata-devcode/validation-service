@@ -1,15 +1,22 @@
 package com.venky.validationservice.domain.service;
 
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.FundAccountDetails;
+import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.exception.FailureOrigin;
 import com.venky.validationservice.exception.ValidationExecutionException;
+import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
 import com.venky.validationservice.integration.razorpay.RzpException;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
+@Service
 public class ValidationDomainService {
 
 	private final ProviderValidationPort providerPort;
@@ -47,5 +54,32 @@ public class ValidationDomainService {
 			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex);
 		}
 	}
+
+	public ValidationQueryResponse  fetchResults(UUID validationRequestId) {
+		var validationResult = validationPersistenceService.findByValidationRequestId(validationRequestId);
+		
+		if(validationResult.isEmpty())
+			throw new ValidationExecutionException(
+                    "Validation request not found: " + validationRequestId, FailureOrigin.INTERNAL_SYSTEM);
+		
+		ValidationResult result = null;
+		
+		var validationEntity = validationResult.get();
+		
+		 if (validationEntity.getExecutionStatus() == ExecutionStatus.COMPLETED) {
+	            result = ValidationResult.builder()
+	                    .status(validationEntity.getValidationStatus())
+	                    .confidenceLevel(validationEntity.getConfidenceLevel())
+	                    .build();
+	        }
+		
+		 return ValidationQueryResponse.builder()
+	                .validationRequestId(validationEntity.getValidationRequestId())
+	                .executionStatus(validationEntity.getExecutionStatus())
+	                .result(result)
+	                .build();
+	}
+	
+	
 
 }

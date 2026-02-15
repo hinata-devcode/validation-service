@@ -1,16 +1,20 @@
 package com.venky.validationservice.application;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.venky.validationservice.controller.dto.BankAccountRequestDTO;
 import com.venky.validationservice.controller.dto.UserDetailsDTO;
 import com.venky.validationservice.controller.dto.VpaRequestDTO;
 import com.venky.validationservice.domain.model.FundAccountDetails;
+import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.domain.service.ValidationDomainService;
 import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
+import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +52,24 @@ public class ValidationApplicationService {
 	        return ValidationResponseDTO.from(executionResult);
 	    }
 
-	public ValidationResult validateVpa(@Valid VpaRequestDTO request, @Valid UserDetailsDTO detailsDTO) {
+	public ValidationResponseDTO validateVpa(@Valid VpaRequestDTO vpaDto, @Valid UserDetailsDTO userDto, ValidationState validationState) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		 FundAccountDetails details = FundAccountDetails.builder()
+	                .beneficiaryName(userDto.getName())
+	                .email(userDto.getEmail())
+	                .phone(userDto.getPhone())
+	                .vpa(vpaDto.getVpa())
+	                .build();
+
+	        ValidationExecutionResult executionResult =
+	                domainService.validate(details,validationState);
+
+	        // Build API response
+	        return ValidationResponseDTO.from(executionResult);
+	}
+
+	public ValidationQueryResponse getValidation(UUID validationRequestId) {
+		return domainService.fetchResults(validationRequestId);
 	}
 }

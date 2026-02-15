@@ -41,19 +41,19 @@ public interface ValidationRequestRepository
 	@Transactional
 	@Modifying
 	@Query("""
-	       UPDATE ValidationRequest vr
-	       SET vr.status = 'PROCESSING',
+	       UPDATE ValidationRequestEntity vr
+	       SET vr.executionStatus = 'PENDING',
 	           vr.updatedAt = CURRENT_TIMESTAMP
-	       WHERE vr.id = :id
-	       AND vr.status = 'INITIATED'
+	       WHERE vr.validationRequestId = :id
+	       AND vr.executionStatus = 'INITIATED'
 	       """)
 	int markProcessingIfInitiated(@Param("id") UUID id);
 	
 	
 	@Query("""
 		       SELECT vr
-		       FROM ValidationRequest vr
-		       WHERE vr.status = 'PROCESSING'
+		       FROM ValidationRequestEntity vr
+		       WHERE vr.executionStatus = 'PENDING'
 		       AND vr.providerReferenceId IS NULL
 		       AND vr.updatedAt < :cutoff
 		       """)

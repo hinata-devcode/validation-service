@@ -56,7 +56,7 @@ public class RazorpayValidationService implements ProviderValidationPort {
 
 		validationState.setProvider(Provider.RAZORPAY);
 		validationState.setProviderReferenceId(response.getValidationId());
-		validationState.setExecutionStatus(ExecutionStatus.PENDING);
+		
 
 		String favId = response.getValidationId();
 

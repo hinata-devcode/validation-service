@@ -6,6 +6,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.venky.validationservice.domain.model.ConfidenceLevel;
+import com.venky.validationservice.domain.model.ValidationStatus;
 import com.venky.validationservice.integration.common.ExecutionStatus;
 
 @Entity
@@ -13,8 +15,8 @@ import com.venky.validationservice.integration.common.ExecutionStatus;
 public class ValidationRequestEntity {
 
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
-    private UUID id;
+    @Column(name = "validation_request_id", nullable = false, updatable = false)
+    private UUID validationRequestId;
 
     @Column(name = "provider")
     private String provider;
@@ -22,14 +24,17 @@ public class ValidationRequestEntity {
     @Column(name = "provider_reference_id")
     private String providerReferenceId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "execution_status", nullable = false)
-    private String executionStatus;
+    private ExecutionStatus executionStatus;
 
-    @Column(name = "decision_status")
-    private String decisionStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "validation_status")
+    private ValidationStatus validationStatus;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "confidence_level")
-    private String confidenceLevel;
+    private ConfidenceLevel confidenceLevel;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -52,8 +57,8 @@ public class ValidationRequestEntity {
 
     protected ValidationRequestEntity() {}
 
-    public ValidationRequestEntity(UUID id, String executionStatus) {
-        this.id=id;
+    public ValidationRequestEntity(UUID id, ExecutionStatus executionStatus) {
+        this.validationRequestId=id;
         this.executionStatus = executionStatus;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
@@ -68,7 +73,7 @@ public class ValidationRequestEntity {
 		this.providerReferenceId=providerReferenceId;
 	}
 
-	public void setExecutionStatus(String executionStatus) {
+	public void setExecutionStatus(ExecutionStatus executionStatus) {
 		this.executionStatus=executionStatus;
 	}
 
@@ -76,26 +81,22 @@ public class ValidationRequestEntity {
 		this.updatedAt=updatedAt;
 	}
 
-	public String getExecutionStatus() {
+	public ExecutionStatus getExecutionStatus() {
 		return executionStatus;
 	}
 	
 	public void complete(
-	        String decisionStatus,
-	        String confidenceLevel) {
+	        ValidationStatus validationStatus,
+	        ConfidenceLevel confidenceLevel) {
 
 	    if (!ExecutionStatus.PENDING.name().equals(this.executionStatus)) {
 	        return; // idempotency guard
 	    }
 
-	    this.executionStatus = ExecutionStatus.COMPLETED.name();
-	    this.decisionStatus = decisionStatus;
+	    this.executionStatus = ExecutionStatus.COMPLETED;
+	    this.validationStatus = validationStatus;
 	    this.confidenceLevel = confidenceLevel;
 	    this.updatedAt = Instant.now();
-	}
-
-	public UUID getId() {
-		return id;
 	}
 
 	public String getProvider() {
@@ -106,11 +107,11 @@ public class ValidationRequestEntity {
 		return providerReferenceId;
 	}
 
-	public String getDecisionStatus() {
-		return decisionStatus;
+	public ValidationStatus getDecisionStatus() {
+		return validationStatus;
 	}
 
-	public String getConfidenceLevel() {
+	public ConfidenceLevel getConfidenceLevel() {
 		return confidenceLevel;
 	}
 
@@ -131,10 +132,8 @@ public class ValidationRequestEntity {
 	}
 
 	public void markProviderFailed() {
-		this.executionStatus=ExecutionStatus.PROVIDER_FAILED.name();
+		this.executionStatus=ExecutionStatus.PROVIDER_FAILED;
 	}
-	
-	
 	
 	public void incrementPollAttempts() {
 	    this.pollAttempts++;
@@ -171,8 +170,16 @@ public class ValidationRequestEntity {
 	}
 
 	public void markProviderTimeoutFailure() {
-	    this.executionStatus = ExecutionStatus.FAILED.toString();
+	    this.executionStatus = ExecutionStatus.FAILED;
 	    this.failureReason = "Provider timeout";
+	}
+
+	public ValidationStatus getValidationStatus() {
+		return this.validationStatus;
+	}
+
+	public UUID getValidationRequestId() {
+		return this.validationRequestId;
 	}
 
 

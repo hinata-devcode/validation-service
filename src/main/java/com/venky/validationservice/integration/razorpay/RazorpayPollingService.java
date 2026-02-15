@@ -53,7 +53,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		}
 
 		// here we are saving the info to audit table
-		ProviderValidationEventEntity event = new ProviderValidationEventEntity(request.getId(), Provider.RAZORPAY,
+		ProviderValidationEventEntity event = new ProviderValidationEventEntity(request.getValidationRequestId(), Provider.RAZORPAY,
 				request.getProviderReferenceId(), ProviderEventType.API_RESPONSE, apiResponse);
 
 		event.markPending();

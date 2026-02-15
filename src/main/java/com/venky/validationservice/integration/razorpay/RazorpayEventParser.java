@@ -5,22 +5,24 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.venky.validationservice.application.worker.ProviderResult;
+import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.razorpay.webhook.RazorpayWebhookSanitizer;
 import com.venky.validationservice.integration.webhook.ProviderEventParser;
 
 
 @Component
-public class RazorpayWebhookParser implements ProviderEventParser{
+public class RazorpayEventParser implements ProviderEventParser{
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final RazorpayWebhookSanitizer sanitizer;
 
-    public RazorpayWebhookParser(RazorpayWebhookSanitizer sanitizer) {
+    public RazorpayEventParser(RazorpayWebhookSanitizer sanitizer) {
         this.sanitizer = sanitizer;
     }
 
@@ -58,15 +60,54 @@ public class RazorpayWebhookParser implements ProviderEventParser{
                     sanitizer.sanitize(rawPayload)
             );
 
-        } catch (Exception e) {
-            throw new IllegalStateException("Invalid webhook payload", e);
+        } catch (JsonProcessingException ex) {
+        	   throw new NonRetryableProviderException("Invalid payload", ex);
         }
     
 	}
 
 	@Override
-	public ProviderResult parseApiResponse(String payload) {
-		return null;
+	public ProviderResult parseApiResponse(String rawPayload) {
+
+        try {
+
+            JsonNode root = mapper.readTree(rawPayload);
+
+            String favId = root.path("id").asText();
+            String status = root.path("status").asText();
+
+            JsonNode validationResults = root.path("validation_results");
+
+            Map<String, String> attributes = new HashMap<>();
+            
+            if (validationResults != null && validationResults.isObject()) {
+
+                ObjectNode obj = (ObjectNode) validationResults;
+
+                obj.fields().forEachRemaining(e -> {
+
+                    JsonNode value = e.getValue();
+
+                    attributes.put(
+                            e.getKey(),
+                            value == null || value.isNull()
+                                    ? null
+                                    : value.asText()
+                    );
+                });
+            }
+
+            return new ProviderResult(
+                    favId,
+                    status,
+                    attributes,
+                    sanitizer.sanitize(rawPayload)
+            );
+
+
+        } catch (Exception ex) {
+            throw new NonRetryableProviderException("Failed to parse Razorpay response", ex);
+        }
 	}
 
 	@Override

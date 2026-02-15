@@ -2,10 +2,13 @@ package com.venky.validationservice.persistence.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,6 +36,31 @@ public interface ValidationRequestRepository
 		        @Param("status") String status,
 		        @Param("threshold") Instant threshold
 		);
+	
+	
+	@Transactional
+	@Modifying
+	@Query("""
+	       UPDATE ValidationRequest vr
+	       SET vr.status = 'PROCESSING',
+	           vr.updatedAt = CURRENT_TIMESTAMP
+	       WHERE vr.id = :id
+	       AND vr.status = 'INITIATED'
+	       """)
+	int markProcessingIfInitiated(@Param("id") UUID id);
+	
+	
+	@Query("""
+		       SELECT vr
+		       FROM ValidationRequest vr
+		       WHERE vr.status = 'PROCESSING'
+		       AND vr.providerReferenceId IS NULL
+		       AND vr.updatedAt < :cutoff
+		       """)
+		List<ValidationRequestEntity> findStuckProcessing(
+		        @Param("cutoff") LocalDateTime cutoff);
+
+
 
 }
 

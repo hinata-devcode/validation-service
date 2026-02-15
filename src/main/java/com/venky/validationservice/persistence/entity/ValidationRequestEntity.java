@@ -1,6 +1,8 @@
 package com.venky.validationservice.persistence.entity;
 
 import jakarta.persistence.*;
+
+import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -38,6 +40,15 @@ public class ValidationRequestEntity {
     @Column(name = "last_status_checkAt")
     private Instant lastStatusCheckAt;
 
+ 
+    @Column(name = "poll_attempts")
+    private int pollAttempts;
+
+    @Column(name = "first_created_at")
+    private Instant firstCreatedAt;
+
+    @Column(name="failure_reason")
+	private String failureReason;
 
     protected ValidationRequestEntity() {}
 
@@ -118,8 +129,52 @@ public class ValidationRequestEntity {
 	public void setLastStatusCheckAt(Instant now) {
 		this.lastStatusCheckAt=now;
 	}
+
+	public void markProviderFailed() {
+		this.executionStatus=ExecutionStatus.PROVIDER_FAILED.name();
+	}
 	
 	
+	
+	public void incrementPollAttempts() {
+	    this.pollAttempts++;
+	}
+
+	public void markFirstCreatedIfAbsent() {
+	    if (this.firstCreatedAt == null) {
+	        this.firstCreatedAt = Instant.now();
+	    }
+	}
+
+	public void updateLastStatusCheck() {
+	    this.lastStatusCheckAt = Instant.now();
+	}
+
+	public boolean isTerminal() {
+	    return ExecutionStatus.COMPLETED.toString().equals(this.executionStatus)
+	            || ExecutionStatus.FAILED.toString().equals(this.executionStatus);
+	}
+
+	public boolean isPollingTimedOut(Duration maxDuration, int maxAttempts) {
+
+	    if (pollAttempts >= maxAttempts) {
+	        return true;
+	    }
+
+	    if (firstCreatedAt == null) {
+	        return false;
+	    }
+
+	    Duration elapsed = Duration.between(firstCreatedAt, Instant.now());
+
+	    return elapsed.compareTo(maxDuration) > 0;
+	}
+
+	public void markProviderTimeoutFailure() {
+	    this.executionStatus = ExecutionStatus.FAILED.toString();
+	    this.failureReason = "Provider timeout";
+	}
+
 
 
     // getters & setters

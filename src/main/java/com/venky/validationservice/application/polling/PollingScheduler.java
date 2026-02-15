@@ -35,7 +35,7 @@ public class PollingScheduler {
                 ));
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 3000)
     public void triggerPolling() {
 
         Instant threshold =

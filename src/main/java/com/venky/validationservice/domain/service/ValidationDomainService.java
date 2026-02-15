@@ -26,6 +26,13 @@ public class ValidationDomainService {
 			// Call provider
 			
 			validationPersistenceService.createValidationRequest(validationState.getValidationRequestId());
+			
+			//ATOMIC UPDATE IN CASE OF MUTIPLE INSTACNES OR TWO THREADS TRYING TO UPDATE SAME REQUEST
+			 int updated = validationPersistenceService.markProcessingIfInitiated(validationState.getValidationRequestId());
+			 
+			 if(updated==0)
+				 throw new IllegalStateException("Request already processing");
+			
 			ValidationExecutionResult execution = providerPort.validate(details, validationState);
 
 			return execution;

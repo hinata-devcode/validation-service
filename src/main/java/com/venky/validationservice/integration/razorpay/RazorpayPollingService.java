@@ -1,5 +1,7 @@
 package com.venky.validationservice.integration.razorpay;
 
+import java.time.Duration;
+
 import org.springframework.stereotype.Service;
 
 import com.venky.validationservice.application.polling.ProviderPollingService;
@@ -9,42 +11,56 @@ import com.venky.validationservice.persistence.entity.EventProcessingStatus;
 import com.venky.validationservice.persistence.entity.ProviderValidationEventEntity;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
+import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 @Service
 public class RazorpayPollingService implements ProviderPollingService {
 
-    private final RazorpayClient razorpayClient;
-    private final ProviderValidationEventPersistenceService eventPersistence;
+	private final RazorpayClient razorpayClient;
+	private final ProviderValidationEventPersistenceService eventPersistence;
+	private final ValidationPersistenceService validationPersistenceService;
 
-    
-    public RazorpayPollingService(RazorpayClient razorpayClient,
-			ProviderValidationEventPersistenceService eventPersistence) {
+	public RazorpayPollingService(RazorpayClient razorpayClient,
+			ProviderValidationEventPersistenceService eventPersistence,
+			ValidationPersistenceService validationPersistenceService) {
 		super();
 		this.razorpayClient = razorpayClient;
 		this.eventPersistence = eventPersistence;
+		this.validationPersistenceService = validationPersistenceService;
 	}
 
 	@Override
-    public Provider getProvider() {
-        return Provider.RAZORPAY;
-    }
+	public Provider getProvider() {
+		return Provider.RAZORPAY;
+	}
 
-    @Override
-    public void poll(ValidationRequestEntity request) {
+	@Override
+	public void poll(ValidationRequestEntity request) {
 
-        String apiResponse =
-                razorpayClient.fetchStatus(
-                        request.getProviderReferenceId()
-                );
+		if (request.isTerminal()) {
+			return;
+		}
 
-        ProviderValidationEventEntity event =
-                new ProviderValidationEventEntity(request.getId(),Provider.RAZORPAY,request.getProviderReferenceId(),ProviderEventType.API_RESPONSE,apiResponse);
+		String apiResponse = razorpayClient.fetchStatus(request.getProviderReferenceId());
 
+		request.incrementPollAttempts();
+		request.updateLastStatusCheck();
 
-        event.markPending();
-        event.setRetryCount(0);
-        eventPersistence.save(event);
-    }
+		if (request.isPollingTimedOut(Duration.ofMinutes(30), 10)) {
+			request.markProviderTimeoutFailure();
+			validationPersistenceService.updateValidationEntity(request);
+			return;
+		}
+
+		// here we are saving the info to audit table
+		ProviderValidationEventEntity event = new ProviderValidationEventEntity(request.getId(), Provider.RAZORPAY,
+				request.getProviderReferenceId(), ProviderEventType.API_RESPONSE, apiResponse);
+
+		event.markPending();
+		event.setRetryCount(0);
+		eventPersistence.save(event);
+
+		validationPersistenceService.updateValidationEntity(request);
+	}
 
 }
-

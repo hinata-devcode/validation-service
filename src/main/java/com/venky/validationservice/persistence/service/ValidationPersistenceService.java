@@ -57,6 +57,10 @@ public class ValidationPersistenceService {
 	public List<ValidationRequestEntity> findRequestsForPolling(String status, Instant threshold) {
 		return requestRepo.findRequestsForPolling(status, threshold);
 	}
+	
+	public int markProcessingIfInitiated(UUID id) {
+		return requestRepo.markProcessingIfInitiated(id);
+	}
 
 	/* ---------- Provider events ---------- */
 

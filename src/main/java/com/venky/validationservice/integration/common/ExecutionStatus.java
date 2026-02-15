@@ -4,6 +4,7 @@ public enum ExecutionStatus {
     INITIATED,
     PENDING,
     COMPLETED,
-    FAILED
+    FAILED,
+    PROVIDER_FAILED
 }
 

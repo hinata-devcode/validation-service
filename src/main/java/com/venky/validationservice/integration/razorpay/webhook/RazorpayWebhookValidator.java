@@ -17,7 +17,7 @@ public class RazorpayWebhookValidator {
     private final String webhookSecret;
 
     public RazorpayWebhookValidator(
-            @Value("${razorpay.webhook.secret}") String webhookSecret) {
+            @Value("${WEBHOOK_SECRET}") String webhookSecret) {
         this.webhookSecret = webhookSecret;
     }
 

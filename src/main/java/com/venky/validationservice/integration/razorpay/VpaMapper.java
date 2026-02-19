@@ -6,7 +6,7 @@ public class VpaMapper {
 	
 	public static Vpa createVpa(FundAccountDetails accountDetails) {
 		return Vpa.builder()
-				          .upiId(accountDetails.getVpa())
+				          .address(accountDetails.getVpa())
 				          .build();
 	}
 

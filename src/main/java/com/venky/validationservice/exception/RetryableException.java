@@ -1,8 +1,6 @@
 package com.venky.validationservice.exception;
 
-import com.venky.validationservice.integration.razorpay.RzpException;
-
-public class RetryableException extends RzpException {
+public class RetryableException extends RuntimeException {
 
     public RetryableException(String message, Throwable cause) {
         super(message, cause);

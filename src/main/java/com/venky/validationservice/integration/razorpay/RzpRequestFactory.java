@@ -11,13 +11,13 @@ public class RzpRequestFactory {
         this.properties = properties;
     }
 
-    public RazorpayExternalRequest build(FundAccount fundAccount) {
+	public RazorpayExternalRequest build(FundAccount fundAccount) {
 
-        return RazorpayExternalRequest.builder()
-                .sourceAccountNumber(properties.getSourceAccountNumber())
-                .validationType(properties.getValidationType())
-                .fundAccount(fundAccount)
-                .build();
-    }
+		String validationType = (fundAccount.getAccountType().equalsIgnoreCase("vpa")) ? "pennydrop"
+				: properties.getValidationType();
+
+		return RazorpayExternalRequest.builder().sourceAccountNumber(properties.getSourceAccountNumber())
+				.validationType(validationType).fundAccount(fundAccount).build();
+	}
 }
 

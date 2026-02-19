@@ -10,11 +10,7 @@ import com.venky.validationservice.integration.razorpay.DecisionStatus;
 public class DomainDecisionMapper {
 
     public ValidationStatus mapValidationStatus(DecisionStatus decisionStatus) {
-
-        if (decisionStatus == null) {
-            return ValidationStatus.UNKNOWN;
-        }
-
+    	
         switch (decisionStatus) {
             case VALID:
                 return ValidationStatus.VALID;
@@ -22,7 +18,6 @@ public class DomainDecisionMapper {
             case INVALID:
                 return ValidationStatus.INVALID;
 
-            case UNKNOWN:
             default:
                 return ValidationStatus.UNKNOWN;
         }
@@ -30,8 +25,8 @@ public class DomainDecisionMapper {
 
     public ConfidenceLevel mapConfidenceLevel(String providerConfidenceScore) {
 
-        if (providerConfidenceScore == null) {
-            return ConfidenceLevel.LOW;
+        if (providerConfidenceScore == null || providerConfidenceScore.isBlank()) {
+            return ConfidenceLevel.NOT_APPLICABLE;
         }
 
         double score;

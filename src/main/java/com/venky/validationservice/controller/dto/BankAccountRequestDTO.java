@@ -1,5 +1,7 @@
 package com.venky.validationservice.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -9,10 +11,12 @@ import lombok.Setter;
 @Setter
 public class BankAccountRequestDTO {
 
+	@JsonProperty("account_number")
 	@NotBlank(message = "Account number cannot be empty")
 	@Pattern(regexp = "^\\d{9,18}$", message = "Account number must be 9-18 digits")
 	private String accountNumber;
 
+	@JsonProperty("ifsc")
 	@NotBlank(message = "IFSC cannot be empty")
 	@Pattern(regexp = "^[A-Z]{4}0[A-Z0-9]{6}$", message = "Invalid IFSC format")
 	private String ifsc;

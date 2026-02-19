@@ -6,17 +6,22 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.hibernate.annotations.Type;
+
 import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.ValidationStatus;
+import com.venky.validationservice.exception.FailureOrigin;
+import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.persistence.service.UUIDCharConverter;
 
 @Entity
 @Table(name = "validation_request")
 public class ValidationRequestEntity {
 
-    @Id
-    @Column(name = "validation_request_id", nullable = false, updatable = false)
-    private UUID validationRequestId;
+	@Id
+	@Column(name = "validation_request_id", columnDefinition = "CHAR(36)",nullable = false,updatable =false)
+	private UUID validationRequestId;
 
     @Column(name = "provider")
     private String provider;
@@ -44,16 +49,19 @@ public class ValidationRequestEntity {
     
     @Column(name = "last_status_checkAt")
     private Instant lastStatusCheckAt;
-
  
     @Column(name = "poll_attempts")
     private int pollAttempts;
 
     @Column(name = "first_created_at")
     private Instant firstCreatedAt;
+    
+    @Column(name="failure_origin")
+    @Enumerated(EnumType.STRING)
+    private FailureOrigin failureOrigin;
 
     @Column(name="failure_reason")
-	private String failureReason;
+	private String failureCode;
 
     protected ValidationRequestEntity() {}
 
@@ -85,18 +93,18 @@ public class ValidationRequestEntity {
 		return executionStatus;
 	}
 	
-	public void complete(
-	        ValidationStatus validationStatus,
-	        ConfidenceLevel confidenceLevel) {
+	public void complete(ValidationStatus validationStatus, ConfidenceLevel confidenceLevel) {
 
-	    if (!ExecutionStatus.PENDING.name().equals(this.executionStatus)) {
-	        return; // idempotency guard
-	    }
+		if (this.executionStatus != ExecutionStatus.PENDING) {
+		    throw new NonRetryableProviderException(
+		        "Validation already processed: " + this.executionStatus
+		    );
+		}
 
-	    this.executionStatus = ExecutionStatus.COMPLETED;
-	    this.validationStatus = validationStatus;
-	    this.confidenceLevel = confidenceLevel;
-	    this.updatedAt = Instant.now();
+		this.executionStatus = ExecutionStatus.COMPLETED;
+		this.validationStatus = validationStatus;
+		this.confidenceLevel = confidenceLevel;
+		this.updatedAt = Instant.now();
 	}
 
 	public String getProvider() {
@@ -131,8 +139,10 @@ public class ValidationRequestEntity {
 		this.lastStatusCheckAt=now;
 	}
 
-	public void markProviderFailed() {
+	public void markProviderFailed(String message) {
 		this.executionStatus=ExecutionStatus.PROVIDER_FAILED;
+		 this.failureOrigin = FailureOrigin.EXTERNAL_PROVIDER;
+		 this.failureCode=message;
 	}
 	
 	public void incrementPollAttempts() {
@@ -169,11 +179,6 @@ public class ValidationRequestEntity {
 	    return elapsed.compareTo(maxDuration) > 0;
 	}
 
-	public void markProviderTimeoutFailure() {
-	    this.executionStatus = ExecutionStatus.FAILED;
-	    this.failureReason = "Provider timeout";
-	}
-
 	public ValidationStatus getValidationStatus() {
 		return this.validationStatus;
 	}
@@ -182,7 +187,11 @@ public class ValidationRequestEntity {
 		return this.validationRequestId;
 	}
 
-
+	public void markValidationFailure(String message) {
+	    this.executionStatus = ExecutionStatus.FAILED;
+	    this.failureOrigin=FailureOrigin.INTERNAL_SYSTEM;
+	    this.failureCode=message;
+	}
 
     // getters & setters
 }

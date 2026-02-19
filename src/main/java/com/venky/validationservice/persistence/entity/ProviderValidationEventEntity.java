@@ -29,12 +29,11 @@ public class ProviderValidationEventEntity {
     @Column(name = "event_type", nullable = false)
     private ProviderEventType eventType; // API_RESPONSE / WEBHOOK
 
-    
 	@Column(name = "raw_payload", columnDefinition = "json")
     private String rawPayload; // store full payload safely
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status",nullable = false)
+    @Column(name = "provider_status",nullable = false)
     private EventProcessingStatus status=EventProcessingStatus.PENDING;
     
     @Column(name="retry_count")

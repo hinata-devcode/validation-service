@@ -2,8 +2,9 @@ package com.venky.validationservice.integration.razorpay.webhook;
 
 import org.springframework.stereotype.Component;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Component
 public class RazorpayWebhookPayloadExtractor {
@@ -18,7 +19,7 @@ public class RazorpayWebhookPayloadExtractor {
     	            .path("fund_account.validation")
     	            .path("entity")
     	            .path("id")
-    	            .asString();
+    	            .toString();
     	    } catch (Exception e) {
     	        throw new IllegalArgumentException("Invalid webhook payload", e);
     	    }

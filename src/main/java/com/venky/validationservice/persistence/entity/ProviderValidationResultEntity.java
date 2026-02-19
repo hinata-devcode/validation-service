@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
@@ -25,41 +26,69 @@ import lombok.Data;
 public class ProviderValidationResultEntity {
 
     @Id
+    @Column(name = "validation_request_id", columnDefinition = "CHAR(36)")
     private UUID validationRequestId;
 
     private String provider;
 
+    @Column(name="provider_reference_id")
     private String providerReferenceId;
 
+    @Column(name="provider_status")
     private String providerStatus;
+    
+    @Column(name = "provider_account_status")
+    private String providerAccountStatus;
+
+    @Column(name = "provider_name_match_score")
+    private String providerNameMatchScore;
+
+    @Column(name = "provider_registered_name")
+    private String providerRegisteredName;
+
+    @Column(name = "provider_account_active")
+    private Boolean providerAccountActive;
+    
+    @Column(name = "provider_bank_details_json", columnDefinition = "LONGTEXT")
+    private String bankDetailsJson;
 
     @Lob
+    @Column(name = "sanitized_payload", columnDefinition = "LONGTEXT")
     private String sanitizedPayload;
 
     @ElementCollection
-    @CollectionTable(name = "provider_validation_attributes")
-    @MapKeyColumn(name = "attribute_key")
-    @Column(name = "attribute_value")
-    private Map<String, String> attributes = new HashMap<>();
+    @CollectionTable(
+    	    name = "provider_validation_attributes",
+    	    joinColumns = @JoinColumn(name = "validation_request_id")
+    	)
+    @MapKeyColumn(name = "metadata_key")
+    @Column(name = "metadata_value")
+    private Map<String, String> metaDataAttributes = new HashMap<>();
 
     private Instant receivedAt;
 
-	public static ProviderValidationResultEntity from(
-	        UUID requestId,
-	        String provider,
-	        String providerReferenceId,
-	        ProviderResult result
-	) {
-	    ProviderValidationResultEntity e = new ProviderValidationResultEntity();
-	    e.setValidationRequestId(requestId);
-	    e.setProvider(provider);
-	    e.setProviderReferenceId(providerReferenceId);
-	    e.setProviderStatus(result.getProviderStatus());
-	    e.setSanitizedPayload(result.getSanitizedRawPayload());
-	    e.setAttributes(result.getAttributes());
-	    e.setReceivedAt(Instant.now());
-	    return e;
-	}
+	public static ProviderValidationResultEntity from(UUID validationRequestId, String providerName,
+			String providerReferenceId, ProviderResult result) {
 
+		ProviderValidationResultEntity entity = new ProviderValidationResultEntity();
+
+		entity.setValidationRequestId(validationRequestId);
+		entity.setProvider(providerName);
+		entity.setProviderReferenceId(result.getProviderReferenceId());
+		entity.setProviderStatus(result.getProviderStatus().name());
+
+		entity.setProviderAccountStatus(result.getProviderAccountStatus());
+		entity.setProviderAccountActive(result.getAccountActive());
+		entity.setProviderNameMatchScore(result.getNameMatchScore());
+		entity.setProviderRegisteredName(result.getRegisteredName());
+
+		entity.setSanitizedPayload(result.getSanitizedRawPayload());
+		entity.setMetaDataAttributes(result.getAttributes());
+		entity.setBankDetailsJson(result.getBankDetailsJson());
+		entity.setReceivedAt(Instant.now());
+
+		return entity;
+
+	}
     
 }

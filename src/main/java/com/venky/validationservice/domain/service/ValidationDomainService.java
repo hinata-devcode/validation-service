@@ -9,11 +9,12 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.exception.FailureOrigin;
+import com.venky.validationservice.exception.ThirdpartyProviderException;
 import com.venky.validationservice.exception.ValidationExecutionException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
-import com.venky.validationservice.integration.razorpay.RzpException;
+import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 @Service
@@ -21,6 +22,7 @@ public class ValidationDomainService {
 
 	private final ProviderValidationPort providerPort;
 	private final ValidationPersistenceService validationPersistenceService;
+	private ValidationRequestEntity validationRequestEntity;
 
 	public ValidationDomainService(ProviderValidationPort providerPort, ValidationPersistenceService validationPersistenceService) {
 		this.providerPort = providerPort;
@@ -32,7 +34,7 @@ public class ValidationDomainService {
 
 			// Call provider
 			
-			validationPersistenceService.createValidationRequest(validationState.getValidationRequestId());
+			validationRequestEntity=validationPersistenceService.createValidationRequest(validationState.getValidationRequestId());
 			
 			//ATOMIC UPDATE IN CASE OF MUTIPLE INSTACNES OR TWO THREADS TRYING TO UPDATE SAME REQUEST
 			 int updated = validationPersistenceService.markProcessingIfInitiated(validationState.getValidationRequestId());
@@ -46,11 +48,13 @@ public class ValidationDomainService {
 
 		}
 
-		catch (RzpException ex) {
+		catch (ThirdpartyProviderException ex) {
+			validationPersistenceService.markValidationRequestFailed(validationRequestEntity,FailureOrigin.EXTERNAL_PROVIDER,"PROVIDER_ERROR");
 			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
 					ex);
 
 		} catch (RuntimeException ex) {
+			validationPersistenceService.markValidationRequestFailed(validationRequestEntity, FailureOrigin.INTERNAL_SYSTEM,"INTERNAL_ERROR");
 			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex);
 		}
 	}

@@ -12,8 +12,10 @@ import com.venky.validationservice.application.ValidationApplicationService;
 import com.venky.validationservice.application.ValidationRequestIdGenerator;
 import com.venky.validationservice.application.ValidationResponseDTO;
 import com.venky.validationservice.controller.dto.BankAccountRequestDTO;
+import com.venky.validationservice.controller.dto.BankValidationRequest;
 import com.venky.validationservice.controller.dto.UserDetailsDTO;
 import com.venky.validationservice.controller.dto.VpaRequestDTO;
+import com.venky.validationservice.controller.dto.VpaValidationRequest;
 import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
@@ -32,29 +34,33 @@ public class ValidationController {
 
 	@PostMapping("/bank-account")
 	// @Valid triggers the Gatekeeper (DTO) automatically
-	public ResponseEntity<ValidationResponseDTO> validateBank(@Valid @RequestBody BankAccountRequestDTO request, @Valid @RequestBody UserDetailsDTO userDetails) {
+	public ResponseEntity<ValidationResponseDTO> validateBank( @Valid @RequestBody BankValidationRequest request) {
 
 		UUID requestId = uuidGenerator.generate();
+		
+		BankAccountRequestDTO bankAccount = request.getBankAccount();
+	    UserDetailsDTO userDetails = request.getUserDetails();
 
 		  ValidationState validationState =
 		            new ValidationState(requestId);
 		// If we reach here, the data is safe and valid format.
-		ValidationResponseDTO response = validationService.validateBankAccount(request,userDetails,validationState);
+		ValidationResponseDTO response = validationService.validateBankAccount(bankAccount,userDetails,validationState);
 		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping("/vpa")
-    public ResponseEntity<ValidationResponseDTO> validateVpa(
-            @Valid @RequestBody VpaRequestDTO request,@Valid @RequestBody UserDetailsDTO detailsDTO) {
-    
+	public ResponseEntity<ValidationResponseDTO> validateVpa(@Valid @RequestBody VpaValidationRequest request) {
+
 		UUID requestId = uuidGenerator.generate();
 
-		  ValidationState validationState =
-		            new ValidationState(requestId);
-		  
-		  ValidationResponseDTO response = validationService.validateVpa(request,detailsDTO,validationState);  
-        return ResponseEntity.ok(response);
-    }
+		VpaRequestDTO vpaDetails = request.getVpaRequestDTO();
+		UserDetailsDTO userDetails = request.getUserDetails();
+
+		ValidationState validationState = new ValidationState(requestId);
+
+		ValidationResponseDTO response = validationService.validateVpa(vpaDetails, userDetails, validationState);
+		return ResponseEntity.ok(response);
+	}
 	
 	 @GetMapping("/{validationRequestId}")
 	    public ResponseEntity<ValidationQueryResponse> getValidation(

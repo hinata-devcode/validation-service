@@ -5,6 +5,8 @@ import java.time.Duration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -13,8 +15,12 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.venky.validationservice.exception.NonRetryableException;
+import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.exception.RetryableException;
+import com.venky.validationservice.exception.RetryableProviderException;
 import com.venky.validationservice.integration.utils.RetryExecutor;
 
 @Component
@@ -32,7 +38,7 @@ public class RazorpayClient {
 		this.retryExecutor = retryExecutor;
 	}
 
-	public RazorpayResponse validateFundAccount(RazorpayExternalRequest request) {
+	public String validateFundAccount(RazorpayExternalRequest request) {
 		return retryExecutor.execute(() -> createValidationRequest(request), maxAttempts, Duration.ofSeconds(initialDelay));
 	}
 
@@ -40,25 +46,30 @@ public class RazorpayClient {
 		return retryExecutor.execute(() -> fetchValidationStatus(providerReferenceId), 3, Duration.ofSeconds(2));
 	}
 
-	private RazorpayResponse createValidationRequest(RazorpayExternalRequest request) {
+	private String createValidationRequest(RazorpayExternalRequest request) {
 
 		try {
 			HttpEntity<RazorpayExternalRequest> entity = createHttpEntity(request);
 
 			String url = properties.getBaseUrl() + "/v1/fund_accounts/validations";
-
-			ResponseEntity<RazorpayResponse> response = restTemplate.exchange(url, HttpMethod.POST, entity,
-					RazorpayResponse.class);
+			
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity,
+					String.class);
 
 			return response.getBody();
 		} catch (HttpClientErrorException ex) {
-	        throw new NonRetryableException("Razorpay client error", ex);
+			String errorBody = ex.getResponseBodyAsString();
+			HttpStatusCode status = ex.getStatusCode();
 
-	    } catch (HttpServerErrorException ex) {
-	        throw new RetryableException("Razorpay server error", ex);
+			throw new NonRetryableProviderException(
+					String.format("Razorpay client error: status=%s body=%s", status, errorBody), ex);
+
+		} catch (HttpServerErrorException ex) {
+			//need to implement logging
+	        throw new RetryableProviderException("Razorpay server error", ex);
 
 	    } catch (ResourceAccessException ex) {
-	        throw new RetryableException("Razorpay timeout", ex);
+	        throw new RetryableProviderException("Razorpay timeout", ex);
 	    }
 	}
 
@@ -75,13 +86,13 @@ public class RazorpayClient {
 			return response.getBody();
 		} 
 		catch (HttpClientErrorException ex) {
-	        throw new NonRetryableException("Razorpay client error", ex);
+	        throw new NonRetryableProviderException("Razorpay client error "+ex.getMessage(), ex);
 
 	    } catch (HttpServerErrorException ex) {
-	        throw new RetryableException("Razorpay server error", ex);
+	        throw new RetryableProviderException("Razorpay server error "+ex.getMessage(), ex);
 
 	    } catch (ResourceAccessException ex) {
-	        throw new RetryableException("Razorpay timeout", ex);
+	        throw new RetryableProviderException("Razorpay timeout", ex);
 	    }
 	}
 

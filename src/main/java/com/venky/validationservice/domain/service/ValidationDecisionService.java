@@ -9,22 +9,22 @@ import com.venky.validationservice.integration.razorpay.DecisionStatus;
 @Service
 public class ValidationDecisionService {
 
-    public DomainDecision decide(ProviderResult result) {
+	public DomainDecision decide(ProviderResult result) {
 
-        String accountStatus =
-            result.getAttributes().get("account_status");
+	    Boolean accountActive = result.getAccountActive();
+	    String nameMatchScore = result.getNameMatchScore();
 
-        String nameMatch =
-            result.getAttributes().get("name_match_score");
+	    DecisionStatus decision =
+	            Boolean.TRUE.equals(accountActive)
+	                    ? DecisionStatus.VALID
+	                    : DecisionStatus.INVALID;
 
-        DecisionStatus decision =
-            "active".equalsIgnoreCase(accountStatus)
-                ? DecisionStatus.VALID
-                : DecisionStatus.INVALID;
+	    String confidence =
+	            nameMatchScore != null
+	                    ? String.valueOf(nameMatchScore)
+	                    : nameMatchScore;
 
-        String confidence =
-            nameMatch != null ? nameMatch : "UNKNOWN";
+	    return new DomainDecision(decision, confidence);
+	}
 
-        return new DomainDecision(decision, confidence);
-    }
 }

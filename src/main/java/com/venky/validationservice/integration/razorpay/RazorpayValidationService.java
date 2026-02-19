@@ -1,9 +1,10 @@
 package com.venky.validationservice.integration.razorpay;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.venky.validationservice.controller.dto.BankAccountRequestDTO;
 import com.venky.validationservice.controller.dto.UserDetailsDTO;
 import com.venky.validationservice.controller.dto.VpaRequestDTO;
-import com.venky.validationservice.dao.ValidationRepository;
 import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
@@ -29,39 +30,48 @@ import java.util.UUID;
 @Service
 public class RazorpayValidationService implements ProviderValidationPort {
 
-	private final RzpFundAccountFactory fundAccountFactory;
+	private final RazorpayAccountDetailsFactory accountDetailsFactory;
 	private final RzpRequestFactory requestFactory;
 	private final RazorpayClient rzpClient;
 	private final ProviderValidationEventPersistenceService eventPersistence;
 	private final ValidationPersistenceService validationPersistenceService;
+	 private final ObjectMapper objectMapper;
 
-	public RazorpayValidationService(RzpFundAccountFactory fundAccountFactory, RzpRequestFactory requestFactory,
+	public RazorpayValidationService(RazorpayAccountDetailsFactory fundAccountFactory, RzpRequestFactory requestFactory,
 			RazorpayClient rzpClient, ProviderValidationEventPersistenceService eventPersistenceService,
-			ValidationPersistenceService validationPersistenceService) {
-		this.fundAccountFactory = fundAccountFactory;
+			ValidationPersistenceService validationPersistenceService, ObjectMapper objectMapper) {
+		this.accountDetailsFactory = fundAccountFactory;
 		this.requestFactory = requestFactory;
 		this.rzpClient = rzpClient;
 		this.eventPersistence = eventPersistenceService;
 		this.validationPersistenceService = validationPersistenceService;
+		this.objectMapper = objectMapper;
 	}
 
 	@Override
 	public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
 
-		FundAccount fundAccount = fundAccountFactory.createFundAccountDetails(details);
-
+		Contact contact=accountDetailsFactory.createContactDetails(details);
+		FundAccount fundAccount = accountDetailsFactory.createFundAccountDetails(details,contact);
+		
 		RazorpayExternalRequest request = requestFactory.build(fundAccount);
 
-		RazorpayResponse response = rzpClient.validateFundAccount(request);
+		String rawJson  = rzpClient.validateFundAccount(request);
+		
+		RazorpayResponse parsedResponse;
+		try {
+			parsedResponse = objectMapper.readValue(rawJson, RazorpayResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new NonRetryableProviderException("parsing exception",e);
+		}
 
 		validationState.setProvider(Provider.RAZORPAY);
-		validationState.setProviderReferenceId(response.getValidationId());
+		validationState.setProviderReferenceId(parsedResponse.getValidationId());
 		
-
-		String favId = response.getValidationId();
+		String favId = parsedResponse.getValidationId();
 
 		eventPersistence.recordApiResponse(validationState.getValidationRequestId(), Provider.RAZORPAY, favId,
-				response.toEventPayload());
+				rawJson);
 
 		// this is for my DB
 		validationPersistenceService.markRequestPending(validationState.getValidationRequestId(),

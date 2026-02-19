@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.venky.validationservice.application.worker.ProviderResult;
 import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.Provider;
+import com.venky.validationservice.integration.common.ProviderValidationStatus;
 import com.venky.validationservice.integration.razorpay.webhook.RazorpayWebhookSanitizer;
 import com.venky.validationservice.integration.webhook.ProviderEventParser;
 
@@ -53,12 +54,13 @@ public class RazorpayEventParser implements ProviderEventParser{
                 });
             }
 
-            return new ProviderResult(
-                    favId,
-                    status,
-                    attributes,
-                    sanitizer.sanitize(rawPayload)
-            );
+//            return new ProviderResult(
+//                    favId,
+//                    assingDomainStatus(status),
+//                    attributes,
+//                    sanitizer.sanitize(rawPayload),null,null
+//            );
+            return null;//yet to implement for webhooks
 
         } catch (JsonProcessingException ex) {
         	   throw new NonRetryableProviderException("Invalid payload", ex);
@@ -66,52 +68,93 @@ public class RazorpayEventParser implements ProviderEventParser{
     
 	}
 
+	
 	@Override
 	public ProviderResult parseApiResponse(String rawPayload) {
 
-        try {
+		try {
 
-            JsonNode root = mapper.readTree(rawPayload);
+			JsonNode root = mapper.readTree(rawPayload);
 
-            String favId = root.path("id").asText();
-            String status = root.path("status").asText();
+			String favId = root.path("id").asText();
+			String status = root.path("status").asText();
 
-            JsonNode validationResults = root.path("validation_results");
+			JsonNode validationResults = root.path("validation_results");
+			JsonNode fundAccountNode = root.path("fund_account");
 
-            Map<String, String> attributes = new HashMap<>();
-            
-            if (validationResults != null && validationResults.isObject()) {
+			Map<String, String> attributes = new HashMap<>();
 
-                ObjectNode obj = (ObjectNode) validationResults;
+			String providerAccountStatus = null;
+			Boolean accountActive = null;
+			String nameMatchScore = null;
+			String registeredName = null;
+			String bankDetailsJson = null;
 
-                obj.fields().forEachRemaining(e -> {
+			if (validationResults != null && validationResults.isObject()) {
 
-                    JsonNode value = e.getValue();
+				ObjectNode obj = (ObjectNode) validationResults;
 
-                    attributes.put(
-                            e.getKey(),
-                            value == null || value.isNull()
-                                    ? null
-                                    : value.asText()
-                    );
-                });
-            }
+				obj.fields().forEachRemaining(e -> {
 
-            return new ProviderResult(
-                    favId,
-                    status,
-                    attributes,
-                    sanitizer.sanitize(rawPayload)
-            );
+					String key = e.getKey();
+
+					// Skip structured fields
+					if ("account_status".equals(key) || "name_match_score".equals(key)
+							|| "registered_name".equals(key)) {
+						return;
+					}
+
+					JsonNode value = e.getValue();
+					attributes.put(key, value == null || value.isNull() ? null : value.asText());
+				});
+
+				providerAccountStatus = validationResults.path("account_status").asText(null);
+
+				if (providerAccountStatus != null) {
+					accountActive = "active".equalsIgnoreCase(providerAccountStatus);
+				}
+
+				JsonNode nameMatchNode = validationResults.path("name_match_score");
+				if (!nameMatchNode.isMissingNode() && !nameMatchNode.isNull()) {
+					nameMatchScore = nameMatchNode.asText();
+				}
+
+				JsonNode registeredNameNode = validationResults.path("registered_name");
+				if (!registeredNameNode.isMissingNode() && !registeredNameNode.isNull()) {
+					registeredName = registeredNameNode.asText();
+				}
+				
+				JsonNode bankDetailsNode = validationResults.path("bank_account");
+				if (!bankDetailsNode.isMissingNode() && !bankDetailsNode.isNull()) {
+					bankDetailsJson = bankDetailsNode.toString(); // store raw JSON
+				}
+			}
 
 
-        } catch (Exception ex) {
-            throw new NonRetryableProviderException("Failed to parse Razorpay response", ex);
-        }
+			return new ProviderResult(favId, assingDomainStatus(status), attributes, sanitizer.sanitize(rawPayload),
+					accountActive, nameMatchScore, registeredName, bankDetailsJson, providerAccountStatus);
+
+		} catch (Exception ex) {
+			throw new NonRetryableProviderException("Failed to parse Razorpay response", ex);
+		}
 	}
+
 
 	@Override
 	public Provider getProvider() {
 		return Provider.RAZORPAY;
 	}
+	
+	private ProviderValidationStatus assingDomainStatus(String status) {
+
+		if (RazorpayValidationStatus.CREATED.name().equalsIgnoreCase(status))
+			return ProviderValidationStatus.CREATED;
+		else if (RazorpayValidationStatus.FAILED.name().equalsIgnoreCase(status))
+			return ProviderValidationStatus.FAILED;
+		else if (RazorpayValidationStatus.COMPLETED.name().equalsIgnoreCase(status))
+			return ProviderValidationStatus.COMPLETED;
+
+		throw new NonRetryableProviderException("Unknown Razorpay status: " + status);
+	}
+
 }

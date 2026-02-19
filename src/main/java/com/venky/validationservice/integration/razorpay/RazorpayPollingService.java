@@ -47,7 +47,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		request.updateLastStatusCheck();
 
 		if (request.isPollingTimedOut(Duration.ofMinutes(30), 10)) {
-			request.markProviderTimeoutFailure();
+			request.markProviderFailed("RETRIES_EXHAUSTED");
 			validationPersistenceService.updateValidationEntity(request);
 			return;
 		}

@@ -1,5 +1,7 @@
 package com.venky.validationservice.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -9,9 +11,10 @@ import lombok.Setter;
 @Setter
 public class VpaRequestDTO {
 
+	@JsonProperty("vpa_address")
 	@NotBlank(message = "VPA is mandatory")
 	// Regex for standard UPI ID (e.g., venky@oksbi)
-	@Pattern(regexp = "^[\\w.-]+@[\\w.-]+$", message = "Invalid UPI ID format")
+	//@Pattern(regexp = "^[\\w.-]+@[\\w.-]+$", message = "Invalid UPI ID format")
 	private String vpa;
 
 	@Override

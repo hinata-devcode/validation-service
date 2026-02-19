@@ -25,16 +25,4 @@ public class RazorpayResponse {
         private String fundAccountId; // fa_xxx
     }
     
-    /**
-     * Snapshot used ONLY for event persistence.
-     * This is NOT full Razorpay response.
-     */
-    public String toEventPayload() {
-        return String.format(
-            "{ \"validation_id\": \"%s\", \"status\": \"%s\", \"fund_account_id\": \"%s\" }",
-            validationId,
-            status,
-            fundAccount != null ? fundAccount.getFundAccountId() : null
-        );
-    }
 }

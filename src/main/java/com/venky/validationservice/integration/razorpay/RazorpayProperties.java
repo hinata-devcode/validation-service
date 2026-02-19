@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @Component
 @ConfigurationProperties(prefix = "razorpay")
-@ToString(exclude = {"apiKey", "apiSecret"})
+@ToString(exclude = {"apiKey", "apiSecret","sourceAccountNumber"})
 public class RazorpayProperties {
 
 	 /* ---------- Client config ---------- */

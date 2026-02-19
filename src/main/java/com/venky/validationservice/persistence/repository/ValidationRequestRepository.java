@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 
 public interface ValidationRequestRepository
@@ -33,7 +34,7 @@ public interface ValidationRequestRepository
 		           OR v.lastStatusCheckAt <= :threshold)
 		""")
 		List<ValidationRequestEntity> findRequestsForPolling(
-		        @Param("status") String status,
+		        @Param("status") ExecutionStatus pending,
 		        @Param("threshold") Instant threshold
 		);
 	
@@ -59,8 +60,6 @@ public interface ValidationRequestRepository
 		       """)
 		List<ValidationRequestEntity> findStuckProcessing(
 		        @Param("cutoff") LocalDateTime cutoff);
-
-
 
 }
 

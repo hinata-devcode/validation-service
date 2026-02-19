@@ -8,7 +8,10 @@ import com.venky.validationservice.application.worker.ProviderResult;
 import com.venky.validationservice.persistence.entity.ProviderValidationResultEntity;
 import com.venky.validationservice.persistence.repository.ProviderValidationResultRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class ProviderValidationResultService {
 
     private final ProviderValidationResultRepository repo;

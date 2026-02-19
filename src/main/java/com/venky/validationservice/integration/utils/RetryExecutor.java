@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
+import com.venky.validationservice.exception.RetryableException;
+
 @Component
 public class RetryExecutor {
 
@@ -20,10 +22,10 @@ public class RetryExecutor {
 			} catch (Exception ex) {
 
 				attempt++;
-
-				if (attempt >= maxAttempts) {
-					throw ex;
-				}
+				
+				 if (!(ex instanceof RetryableException) || attempt >= maxAttempts) {
+		                throw ex;
+		            }
 
 				try {
 					Thread.sleep(delay.toMillis());

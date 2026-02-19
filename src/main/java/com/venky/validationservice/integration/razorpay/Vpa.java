@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class Vpa {
 	
-	private final String upiId;
+	private final String address;
 
 }

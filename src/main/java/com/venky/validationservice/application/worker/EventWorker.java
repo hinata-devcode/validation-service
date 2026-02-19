@@ -20,6 +20,7 @@ import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ProviderEventType;
+import com.venky.validationservice.integration.common.ProviderValidationStatus;
 import com.venky.validationservice.integration.razorpay.RazorpayEventParser;
 import com.venky.validationservice.integration.webhook.ProviderEventParser;
 import com.venky.validationservice.persistence.entity.ProviderValidationEventEntity;
@@ -58,7 +59,7 @@ public class EventWorker {
 				.collect(Collectors.toMap(ProviderEventParser::getProvider, Function.identity()));
 	}
 
-	@Scheduled(fixedDelay = 2000)
+	@Scheduled(fixedDelay = 9000)
 	public void processNextEvent() {
 		Optional<ProviderValidationEventEntity> eventOpt = eventPersistenceService.fetchUnprocessedEvents();
 		eventOpt.ifPresent(this::processSingleEvent);
@@ -102,9 +103,9 @@ public class EventWorker {
 				providerResult = parser.parseApiResponse(event.getRawPayload());
 			}
 
-			String status = providerResult.getProviderStatus();
+			ProviderValidationStatus status = providerResult.getProviderStatus();
 
-			if ("CREATED".equalsIgnoreCase(status)) {
+			if (ProviderValidationStatus.CREATED==status) {
 
 				// Still processing on provider side → skip
 				event.markSkipped();
@@ -116,9 +117,9 @@ public class EventWorker {
 				return;
 			}
 
-			if ("FAILED".equalsIgnoreCase(status)) {
+			if (ProviderValidationStatus.FAILED== status) {
 
-				request.markProviderFailed();
+				request.markProviderFailed("PROVIDER_CANNOT_PROCESS_REQUEST");
 
 				validationPersistence.updateValidationEntity(request);
 

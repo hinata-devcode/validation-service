@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ProviderEventType;
+import com.venky.validationservice.persistence.entity.EventProcessingStatus;
 import com.venky.validationservice.persistence.entity.ProviderValidationEventEntity;
 import com.venky.validationservice.persistence.repository.ProviderValidationEventRepository;
 
 @Service
+@Transactional
 public class ProviderValidationEventPersistenceService {
 
 	private final ProviderValidationEventRepository repository;
@@ -37,9 +42,17 @@ public class ProviderValidationEventPersistenceService {
 		repository.save(event);
 	}
 
+	@Transactional
 	public Optional<ProviderValidationEventEntity> fetchUnprocessedEvents() {
-		return repository.findNextUnprocessed();
+
+	    Pageable limitOne = PageRequest.of(0, 1);
+
+	    List<ProviderValidationEventEntity> events =
+	        repository.findNextUnprocessed(EventProcessingStatus.PENDING, limitOne);
+	    
+	    return events.stream().findFirst();
 	}
+
 
 	public void markCompleted(ProviderValidationEventEntity event) {
 		event.markCompleted();

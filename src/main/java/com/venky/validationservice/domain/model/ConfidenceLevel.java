@@ -3,5 +3,6 @@ package com.venky.validationservice.domain.model;
 public enum ConfidenceLevel {
     HIGH,
     MEDIUM,
-    LOW
+    LOW,
+    NOT_APPLICABLE
 }

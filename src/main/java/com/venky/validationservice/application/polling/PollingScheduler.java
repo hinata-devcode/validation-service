@@ -35,7 +35,7 @@ public class PollingScheduler {
                 ));
     }
 
-    @Scheduled(fixedDelay = 3000)
+   @Scheduled(fixedDelay = 5000)
     public void triggerPolling() {
 
         Instant threshold =
@@ -43,11 +43,16 @@ public class PollingScheduler {
 
         List<ValidationRequestEntity> stuckRequests =
                 validationPersistence.findRequestsForPolling(
-                        ExecutionStatus.PENDING.toString(),
+                        ExecutionStatus.PENDING,
                         threshold
                 );
 
         for (ValidationRequestEntity request : stuckRequests) {
+        	
+        	if(request.getProvider()==null || request.getProvider()==null) {
+        		continue;
+        		//case when validation_request exist without provider_reference_id
+        	}
 
             Provider provider =
                     Provider.valueOf(request.getProvider());

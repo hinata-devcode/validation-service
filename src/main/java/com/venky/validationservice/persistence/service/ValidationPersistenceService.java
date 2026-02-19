@@ -22,13 +22,13 @@ public class ValidationPersistenceService {
 	private final ValidationRequestRepository requestRepo;
 
 	public ValidationPersistenceService(ValidationRequestRepository requestRepo) {
-
 		this.requestRepo = requestRepo;
 	}
 
-	public void createValidationRequest(UUID requestId) {
+	public ValidationRequestEntity createValidationRequest(UUID requestId) {
 		ValidationRequestEntity entity = new ValidationRequestEntity(requestId, ExecutionStatus.INITIATED);
 		requestRepo.save(entity);
+		return entity;
 	}
 
 	public void markRequestPending(UUID requestId, String provider, String providerReferenceId) {
@@ -55,8 +55,8 @@ public class ValidationPersistenceService {
 	}
 
 	 @Transactional(readOnly = true)
-	public List<ValidationRequestEntity> findRequestsForPolling(String status, Instant threshold) {
-		return requestRepo.findRequestsForPolling(status, threshold);
+	public List<ValidationRequestEntity> findRequestsForPolling(ExecutionStatus pending, Instant threshold) {
+		return requestRepo.findRequestsForPolling(pending, threshold);
 	}
 	 
 	public int markProcessingIfInitiated(UUID id) {
@@ -67,6 +67,16 @@ public class ValidationPersistenceService {
 	public Optional<ValidationRequestEntity> findByValidationRequestId(UUID validationRequestId) {
 		// TODO Auto-generated method stub
 		return requestRepo.findById(validationRequestId);
+	}
+	
+	public void markValidationRequestFailed(ValidationRequestEntity validationRequestEntity,
+			FailureOrigin failureOrigin,String message) {
+		if (failureOrigin.equals(FailureOrigin.INTERNAL_SYSTEM))
+			validationRequestEntity.markValidationFailure(message);
+		else
+			validationRequestEntity.markProviderFailed(message);
+
+		requestRepo.save(validationRequestEntity);
 	}
 
 }

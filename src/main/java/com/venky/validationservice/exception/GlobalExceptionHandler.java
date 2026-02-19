@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(
                         "INTERNAL_ERROR",
-                        "Something went wrong"
+                        "Something went wrong "+ex.getMessage()
                 ));
     }
 }

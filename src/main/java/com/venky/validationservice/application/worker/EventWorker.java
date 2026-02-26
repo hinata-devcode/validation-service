@@ -15,6 +15,7 @@ import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.DomainDecision;
 import com.venky.validationservice.domain.model.ValidationStatus;
 import com.venky.validationservice.domain.service.DomainDecisionMapper;
+import com.venky.validationservice.domain.service.EventFailureService;
 import com.venky.validationservice.domain.service.ValidationDecisionService;
 import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
@@ -36,20 +37,18 @@ import jakarta.transaction.Transactional;
 @Service
 public class EventWorker {
 	
-	 private static final int MAX_RETRY = 5;
-	 private static final Duration RETRY_DELAY = Duration.ofSeconds(4);
-
 	private final ValidationPersistenceService validationPersistence;
 	private final ValidationDecisionService validationDecisionService;
 	private final ProviderValidationResultService providerValidationResultService;
 	private final ProviderValidationEventPersistenceService eventPersistenceService;
 	private final Map<Provider, ProviderEventParser> parserMap;
 	private final DomainDecisionMapper domainDecisionMapper;
+	private final EventFailureService eventFailureService;
 
 	public EventWorker(ValidationPersistenceService validationPersistence,
 			ValidationDecisionService validationDecisionService,
 			ProviderValidationResultService providerValidationResultService,
-			ProviderValidationEventPersistenceService eventPersistenceService, List<ProviderEventParser> parsers, DomainDecisionMapper domainDecisionMapper) {
+			ProviderValidationEventPersistenceService eventPersistenceService, List<ProviderEventParser> parsers, DomainDecisionMapper domainDecisionMapper, EventFailureService eventFailureService) {
 		this.validationPersistence = validationPersistence;
 		this.validationDecisionService = validationDecisionService;
 		this.providerValidationResultService = providerValidationResultService;
@@ -57,25 +56,29 @@ public class EventWorker {
 		this.domainDecisionMapper = domainDecisionMapper;
 		this.parserMap = parsers.stream()
 				.collect(Collectors.toMap(ProviderEventParser::getProvider, Function.identity()));
+		this.eventFailureService = eventFailureService;
 	}
 
 	@Scheduled(fixedDelay = 9000)
 	public void processNextEvent() {
-		Optional<ProviderValidationEventEntity> eventOpt = eventPersistenceService.fetchUnprocessedEvents();
+		Optional<ProviderValidationEventEntity> eventOpt = eventPersistenceService.fetchUnprocessedEvents(Instant.now());
 		eventOpt.ifPresent(this::processSingleEvent);
 	}
+
 
 	@Transactional
 	private void processSingleEvent(ProviderValidationEventEntity event) {
 
 		try {
+			
+			event.markProcessing();
+			eventPersistenceService.save(event);
 
 			Optional<ValidationRequestEntity> requestOpt = validationPersistence
 					.findProviderReferenceId(event.getProviderReferenceId());
 
 			if (requestOpt.isEmpty()) {
-				// Webhook before API response → retry later
-				scheduleRetry(event, "Validation request not found yet");
+				eventFailureService.scheduleRetry(event, "Validation request not found yet");
 				return;
 			}
 
@@ -83,15 +86,15 @@ public class EventWorker {
 
 			// 2️⃣ Idempotency check
 			if (request.isTerminal()) {
-				event.markSkipped();
+				event.markCompleted();
 				eventPersistenceService.save(event);
 				return;
 			}
-		
+
 			ProviderEventParser parser = parserMap.get(event.getProvider());
 
 			if (parser == null) {
-				markFailed(event, "No parser found for provider");
+				eventFailureService.markDeadLetter(event, "No parser found for provider");
 				return;
 			}
 
@@ -105,19 +108,17 @@ public class EventWorker {
 
 			ProviderValidationStatus status = providerResult.getProviderStatus();
 
-			if (ProviderValidationStatus.CREATED==status) {
+			if (ProviderValidationStatus.CREATED == status) {
 
-				// Still processing on provider side → skip
-				event.markSkipped();
+				event.markCompleted();
 				eventPersistenceService.save(event);
-
-				// update polling timestamp
+				
 				request.setLastStatusCheckAt(Instant.now());
 				validationPersistence.updateValidationEntity(request);
 				return;
 			}
 
-			if (ProviderValidationStatus.FAILED== status) {
+			if (ProviderValidationStatus.FAILED == status) {
 
 				request.markProviderFailed("PROVIDER_CANNOT_PROCESS_REQUEST");
 
@@ -131,19 +132,21 @@ public class EventWorker {
 
 				return;
 			}
+			// here in completed state case all tables gets updated based on validation
+			// results
 
 			DomainDecision decision = validationDecisionService.decide(providerResult);
-			
-			ValidationStatus validationStatus =
-					domainDecisionMapper.mapValidationStatus(decision.getDecision());
 
-			ConfidenceLevel confidenceLevel =
-					domainDecisionMapper.mapConfidenceLevel(decision.getConfidence());
+			ValidationStatus validationStatus = domainDecisionMapper.mapValidationStatus(decision.getDecision());
+
+			ConfidenceLevel confidenceLevel = domainDecisionMapper.mapConfidenceLevel(decision.getConfidence());
 
 			request.complete(validationStatus, confidenceLevel);
 
 			validationPersistence.updateValidationEntity(request);
-			eventPersistenceService.markCompleted(event);
+			
+			event.markCompleted();
+			eventPersistenceService.save(event);
 
 			providerValidationResultService.store(request.getValidationRequestId(), event.getProvider().name(),
 					event.getProviderReferenceId().toString(), providerResult);
@@ -151,41 +154,13 @@ public class EventWorker {
 		}
 
 		catch (NonRetryableProviderException ex) {
-			markFailed(event, ex.getMessage());
+			eventFailureService.markDeadLetter(event, "non retryable error in event worker");
 		} catch (Exception ex) {
-			handleFailure(event, ex);
+			eventFailureService.handleFailure(event, ex);
 		}
 
 	}
 
-	private void handleFailure(ProviderValidationEventEntity event, Exception ex) {
-
-        int retry = event.getRetryCount() + 1;
-        event.setRetryCount(retry);
-        event.setLastError(ex.getMessage());
-
-        if (retry >= MAX_RETRY) {
-            event.markFailed();
-        } else {
-            event.markPending();
-            event.setNextRetryAt(Instant.now().plus(RETRY_DELAY));
-        }
-
-        eventPersistenceService.save(event);
-	}
-
-	private void markFailed(ProviderValidationEventEntity event, String reason) {
-		event.setLastError(reason);
-		event.markFailed();
-		eventPersistenceService.save(event);
-	}
-
-	private void scheduleRetry(ProviderValidationEventEntity event, String reason) {
-		  event.setRetryCount(event.getRetryCount() + 1);
-	      event.setLastError(reason);
-	      event.setNextRetryAt(Instant.now().plus(RETRY_DELAY));
-	      event.markPending();
-	      eventPersistenceService.save(event);
-	}
+	
 
 }

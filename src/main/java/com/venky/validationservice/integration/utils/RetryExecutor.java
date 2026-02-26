@@ -5,37 +5,45 @@ import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
-import com.venky.validationservice.exception.RetryableException;
+import com.venky.validationservice.exception.RetryableProviderException;
 
 @Component
 public class RetryExecutor {
 
 	public <T> T execute(Supplier<T> action, int maxAttempts, Duration initialDelay) {
 
-		int attempt = 0;
+		int attempt = 1;
 		Duration delay = initialDelay;
 
 		while (true) {
 
 			try {
 				return action.get();
+
 			} catch (Exception ex) {
 
-				attempt++;
-				
-				 if (!(ex instanceof RetryableException) || attempt >= maxAttempts) {
-		                throw ex;
-		            }
-
-				try {
-					Thread.sleep(delay.toMillis());
-				} catch (InterruptedException ie) {
-					Thread.currentThread().interrupt();
-					throw new RuntimeException(ie);
+				if (!isRetryable(ex) || attempt >= maxAttempts) {
+					throw ex;
 				}
 
-				delay = delay.multipliedBy(2); 
+				sleep(delay);
+
+				delay = delay.multipliedBy(2);
+				attempt++;
 			}
+		}
+	}
+
+	private boolean isRetryable(Exception ex) {
+		return ex instanceof RetryableProviderException;
+	}
+
+	private void sleep(Duration delay) {
+		try {
+			Thread.sleep(delay.toMillis());
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Retry interrupted", ie);
 		}
 	}
 }

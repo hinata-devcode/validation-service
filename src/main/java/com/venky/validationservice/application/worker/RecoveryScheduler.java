@@ -17,7 +17,7 @@ public class RecoveryScheduler {
 		this.validationRequestRepository = validationRequestRepository;
 	}
 
-	@Scheduled(fixedDelay = 60000)
+	//@Scheduled(fixedDelay = 60000)
 	public void recoverStuckRequests() {
 
 		List<ValidationRequestEntity> stuck = validationRequestRepository
@@ -25,7 +25,7 @@ public class RecoveryScheduler {
 
 		for (ValidationRequestEntity vr : stuck) {
 
-			int updated = validationRequestRepository.markProcessingIfInitiated(vr.getValidationRequestId());
+			int updated = validationRequestRepository.markInProcessingIfInitiated(vr.getValidationRequestId());
 
 			if (updated == 0) {
 				continue;

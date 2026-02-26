@@ -34,7 +34,7 @@ public class ProviderValidationEventEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider_status",nullable = false)
-    private EventProcessingStatus status=EventProcessingStatus.PENDING;
+    private EventExecutionStatus status=EventExecutionStatus.PENDING;
     
     @Column(name="retry_count")
     private int retryCount;
@@ -66,7 +66,7 @@ public class ProviderValidationEventEntity {
 
 
 	public void markCompleted() {
-		this.status=EventProcessingStatus.COMPLETED;
+		this.status=EventExecutionStatus.COMPLETED;
 	}
 
 	public String getProviderReferenceId() {
@@ -93,7 +93,7 @@ public class ProviderValidationEventEntity {
 		return provider;
 	}
 
-	public EventProcessingStatus getStatus() {
+	public EventExecutionStatus getStatus() {
 		return status;
 	}
 
@@ -130,19 +130,19 @@ public class ProviderValidationEventEntity {
 	}
 	
 	public void markProcessing() {
-	    this.status = EventProcessingStatus.PROCESSING;
+	    this.status = EventExecutionStatus.PROCESSING;
 	}
 
-	public void markFailed() {
-	    this.status = EventProcessingStatus.FAILED;
+	public void markDeadLetter() {
+	    this.status = EventExecutionStatus.DEAD_LETTER;
 	}
 
 	public void markPending() {
-	    this.status = EventProcessingStatus.PENDING;
+	    this.status = EventExecutionStatus.PENDING;
 	}
 
-	public void markSkipped() {
-	    this.status = EventProcessingStatus.SKIPPED;
+	public void markRetry() {
+	    this.status = EventExecutionStatus.RETRY_SCHEDULED;
 	}
 
 	public void setRetryCount(int retry) {

@@ -95,7 +95,7 @@ public class ValidationRequestEntity {
 	
 	public void complete(ValidationStatus validationStatus, ConfidenceLevel confidenceLevel) {
 
-		if (this.executionStatus != ExecutionStatus.PENDING) {
+		if (this.executionStatus != ExecutionStatus.PROCESSING) {
 		    throw new NonRetryableProviderException(
 		        "Validation already processed: " + this.executionStatus
 		    );
@@ -140,7 +140,7 @@ public class ValidationRequestEntity {
 	}
 
 	public void markProviderFailed(String message) {
-		this.executionStatus=ExecutionStatus.PROVIDER_FAILED;
+		this.executionStatus=ExecutionStatus.FAILED;
 		 this.failureOrigin = FailureOrigin.EXTERNAL_PROVIDER;
 		 this.failureCode=message;
 	}
@@ -160,8 +160,8 @@ public class ValidationRequestEntity {
 	}
 
 	public boolean isTerminal() {
-	    return ExecutionStatus.COMPLETED.toString().equals(this.executionStatus)
-	            || ExecutionStatus.FAILED.toString().equals(this.executionStatus);
+	    return ExecutionStatus.COMPLETED == this.executionStatus
+	            || ExecutionStatus.FAILED == (this.executionStatus);
 	}
 
 	public boolean isPollingTimedOut(Duration maxDuration, int maxAttempts) {

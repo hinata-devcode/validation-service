@@ -37,7 +37,7 @@ public class RazorpayWebhookController {
             @RequestHeader("X-Razorpay-Signature") String signature,
             @RequestBody byte[] rawBody) {
 
-        // 1️⃣ Validate signature (NO parsing yet)
+         //1️⃣ Validate signature (NO parsing yet)
         validator.validate(rawBody, signature);
 
         // 2️⃣ Convert to String only AFTER validation
@@ -47,13 +47,13 @@ public class RazorpayWebhookController {
         String providerReferenceId = extractor.extractValidationId(payload);
 
         // 4️⃣ Sanitize payload (PII-safe)
-        String sanitizedPayload = sanitizer.sanitize(payload);
+       // String sanitizedPayload = sanitizer.sanitize(payload);
 
         // 5️⃣ Persist event (NO domain logic)
         eventService.recordWebhookEvent(
                 Provider.RAZORPAY,
                 providerReferenceId,
-                sanitizedPayload
+                payload
         );
 
         return ResponseEntity.ok().build();

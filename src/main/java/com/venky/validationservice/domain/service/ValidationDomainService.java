@@ -9,6 +9,7 @@ import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ValidationQueryResponse;
 import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.exception.FailureOrigin;
+import com.venky.validationservice.exception.ProviderCallTimeoutException;
 import com.venky.validationservice.exception.ThirdpartyProviderException;
 import com.venky.validationservice.exception.ValidationExecutionException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
@@ -33,28 +34,37 @@ public class ValidationDomainService {
 		try {
 
 			// Call provider
-			
-			validationRequestEntity=validationPersistenceService.createValidationRequest(validationState.getValidationRequestId());
-			
-			//ATOMIC UPDATE IN CASE OF MUTIPLE INSTACNES OR TWO THREADS TRYING TO UPDATE SAME REQUEST
-			 int updated = validationPersistenceService.markProcessingIfInitiated(validationState.getValidationRequestId());
-			 
-			 if(updated==0)
-				 throw new IllegalStateException("Request already processing");
-			
+
+			validationRequestEntity = validationPersistenceService
+					.createValidationRequest(validationState.getValidationRequestId());
+
+			// ATOMIC UPDATE IN CASE OF MUTIPLE INSTACNES OR TWO THREADS TRYING TO UPDATE
+			// SAME REQUEST
+			int updated = validationPersistenceService
+					.markInProcessingIfInitiated(validationState.getValidationRequestId());
+
+			if (updated == 0)
+				throw new IllegalStateException("Request already processing");
+
 			ValidationExecutionResult execution = providerPort.validate(details, validationState);
 
 			return execution;
 
 		}
 
-		catch (ThirdpartyProviderException ex) {
-			validationPersistenceService.markValidationRequestFailed(validationRequestEntity,FailureOrigin.EXTERNAL_PROVIDER,"PROVIDER_ERROR");
+		catch (ProviderCallTimeoutException ex) {
+			validationPersistenceService.markProviderCallTimeout(validationRequestEntity);
+
+			throw new ValidationExecutionException("Provider call uncertain", FailureOrigin.EXTERNAL_PROVIDER, ex);
+		} catch (ThirdpartyProviderException ex) {
+			validationPersistenceService.markValidationRequestFailed(validationRequestEntity,
+					FailureOrigin.EXTERNAL_PROVIDER, "PROVIDER_ERROR");
 			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
 					ex);
 
 		} catch (RuntimeException ex) {
-			validationPersistenceService.markValidationRequestFailed(validationRequestEntity, FailureOrigin.INTERNAL_SYSTEM,"INTERNAL_ERROR");
+			validationPersistenceService.markValidationRequestFailed(validationRequestEntity,
+					FailureOrigin.INTERNAL_SYSTEM, "INTERNAL_ERROR");
 			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex);
 		}
 	}

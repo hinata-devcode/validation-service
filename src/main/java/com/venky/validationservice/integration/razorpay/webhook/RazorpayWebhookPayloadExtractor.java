@@ -19,7 +19,7 @@ public class RazorpayWebhookPayloadExtractor {
     	            .path("fund_account.validation")
     	            .path("entity")
     	            .path("id")
-    	            .toString();
+    	            .asText();
     	    } catch (Exception e) {
     	        throw new IllegalArgumentException("Invalid webhook payload", e);
     	    }

@@ -27,48 +27,101 @@ public class RazorpayEventParser implements ProviderEventParser{
         this.sanitizer = sanitizer;
     }
 
-	@Override
-	public ProviderResult parseWebhook(String rawPayload) {
+    @Override
+    public ProviderResult parseWebhook(String rawPayload) {
 
         try {
-            JsonNode root = mapper.readTree(rawPayload);
-            JsonNode entity =
-                root.at("/payload/fund_account.validation/entity");
 
-            String favId = entity.get("id").asText();
-            String status = entity.get("status").asText();
-            
+            JsonNode root = mapper.readTree(rawPayload);
+
+            // Navigate to entity node
+            JsonNode entityNode =
+                    root.path("payload")
+                        .path("fund_account.validation")
+                        .path("entity");
+
+            if (entityNode.isMissingNode() || entityNode.isNull()) {
+                throw new NonRetryableProviderException("Invalid webhook structure: entity not found");
+            }
+
+            String favId = entityNode.path("id").asText();
+            String status = entityNode.path("status").asText();
+
+            JsonNode validationResults = entityNode.path("validation_results");
+
             Map<String, String> attributes = new HashMap<>();
 
-            JsonNode validationResults = entity.get("validation_results");
+            String providerAccountStatus = null;
+            Boolean accountActive = null;
+            String nameMatchScore = null;
+            String registeredName = null;
+            String bankDetailsJson = null;
 
             if (validationResults != null && validationResults.isObject()) {
+
                 ObjectNode obj = (ObjectNode) validationResults;
 
                 obj.fields().forEachRemaining(e -> {
+
+                    String key = e.getKey();
+
+                    // Skip structured fields
+                    if ("account_status".equals(key)
+                            || "name_match_score".equals(key)
+                            || "registered_name".equals(key)
+                            || "bank_account".equals(key)) {
+                        return;
+                    }
+
                     JsonNode value = e.getValue();
                     attributes.put(
-                        e.getKey(),
-                        value.isValueNode() ? value.asText() : value.toString()
+                            key,
+                            value == null || value.isNull() ? null : value.asText()
                     );
                 });
+
+                // Structured fields
+                providerAccountStatus = validationResults.path("account_status").asText(null);
+
+                if (providerAccountStatus != null) {
+                    accountActive = "active".equalsIgnoreCase(providerAccountStatus);
+                }
+
+                JsonNode nameMatchNode = validationResults.path("name_match_score");
+                if (!nameMatchNode.isMissingNode() && !nameMatchNode.isNull()) {
+                    nameMatchScore = nameMatchNode.asText();
+                }
+
+                JsonNode registeredNameNode = validationResults.path("registered_name");
+                if (!registeredNameNode.isMissingNode() && !registeredNameNode.isNull()) {
+                    registeredName = registeredNameNode.asText();
+                }
+
+                // This exists only in VPA case
+                JsonNode bankDetailsNode = validationResults.path("bank_account");
+                if (!bankDetailsNode.isMissingNode() && !bankDetailsNode.isNull()) {
+                    bankDetailsJson = bankDetailsNode.toString(); // store raw JSON
+                }
             }
 
-//            return new ProviderResult(
-//                    favId,
-//                    assingDomainStatus(status),
-//                    attributes,
-//                    sanitizer.sanitize(rawPayload),null,null
-//            );
-            return null;//yet to implement for webhooks
+            return new ProviderResult(
+                    favId,
+                    assingDomainStatus(status),
+                    attributes,
+                    sanitizer.sanitize(rawPayload),
+                    accountActive,
+                    nameMatchScore,
+                    registeredName,
+                    providerAccountStatus,
+                    bankDetailsJson
+            );
 
-        } catch (JsonProcessingException ex) {
-        	   throw new NonRetryableProviderException("Invalid payload", ex);
+        } catch (Exception ex) {
+            throw new NonRetryableProviderException("Failed to parse Razorpay webhook", ex);
         }
-    
-	}
+    }
 
-	
+    
 	@Override
 	public ProviderResult parseApiResponse(String rawPayload) {
 

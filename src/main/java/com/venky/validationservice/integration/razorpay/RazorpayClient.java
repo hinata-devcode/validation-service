@@ -1,5 +1,8 @@
 package com.venky.validationservice.integration.razorpay;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.time.Duration;
 
 import org.springframework.http.HttpEntity;
@@ -17,9 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.venky.validationservice.exception.NonRetryableException;
 import com.venky.validationservice.exception.NonRetryableProviderException;
-import com.venky.validationservice.exception.RetryableException;
+import com.venky.validationservice.exception.ProviderCallTimeoutException;
 import com.venky.validationservice.exception.RetryableProviderException;
 import com.venky.validationservice.integration.utils.RetryExecutor;
 
@@ -69,9 +71,10 @@ public class RazorpayClient {
 	        throw new RetryableProviderException("Razorpay server error", ex);
 
 	    } catch (ResourceAccessException ex) {
-	        throw new RetryableProviderException("Razorpay timeout", ex);
+	    	throw classifyNetworkException(ex);
 	    }
 	}
+
 
 	private String fetchValidationStatus(String providerReferenceId) {
 
@@ -92,7 +95,7 @@ public class RazorpayClient {
 	        throw new RetryableProviderException("Razorpay server error "+ex.getMessage(), ex);
 
 	    } catch (ResourceAccessException ex) {
-	        throw new RetryableProviderException("Razorpay timeout", ex);
+	    	throw classifyNetworkException(ex);
 	    }
 	}
 
@@ -104,5 +107,23 @@ public class RazorpayClient {
 		HttpEntity<T> entity = new HttpEntity<>(request, headers);
 		return entity;
 	}
+	
+	private RuntimeException classifyNetworkException(ResourceAccessException ex) throws ProviderCallTimeoutException {
+		Throwable root = ex.getRootCause();
 
+		if (root == null) {
+			return new NonRetryableProviderException("Unknown network error", ex);
+		}
+
+		if (root instanceof ConnectException || root instanceof UnknownHostException) {
+			return new RetryableProviderException("Connection failure", ex);
+		}
+
+		if (root instanceof SocketTimeoutException) {
+			return new ProviderCallTimeoutException("Read timeout", ex);
+		}
+
+		return new NonRetryableProviderException("Unknown network error", ex);
+	}
+	
 }

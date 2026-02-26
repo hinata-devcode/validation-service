@@ -1,13 +1,15 @@
 package com.venky.validationservice.integration.razorpay;
 
 import java.time.Duration;
+import java.time.Instant;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.venky.validationservice.application.polling.ProviderPollingService;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ProviderEventType;
-import com.venky.validationservice.persistence.entity.EventProcessingStatus;
+import com.venky.validationservice.persistence.entity.EventExecutionStatus;
 import com.venky.validationservice.persistence.entity.ProviderValidationEventEntity;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
@@ -19,6 +21,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 	private final RazorpayClient razorpayClient;
 	private final ProviderValidationEventPersistenceService eventPersistence;
 	private final ValidationPersistenceService validationPersistenceService;
+	private final int maxPollingAttempts = 5;
 
 	public RazorpayPollingService(RazorpayClient razorpayClient,
 			ProviderValidationEventPersistenceService eventPersistence,
@@ -34,6 +37,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		return Provider.RAZORPAY;
 	}
 
+	@Transactional
 	@Override
 	public void poll(ValidationRequestEntity request) {
 
@@ -46,7 +50,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		request.incrementPollAttempts();
 		request.updateLastStatusCheck();
 
-		if (request.isPollingTimedOut(Duration.ofMinutes(30), 10)) {
+		if (request.isPollingTimedOut(Duration.ofMinutes(30), maxPollingAttempts)) {
 			request.markProviderFailed("RETRIES_EXHAUSTED");
 			validationPersistenceService.updateValidationEntity(request);
 			return;
@@ -59,6 +63,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		event.markPending();
 		event.setRetryCount(0);
 		eventPersistence.save(event);
+		request.setLastStatusCheckAt(Instant.now());
 
 		validationPersistenceService.updateValidationEntity(request);
 	}

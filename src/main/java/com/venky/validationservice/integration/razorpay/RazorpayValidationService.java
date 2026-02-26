@@ -74,11 +74,11 @@ public class RazorpayValidationService implements ProviderValidationPort {
 				rawJson);
 
 		// this is for my DB
-		validationPersistenceService.markRequestPending(validationState.getValidationRequestId(),
+		validationPersistenceService.updateValidationEventWithProvderDetails(validationState.getValidationRequestId(),
 				Provider.RAZORPAY.toString(), favId);
 
 		// this is for my domain layer/UI return state
-		validationState.markPending(Provider.RAZORPAY, favId);
+		validationState.markProcessing(Provider.RAZORPAY, favId);
 
 		return new ValidationExecutionResult(validationState, Optional.empty());
 	}

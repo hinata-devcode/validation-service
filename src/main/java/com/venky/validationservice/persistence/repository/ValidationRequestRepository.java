@@ -30,11 +30,12 @@ public interface ValidationRequestRepository
 	@Query("""
 		    SELECT v FROM ValidationRequestEntity v
 		    WHERE v.executionStatus = :status
+		      AND v.providerReferenceId IS NOT NULL
 		      AND (v.lastStatusCheckAt IS NULL 
 		           OR v.lastStatusCheckAt <= :threshold)
 		""")
 		List<ValidationRequestEntity> findRequestsForPolling(
-		        @Param("status") ExecutionStatus pending,
+		        @Param("status") ExecutionStatus processing,
 		        @Param("threshold") Instant threshold
 		);
 	
@@ -42,15 +43,13 @@ public interface ValidationRequestRepository
 	@Transactional
 	@Modifying
 	@Query("""
-	       UPDATE ValidationRequestEntity vr
-	       SET vr.executionStatus = 'PENDING',
-	           vr.updatedAt = CURRENT_TIMESTAMP
-	       WHERE vr.validationRequestId = :id
-	       AND vr.executionStatus = 'INITIATED'
-	       """)
-	int markProcessingIfInitiated(@Param("id") UUID id);
-	
-	
+	UPDATE ValidationRequestEntity v
+	SET v.executionStatus = 'PROCESSING'
+	WHERE v.validationRequestId = :id
+	  AND v.executionStatus = 'INITIATED'
+	""")
+	int markInProcessingIfInitiated(@Param("id") UUID id);
+		
 	@Query("""
 		       SELECT vr
 		       FROM ValidationRequestEntity vr
@@ -60,6 +59,15 @@ public interface ValidationRequestRepository
 		       """)
 		List<ValidationRequestEntity> findStuckProcessing(
 		        @Param("cutoff") LocalDateTime cutoff);
+	
+	@Query("""
+			   SELECT e.validationRequestId, COUNT(e)
+			   FROM ProviderValidationEventEntity e
+			   WHERE e.validationRequestId IN :ids
+			     AND e.status IN ('PENDING', 'PROCESSING')
+			   GROUP BY e.validationRequestId
+			""")
+			List<Object[]> countPendingEvents(List<UUID> ids);
 
 }
 

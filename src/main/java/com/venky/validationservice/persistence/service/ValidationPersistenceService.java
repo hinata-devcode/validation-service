@@ -31,20 +31,6 @@ public class ValidationPersistenceService {
 		return entity;
 	}
 
-	public void markRequestPending(UUID requestId, String provider, String providerReferenceId) {
-		
-		ValidationRequestEntity entity = requestRepo.findById(requestId)
-				.orElseThrow(() -> new ValidationExecutionException("Validation request ID not found" + requestId,
-						FailureOrigin.INTERNAL_SYSTEM));
-
-		entity.setProvider(provider);
-		entity.setProviderReferenceId(providerReferenceId);
-		entity.setExecutionStatus(ExecutionStatus.PENDING);
-		entity.setUpdatedAt(java.time.Instant.now());
-
-		requestRepo.save(entity);
-	}
-
 	 @Transactional(readOnly = true)
 	public Optional<ValidationRequestEntity> findProviderReferenceId(String providerReferenceId) {
 		return requestRepo.findByProviderReferenceId(providerReferenceId);
@@ -55,12 +41,12 @@ public class ValidationPersistenceService {
 	}
 
 	 @Transactional(readOnly = true)
-	public List<ValidationRequestEntity> findRequestsForPolling(ExecutionStatus pending, Instant threshold) {
-		return requestRepo.findRequestsForPolling(pending, threshold);
+	public List<ValidationRequestEntity> findRequestsForPolling(ExecutionStatus processing, Instant threshold) {
+		return requestRepo.findRequestsForPolling(processing, threshold);
 	}
 	 
-	public int markProcessingIfInitiated(UUID id) {
-		return requestRepo.markProcessingIfInitiated(id);
+	public int markInProcessingIfInitiated(UUID id) {
+		return requestRepo.markInProcessingIfInitiated(id);
 	}
 
 	@Transactional(readOnly = true)
@@ -78,5 +64,28 @@ public class ValidationPersistenceService {
 
 		requestRepo.save(validationRequestEntity);
 	}
+	
+	public List<Object[]> countPendingEvents(List<UUID> requestIds){
+		return requestRepo.countPendingEvents(requestIds);
+	}
 
+	public void markProviderCallTimeout(ValidationRequestEntity validationRequestEntity) {
+		validationRequestEntity.setExecutionStatus(ExecutionStatus.PROVIDER_CALL_TIMEOUT);
+		requestRepo.save(validationRequestEntity);
+	}
+
+	public void updateValidationEventWithProvderDetails(UUID validationRequestId, String provider, String providerReferenceId) {
+		ValidationRequestEntity entity = requestRepo.findById(validationRequestId)
+				.orElseThrow(() -> new ValidationExecutionException("Validation request ID not found" + validationRequestId,
+						FailureOrigin.INTERNAL_SYSTEM));
+		
+		entity.setProvider(provider);
+		entity.setProviderReferenceId(providerReferenceId);
+		entity.setExecutionStatus(ExecutionStatus.PROCESSING);
+		entity.setUpdatedAt(java.time.Instant.now());
+
+		requestRepo.save(entity);
+	}
+
+	
 }

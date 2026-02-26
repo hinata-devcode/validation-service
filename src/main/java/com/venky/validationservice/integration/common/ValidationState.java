@@ -42,10 +42,10 @@ public class ValidationState {
 		this.executionStatus = executionStatus;
 	}
 
-	public void markPending(Provider provider, String favId) {
+	public void markProcessing(Provider provider, String favId) {
 		this.provider = provider;
 		this.providerReferenceId = favId;
-		this.executionStatus = ExecutionStatus.PENDING;
+		this.executionStatus = ExecutionStatus.PROCESSING;
 	}
 
     

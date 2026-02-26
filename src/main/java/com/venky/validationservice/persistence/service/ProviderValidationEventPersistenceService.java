@@ -1,5 +1,6 @@
 package com.venky.validationservice.persistence.service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ProviderEventType;
-import com.venky.validationservice.persistence.entity.EventProcessingStatus;
+import com.venky.validationservice.persistence.entity.EventExecutionStatus;
 import com.venky.validationservice.persistence.entity.ProviderValidationEventEntity;
 import com.venky.validationservice.persistence.repository.ProviderValidationEventRepository;
 
@@ -43,26 +44,22 @@ public class ProviderValidationEventPersistenceService {
 	}
 
 	@Transactional
-	public Optional<ProviderValidationEventEntity> fetchUnprocessedEvents() {
+	public Optional<ProviderValidationEventEntity> fetchUnprocessedEvents(Instant now) {
 
 	    Pageable limitOne = PageRequest.of(0, 1);
 
 	    List<ProviderValidationEventEntity> events =
-	        repository.findNextUnprocessed(EventProcessingStatus.PENDING, limitOne);
+	        repository.findNextProcessableEvents(now,limitOne);
 	    
 	    return events.stream().findFirst();
 	}
 
 
-	public void markCompleted(ProviderValidationEventEntity event) {
-		event.markCompleted();
-		repository.save(event);
-	}
-
 	public void save(ProviderValidationEventEntity event) {
 		repository.save(event);
 	}
 
+	
 //	public void markSkipped(ProviderValidationEventEntity event) {
 //		event.markSkipped();
 //		repository.save(event);

@@ -4,6 +4,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,6 +48,10 @@ public class RazorpayClient {
 
 	public String fetchStatus(String providerReferenceId) {
 		return retryExecutor.execute(() -> fetchValidationStatus(providerReferenceId), 3, Duration.ofSeconds(2));
+	}
+	
+	public RazorpayValidationCollectionResponse fetchValidations(long from, long to, int count, int skip) {
+		return retryExecutor.execute(() -> fetchValidationCollection(from, to, count, skip), 3, Duration.ofSeconds(2));
 	}
 
 	private String createValidationRequest(RazorpayExternalRequest request) {
@@ -126,4 +132,33 @@ public class RazorpayClient {
 		return new NonRetryableProviderException("Unknown network error", ex);
 	}
 	
+	private RazorpayValidationCollectionResponse fetchValidationCollection(long from, long to, int count, int skip) {
+
+		try {
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setBasicAuth(properties.getApiKey(), properties.getApiSecret());
+
+			HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+			String url = properties.getBaseUrl() + "/v1/fund_accounts/validations" + "?account_number="
+					+ properties.getSourceAccountNumber() + "&from=" + from + "&to=" + to + "&count=" + count + "&skip="
+					+ skip;
+
+			ResponseEntity<RazorpayValidationCollectionResponse> response = restTemplate.exchange(url, HttpMethod.GET,
+					entity, RazorpayValidationCollectionResponse.class);
+
+			return response.getBody();
+
+		} catch (HttpClientErrorException ex) {
+			throw new NonRetryableProviderException("Razorpay client error " + ex.getMessage(), ex);
+
+		} catch (HttpServerErrorException ex) {
+			throw new RetryableProviderException("Razorpay server error " + ex.getMessage(), ex);
+
+		} catch (ResourceAccessException ex) {
+			throw classifyNetworkException(ex);
+		}
+	}
+
 }

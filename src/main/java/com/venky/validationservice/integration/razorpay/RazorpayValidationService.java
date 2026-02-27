@@ -54,7 +54,7 @@ public class RazorpayValidationService implements ProviderValidationPort {
 		Contact contact=accountDetailsFactory.createContactDetails(details);
 		FundAccount fundAccount = accountDetailsFactory.createFundAccountDetails(details,contact);
 		
-		RazorpayExternalRequest request = requestFactory.build(fundAccount);
+		RazorpayExternalRequest request = requestFactory.build(fundAccount,validationState.getValidationRequestId());
 
 		String rawJson  = rzpClient.validateFundAccount(request);
 		

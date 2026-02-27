@@ -60,14 +60,27 @@ public interface ValidationRequestRepository
 		List<ValidationRequestEntity> findStuckProcessing(
 		        @Param("cutoff") LocalDateTime cutoff);
 	
-	@Query("""
-			   SELECT e.validationRequestId, COUNT(e)
-			   FROM ProviderValidationEventEntity e
-			   WHERE e.validationRequestId IN :ids
-			     AND e.status IN ('PENDING', 'PROCESSING')
-			   GROUP BY e.validationRequestId
-			""")
-			List<Object[]> countPendingEvents(List<UUID> ids);
+		@Query("""
+				   SELECT e.validationRequestId, COUNT(e)
+				   FROM ProviderValidationEventEntity e
+				   WHERE e.validationRequestId IN :ids
+				     AND e.status IN ('PENDING', 'PROCESSING')
+				   GROUP BY e.validationRequestId
+				""")
+		List<Object[]> countPendingEvents(List<UUID> ids);
 
-}
+	    @Query("""
+	            SELECT v FROM ValidationRequestEntity v 
+	            WHERE v.executionStatus IN ('PROVIDER_CALL_TIMEOUT', 'PROCESSING') 
+	            AND v.providerReferenceId IS NULL 
+	            AND v.providerCallInitiatedAt IS NOT NULL
+	            AND v.pollAttempts < :maxAttempts 
+	            AND (v.lastStatusCheckAt IS NULL OR v.lastStatusCheckAt <= :threshold)
+	        """)
+	        List<ValidationRequestEntity> findStuckCases(
+	            @Param("threshold") Instant threshold, 
+	            @Param("maxAttempts") int maxAttempts
+	        );
 
+
+	}

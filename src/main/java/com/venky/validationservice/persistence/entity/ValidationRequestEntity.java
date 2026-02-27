@@ -62,6 +62,9 @@ public class ValidationRequestEntity {
 
     @Column(name="failure_reason")
 	private String failureCode;
+    
+    @Column(name = "provider_call_initiated_at")
+    private Instant providerCallInitiatedAt;
 
     protected ValidationRequestEntity() {}
 
@@ -141,7 +144,7 @@ public class ValidationRequestEntity {
 
 	public void markProviderFailed(String message) {
 		this.executionStatus=ExecutionStatus.FAILED;
-		 this.failureOrigin = FailureOrigin.EXTERNAL_PROVIDER;
+		 this.setFailureOrigin(FailureOrigin.EXTERNAL_PROVIDER);
 		 this.failureCode=message;
 	}
 	
@@ -189,10 +192,25 @@ public class ValidationRequestEntity {
 
 	public void markValidationFailure(String message) {
 	    this.executionStatus = ExecutionStatus.FAILED;
-	    this.failureOrigin=FailureOrigin.INTERNAL_SYSTEM;
+	    this.setFailureOrigin(FailureOrigin.INTERNAL_SYSTEM);
 	    this.failureCode=message;
 	}
 
-    // getters & setters
+	public FailureOrigin getFailureOrigin() {
+		return failureOrigin;
+	}
+
+	public void setFailureOrigin(FailureOrigin failureOrigin) {
+		this.failureOrigin = failureOrigin;
+	}
+
+	public Instant getProviderCallInitiatedAt() {
+		return providerCallInitiatedAt;
+	}
+
+	public void setProviderCallInitiatedAt(Instant providerCallInitiatedAt) {
+		this.providerCallInitiatedAt = providerCallInitiatedAt;
+	}
+
 }
 

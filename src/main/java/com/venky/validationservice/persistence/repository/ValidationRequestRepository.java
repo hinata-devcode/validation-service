@@ -1,6 +1,7 @@
 package com.venky.validationservice.persistence.repository;
 
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -69,18 +70,19 @@ public interface ValidationRequestRepository
 				""")
 		List<Object[]> countPendingEvents(List<UUID> ids);
 
-	    @Query("""
-	            SELECT v FROM ValidationRequestEntity v 
-	            WHERE v.executionStatus IN ('PROVIDER_CALL_TIMEOUT', 'PROCESSING') 
-	            AND v.providerReferenceId IS NULL 
-	            AND v.providerCallInitiatedAt IS NOT NULL
-	            AND v.pollAttempts < :maxAttempts 
-	            AND (v.lastStatusCheckAt IS NULL OR v.lastStatusCheckAt <= :threshold)
-	        """)
-	        List<ValidationRequestEntity> findStuckCases(
-	            @Param("threshold") Instant threshold, 
-	            @Param("maxAttempts") int maxAttempts
-	        );
-
+		@Query("""
+			    SELECT v FROM ValidationRequestEntity v 
+			    WHERE v.executionStatus IN ('PROVIDER_CALL_TIMEOUT', 'PROCESSING') 
+			    AND v.providerReferenceId IS NULL 
+			    AND v.providerCallInitiatedAt IS NOT NULL
+			    AND v.pollAttempts < :maxAttempts 
+			    AND (v.lastStatusCheckAt IS NULL OR v.lastStatusCheckAt <= :threshold)
+			    ORDER BY v.providerCallInitiatedAt ASC
+			""")
+			List<ValidationRequestEntity> findStuckCases(
+			    @Param("threshold") Instant threshold, 
+			    @Param("maxAttempts") int maxAttempts,
+			    Pageable pageable 
+			);
 
 	}

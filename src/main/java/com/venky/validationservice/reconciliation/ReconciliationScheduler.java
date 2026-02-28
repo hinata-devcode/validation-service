@@ -3,6 +3,7 @@ package com.venky.validationservice.reconciliation;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class ReconciliationScheduler {
         Instant threshold = Instant.now().minusSeconds(DELAY_SECONDS);
         
         List<ValidationRequestEntity> stuckRequests = 
-            repository.findStuckCases(threshold, MAX_ATTEMPTS);
+            repository.findStuckCases(threshold, MAX_ATTEMPTS,PageRequest.of(0, 100));
             
         if (stuckRequests.isEmpty()) {
             return;

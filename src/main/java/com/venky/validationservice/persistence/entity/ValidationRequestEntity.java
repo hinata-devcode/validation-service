@@ -53,7 +53,7 @@ public class ValidationRequestEntity {
     @Column(name = "poll_attempts")
     private int pollAttempts;
 
-    @Column(name = "first_created_at")
+	@Column(name = "first_created_at")
     private Instant firstCreatedAt;
     
     @Column(name="failure_origin")
@@ -211,6 +211,11 @@ public class ValidationRequestEntity {
 	public void setProviderCallInitiatedAt(Instant providerCallInitiatedAt) {
 		this.providerCallInitiatedAt = providerCallInitiatedAt;
 	}
+	
+	 public int getPollAttempts() {
+			return pollAttempts;
+		}
+
 
 }
 

@@ -1,6 +1,5 @@
 package com.venky.validationservice.integration.razorpay;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.venky.validationservice.exception.FailureOrigin;
@@ -24,6 +23,7 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 
 	private static final Duration RECONCILIATION_WINDOW = Duration.ofMinutes(30);
 	private static final int PAGE_COUNT = 100;
+	private static final int MAX_ATTEMPTS=5;
 
 	public RazorpayReconciliationHandler(RazorpayClient razorpayClient, ValidationRequestRepository repository) {
 		this.razorpayClient = razorpayClient;
@@ -43,11 +43,11 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 		Instant now = Instant.now();
 
 		// 1. Calculate Global Time Window
-		Instant oldestInitiatedAt = requests.stream().map(ValidationRequestEntity::getProviderCallInitiatedAt)
-				.min(Instant::compareTo).orElse(now);
+		Instant oldestInitiatedAt = requests.get(0).getProviderCallInitiatedAt();
+		Instant newestInitiatedAt = requests.get(requests.size() - 1).getProviderCallInitiatedAt();
 
-		Instant globalFrom = oldestInitiatedAt.minusSeconds(60); // 60-second buffer [cite: 115]
-		Instant globalTo = now;
+		Instant globalFrom = oldestInitiatedAt.minusSeconds(60);
+		Instant globalTo = newestInitiatedAt.plusSeconds(60);
 
 		// 2. Fetch all Razorpay items in this window (Pagination Loop)
 		Map<String, RazorpayValidationItem> razorpayMap = new HashMap<>();
@@ -80,27 +80,32 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 
 		// 3. Match and Update Database Records O(N)
 		for (ValidationRequestEntity request : requests) {
-			String localReferenceId = request.getValidationRequestId().toString();
-			RazorpayValidationItem matchedItem = razorpayMap.get(localReferenceId);
+			try {
+				String localReferenceId = request.getValidationRequestId().toString();
+				RazorpayValidationItem matchedItem = razorpayMap.get(localReferenceId);
 
-			if (matchedItem != null) {
-				// Match Found! Link the ID and set to PROCESSING
-				request.setProviderReferenceId(matchedItem.getId());
-				request.setExecutionStatus(ExecutionStatus.PROCESSING);
-				request.setLastStatusCheckAt(now);
-			} else {
-				// No Match Found. Increment attempts and check expiry
-				request.incrementPollAttempts();
-				request.setLastStatusCheckAt(now);
+				if (matchedItem != null) {
+					// Match Found! Link the ID and set to PROCESSING
+					request.setProviderReferenceId(matchedItem.getId());
+					request.setExecutionStatus(ExecutionStatus.PROCESSING);
+					request.setLastStatusCheckAt(now);
+				} else {
+					// No Match Found. Increment attempts and check expiry
+					request.incrementPollAttempts();
+					request.setLastStatusCheckAt(now);
 
-				boolean isExpired = now.isAfter(request.getProviderCallInitiatedAt().plus(RECONCILIATION_WINDOW));
-				if (isExpired) {
-					request.setExecutionStatus(ExecutionStatus.FAILED);
-					request.setFailureOrigin(FailureOrigin.SYSTEM_TIMEOUT);
+					boolean isExpired = now.isAfter(request.getProviderCallInitiatedAt().plus(RECONCILIATION_WINDOW));
+					if (isExpired || request.getPollAttempts() >= MAX_ATTEMPTS) {
+						request.setExecutionStatus(ExecutionStatus.FAILED);
+						request.setFailureOrigin(FailureOrigin.SYSTEM_TIMEOUT);
+					}
 				}
+				repository.save(request);
+			} catch (Exception e) {
+				System.err.println("Failed to process/save reconcillation " + request.getValidationRequestId() + " - "
+						+ e.getMessage());
 			}
 		}
 
-		repository.saveAll(requests);
 	}
 }

@@ -11,12 +11,15 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.repository.ValidationRequestRepository;
 import com.venky.validationservice.reconciliation.ProviderReconciliationHandler;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class RazorpayReconciliationHandler implements ProviderReconciliationHandler {
 
@@ -66,6 +69,7 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 						PAGE_COUNT, skip);
 
 				if (response == null || response.getItems() == null || response.getItems().isEmpty()) {
+					log.debug("No requests were made to razorpay server between {} & {} ",fromUnix,toUnix);
 					break; // No more records
 				}
 
@@ -87,17 +91,17 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 			}
 
 		} catch (NonRetryableProviderException ex) {
-			System.err.println("Fatal API error during batch fetch: " + ex.getMessage());
+			log.error("Fatal API error during batch fetch for Razorpay FAV transactions: " + ex.getMessage());
 			apiFetchSuccessful = false;
 			handleBatchFailure(requests, false, FailureOrigin.EXTERNAL_PROVIDER, now);
 
 		} catch (RetryableProviderException ex) {
-			System.err.println("Retryable API error during batch fetch: " + ex.getMessage());
+			log.error("Retryable API error during batch fetch for Razorpay FAV transactions: " + ex.getMessage());
 			apiFetchSuccessful = false;
 			handleBatchFailure(requests, true, null, now); // True means increment polls
 
 		} catch (RuntimeException ex) {
-			System.err.println("Runtime mapping error during batch fetch: " + ex.getMessage());
+			log.error("Runtime mapping error during batch fetch for Razorpay FAV transactions: " + ex.getMessage());
 			apiFetchSuccessful = false;
 			handleBatchFailure(requests, false, FailureOrigin.SYSTEM_TIMEOUT, now);
 		}
@@ -128,7 +132,7 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 					}
 					repository.save(request); // Save individually
 				} catch (Exception e) {
-					System.err.println("Failed to process/save reconciliation " + request.getValidationRequestId()
+					log.error("Failed to process/save reconciliation " + request.getValidationRequestId()
 							+ " - " + e.getMessage());
 				}
 			}
@@ -157,7 +161,7 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 	            }
 	            repository.save(request);
 	        } catch (Exception ex) {
-	            System.err.println("Failed to save fallback state for request " + request.getValidationRequestId() + ": " + ex.getMessage());
+	        	log.error("Failed to save fallback state for request " + request.getValidationRequestId() + ": " + ex.getMessage());
 	        }
 	    }
 	}

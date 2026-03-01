@@ -44,6 +44,9 @@ public class ValidationApplicationService {
 	                .accountNumber(bankDto.getAccountNumber())
 	                .ifsc(bankDto.getIfsc())
 	                .build();
+	        
+	        log.info("Initiating bank account validation. valReqId={}, ifsc={}", 
+	        	    validationState.getValidationRequestId(), details.getIfsc()); 
 
 	        ValidationExecutionResult executionResult =
 	                domainService.validate(details,validationState);
@@ -62,6 +65,7 @@ public class ValidationApplicationService {
 	                .vpa(vpaDto.getVpa())
 	                .build();
 
+		 log.info("Initiating VPA validation. valReqId={}", validationState.getValidationRequestId()); 
 	        ValidationExecutionResult executionResult =
 	                domainService.validate(details,validationState);
 

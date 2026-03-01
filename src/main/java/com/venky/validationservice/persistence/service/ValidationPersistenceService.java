@@ -46,7 +46,7 @@ public class ValidationPersistenceService {
 	public List<ValidationRequestEntity> findRequestsForPolling(ExecutionStatus processing, Instant threshold) {
 		return requestRepo.findRequestsForPolling(processing, threshold);
 	}
-	 
+	
 	public int markInProcessingIfInitiated(UUID id, Instant callInitiatedAt) {
 		return requestRepo.markInProcessingIfInitiated(id,callInitiatedAt);
 	}
@@ -84,7 +84,7 @@ public class ValidationPersistenceService {
 	public void updateValidationEventWithProvderDetails(UUID validationRequestId, Provider provider, String providerReferenceId) {
 		ValidationRequestEntity entity = requestRepo.findById(validationRequestId)
 				.orElseThrow(() -> new ValidationExecutionException("Validation request ID not found" + validationRequestId,
-						FailureOrigin.INTERNAL_SYSTEM));
+						FailureOrigin.INTERNAL_SYSTEM,validationRequestId));
 		
 		entity.setProvider(provider);
 		entity.setProviderReferenceId(providerReferenceId);

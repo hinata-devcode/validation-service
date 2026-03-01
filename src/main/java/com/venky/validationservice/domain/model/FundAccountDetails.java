@@ -29,5 +29,13 @@ public class FundAccountDetails {
 	public boolean isVpa() {
 		return vpa != null;
 	}
+
+	@Override
+	public String toString() {
+		return "FundAccountDetails{" + "beneficiaryName='MASKED', " + "email='MASKED', " + "phone='MASKED', " + "ifsc='"
+				+ ifsc + '\'' + '}';
+	}
+	
+	
 	
 }

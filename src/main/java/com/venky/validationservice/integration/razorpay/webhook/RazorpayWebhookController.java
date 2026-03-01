@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/webhooks/razorpay")
 public class RazorpayWebhookController {
@@ -48,6 +51,8 @@ public class RazorpayWebhookController {
 
         // 4️⃣ Sanitize payload (PII-safe)
        // String sanitizedPayload = sanitizer.sanitize(payload);
+        
+		log.info("Received Razorpay webhook. providerRefId={}", providerReferenceId);
 
         // 5️⃣ Persist event (NO domain logic)
         eventService.recordWebhookEvent(

@@ -11,6 +11,8 @@ import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.repository.ValidationRequestRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class ReconciliationScheduler {
     
@@ -40,12 +43,15 @@ public class ReconciliationScheduler {
     public void reconcileTimedOutRequests() {
         Instant threshold = Instant.now().minusSeconds(DELAY_SECONDS);
         
-        List<ValidationRequestEntity> stuckRequests = 
+        List<ValidationRequestEntity> timedOutRequests = 
             repository.findStuckCases(threshold, MAX_ATTEMPTS,PageRequest.of(0, 100));
             
-        if (stuckRequests.isEmpty()) {
+        if (timedOutRequests.isEmpty()) {
+        	log.debug("ReconciliationScheduler ran. No timed-out requests found.");
             return;
         }
+        
+        log.info("ReconciliationScheduler woke up. Found {} requests in PROVIDER_CALL_TIMEOUT state.", timedOutRequests.size());
 
         // Convert List of handlers to a Map for O(1) lookup
         Map<Provider, ProviderReconciliationHandler> handlerMap = handlers.stream()
@@ -53,7 +59,7 @@ public class ReconciliationScheduler {
 
         // Group the stuck requests by Provider (e.g., all "RAZORPAY" requests together) 
         //using enums so RAZORPAY will be same for ProviderReconciliationHandler & ValidationRequestEntity
-        Map<Provider, List<ValidationRequestEntity>> requestsByProvider = stuckRequests.stream()
+        Map<Provider, List<ValidationRequestEntity>> requestsByProvider = timedOutRequests.stream()
             .collect(Collectors.groupingBy(ValidationRequestEntity::getProvider));
 
         // Pass the batched lists to their respective handlers
@@ -65,7 +71,7 @@ public class ReconciliationScheduler {
                 }
             } catch (Exception ex) {
                 // TODO: Add logging here when your logging framework is set up [cite: 85]
-                System.err.println("Failed to reconcile for provider: " + entry.getKey());
+                log.error("Failed to reconcile for provider: " + entry.getKey());
             }
         }
     }

@@ -33,7 +33,9 @@ import com.venky.validationservice.persistence.service.ProviderValidationResultS
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class EventWorker {
 	
@@ -70,6 +72,9 @@ public class EventWorker {
 	private void processSingleEvent(ProviderValidationEventEntity event) {
 
 		try {
+			
+			log.info("Worker picked up validation event. eventId={}, valReqId={}, providerRefId={}, eventType={}", 
+				    event.getId(), event.getValidationRequestId(), event.getProviderReferenceId(), event.getEventType());
 			
 			event.markProcessing();
 			eventPersistenceService.save(event);
@@ -137,6 +142,10 @@ public class EventWorker {
 			// results
 
 			DomainDecision decision = validationDecisionService.decide(providerResult);
+			
+			log.info("Validation decision determined. valReqId={}, providerRefId={}, status={}, confidence={}", 
+				    event.getValidationRequestId(), event.getProviderReferenceId(), 
+				    decision.getDecision(), decision.getConfidence());
 
 			ValidationStatus validationStatus = domainDecisionMapper.mapValidationStatus(decision.getDecision());
 
@@ -148,6 +157,9 @@ public class EventWorker {
 			
 			event.markCompleted();
 			eventPersistenceService.save(event);
+			
+			log.info("Successfully persisted final validation result. valReqId={}, providerRefId={}, finalStatus={}", 
+					request.getValidationRequestId(),event.getProviderReferenceId(), providerResult.getProviderStatus());
 
 			providerValidationResultService.store(request.getValidationRequestId(), event.getProvider().name(),
 					event.getProviderReferenceId().toString(), providerResult);

@@ -70,7 +70,7 @@ public class RazorpayClient {
 //		            new SimpleClientHttpRequestFactory();
 //
 //		    factory.setConnectTimeout(5000);
-//		    factory.setReadTimeout(100);
+//		    factory.setReadTimeout(200);
 //
 //		    RestTemplate restTemplate= new RestTemplate(factory);
 //		    code tested for timed out cases

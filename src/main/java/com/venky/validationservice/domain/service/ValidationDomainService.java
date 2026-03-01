@@ -70,21 +70,21 @@ public class ValidationDomainService {
 					validationRequestEntity.getValidationRequestId(), provider, ex);
 			validationPersistenceService.markProviderCallTimeout(validationRequestEntity.getValidationRequestId(),
 					provider);
-			throw new ValidationExecutionException("Provider call uncertain", FailureOrigin.EXTERNAL_PROVIDER, ex);
+			throw new ValidationExecutionException("Provider call uncertain", FailureOrigin.EXTERNAL_PROVIDER, ex, validationRequestEntity.getValidationRequestId());
 		} catch (ThirdpartyProviderException ex) {
 			log.error("Provider rejected validationRequestId: {}. Provider: {}",
 					validationRequestEntity.getValidationRequestId(), ex.getProvider(), ex);
 			validationPersistenceService.markValidationRequestFailed(validationRequestEntity.getValidationRequestId(),
 					FailureOrigin.EXTERNAL_PROVIDER, "PROVIDER_ERROR", ex.getProvider());
 			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
-					ex);
+					ex,validationRequestEntity.getValidationRequestId());
 
 		} catch (RuntimeException ex) {
 			log.error("Internal validation error for validationRequestId: {}",
 					validationRequestEntity.getValidationRequestId(), ex);
 			validationPersistenceService.markValidationRequestFailed(validationRequestEntity.getValidationRequestId(),
 					FailureOrigin.INTERNAL_SYSTEM, "INTERNAL_ERROR", validationRequestEntity.getProvider());
-			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex);
+			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex,validationRequestEntity.getValidationRequestId());
 		}
 	}
 
@@ -93,7 +93,7 @@ public class ValidationDomainService {
 		
 		if(validationResult.isEmpty())
 			throw new ValidationExecutionException(
-                    "Validation request not found: " + validationRequestId, FailureOrigin.INTERNAL_SYSTEM);
+                    "Validation request not found: " + validationRequestId, FailureOrigin.INTERNAL_SYSTEM,validationRequestId);
 		
 		ValidationResult result = null;
 		

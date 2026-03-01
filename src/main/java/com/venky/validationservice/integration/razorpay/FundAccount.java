@@ -19,7 +19,14 @@ public class FundAccount {
 	@JsonProperty("vpa")
 	private final Vpa vpa;
 	
-	 @JsonProperty("contact")
-	 private Contact contact;
-	
+	@JsonProperty("contact")
+	private Contact contact;
+
+	@Override
+	public String toString() {
+		return "FundAccount{" + "accountType='" + accountType + '\'' + ", bankAccount=" + bankAccount + ", vpa=MASKED"
+				+ ", contact=MASKED" + '}';
+	}
+	 
+		
 }

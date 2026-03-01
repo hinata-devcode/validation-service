@@ -16,6 +16,9 @@ import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PollingScheduler {
 
@@ -41,9 +44,11 @@ public class PollingScheduler {
 				.findRequestsForPolling(ExecutionStatus.PROCESSING, threshold);
 
 		if (stuckRequests.isEmpty()) {
+			 log.debug("PollingScheduler ran. No pending requests found.");
 			return;
 		}
 
+		log.info("PollingScheduler found {} pending validation requests. Initiating poll.", stuckRequests.size());
 		List<UUID> ids = stuckRequests.stream().map(ValidationRequestEntity::getValidationRequestId).toList();
 
 		Map<UUID, Long> pendingCountMap = getPendingCountMap(ids);
@@ -66,6 +71,8 @@ public class PollingScheduler {
 			ProviderPollingService pollingService = pollingServiceMap.get(provider);
 
 			if (pollingService != null) {
+				log.info("Polling provider for status update. valReqId={}, providerRefId={}",
+						request.getValidationRequestId(), request.getProviderReferenceId());
 				pollingService.poll(request);
 			}
 		}

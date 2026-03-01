@@ -15,6 +15,9 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class RazorpayPollingService implements ProviderPollingService {
 
@@ -44,9 +47,18 @@ public class RazorpayPollingService implements ProviderPollingService {
 		if (request.isTerminal()) {
 			return;
 		}
-
+		
+		log.info("Polling Razorpay for validation status. valReqId={}, providerRefId={}", 
+				request.getValidationRequestId(), request.getProviderReferenceId());
+		long startTime = System.currentTimeMillis();
+		
 		String apiResponse = razorpayClient.fetchStatus(request.getProviderReferenceId());
-
+		
+		 long executionTime = System.currentTimeMillis() - startTime;
+		 	 
+	    log.info("Razorpay polling successful. valReqId={}, providerRefId={}, executionTime={}ms, status={}", 
+	    		request.getValidationRequestId(), request.getProviderReferenceId(), executionTime); // e.g. "completed" or "failed"
+	   
 		request.incrementPollAttempts();
 		request.updateLastStatusCheck();
 
@@ -62,10 +74,13 @@ public class RazorpayPollingService implements ProviderPollingService {
 
 		event.markPending();
 		event.setRetryCount(0);
+		
 		eventPersistence.save(event);
+		 log.info("raw api respponse is directly inserted into provider_validation_event DB call");
 		request.setLastStatusCheckAt(Instant.now());
 
 		validationPersistenceService.saveValidationEntity(request);
+		 log.info("validation request entity is updated wih lastStatusCheckAt "+request.getLastStatusCheckAt());
 	}
 
 }

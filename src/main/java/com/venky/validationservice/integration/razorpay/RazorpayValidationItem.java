@@ -1,5 +1,7 @@
 package com.venky.validationservice.integration.razorpay;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,4 +16,6 @@ public class RazorpayValidationItem {
 
     @JsonProperty("reference_id")
     private String referenceId;
+    
+    private Map<String, String> notes;
 }

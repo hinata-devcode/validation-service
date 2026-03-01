@@ -87,6 +87,7 @@ public class EventWorker {
 			// 2️⃣ Idempotency check
 			if (request.isTerminal()) {
 				event.markCompleted();
+				event.setValidationRequestId(request.getValidationRequestId());
 				eventPersistenceService.save(event);
 				return;
 			}
@@ -114,7 +115,7 @@ public class EventWorker {
 				eventPersistenceService.save(event);
 				
 				request.setLastStatusCheckAt(Instant.now());
-				validationPersistence.updateValidationEntity(request);
+				validationPersistence.saveValidationEntity(request);
 				return;
 			}
 
@@ -122,7 +123,7 @@ public class EventWorker {
 
 				request.markProviderFailed("PROVIDER_CANNOT_PROCESS_REQUEST");
 
-				validationPersistence.updateValidationEntity(request);
+				validationPersistence.saveValidationEntity(request);
 
 				providerValidationResultService.store(request.getValidationRequestId(), event.getProvider().name(),
 						providerResult.getProviderReferenceId(), providerResult);
@@ -143,7 +144,7 @@ public class EventWorker {
 
 			request.complete(validationStatus, confidenceLevel);
 
-			validationPersistence.updateValidationEntity(request);
+			validationPersistence.saveValidationEntity(request);
 			
 			event.markCompleted();
 			eventPersistenceService.save(event);

@@ -23,10 +23,12 @@ import com.venky.validationservice.integration.common.ValidationState;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/validation")
 @RequiredArgsConstructor
+@Slf4j
 public class ValidationController {
 
 	private final ValidationApplicationService validationService;
@@ -44,6 +46,9 @@ public class ValidationController {
 		  ValidationState validationState =
 		            new ValidationState(requestId);
 		// If we reach here, the data is safe and valid format.
+		  
+		  log.info("Received bank validation request. Assigned validationRequestId: {}", requestId);
+  
 		ValidationResponseDTO response = validationService.validateBankAccount(bankAccount,userDetails,validationState);
 		return ResponseEntity.ok(response);
 	}
@@ -57,6 +62,8 @@ public class ValidationController {
 		UserDetailsDTO userDetails = request.getUserDetails();
 
 		ValidationState validationState = new ValidationState(requestId);
+		
+		 log.info("Received vpa validation request. Assigned validationRequestId: {}", requestId);
 
 		ValidationResponseDTO response = validationService.validateVpa(vpaDetails, userDetails, validationState);
 		return ResponseEntity.ok(response);

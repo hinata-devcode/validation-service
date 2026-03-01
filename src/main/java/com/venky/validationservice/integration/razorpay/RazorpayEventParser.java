@@ -41,7 +41,7 @@ public class RazorpayEventParser implements ProviderEventParser{
                         .path("entity");
 
             if (entityNode.isMissingNode() || entityNode.isNull()) {
-                throw new NonRetryableProviderException("Invalid webhook structure: entity not found");
+                throw new NonRetryableProviderException("Invalid webhook structure: entity not found",Provider.RAZORPAY);
             }
 
             String favId = entityNode.path("id").asText();
@@ -112,12 +112,12 @@ public class RazorpayEventParser implements ProviderEventParser{
                     accountActive,
                     nameMatchScore,
                     registeredName,
-                    providerAccountStatus,
-                    bankDetailsJson
+                    bankDetailsJson,
+                    providerAccountStatus                   
             );
 
         } catch (Exception ex) {
-            throw new NonRetryableProviderException("Failed to parse Razorpay webhook", ex);
+            throw new NonRetryableProviderException("Failed to parse Razorpay webhook", ex,Provider.RAZORPAY);
         }
     }
 
@@ -188,7 +188,7 @@ public class RazorpayEventParser implements ProviderEventParser{
 					accountActive, nameMatchScore, registeredName, bankDetailsJson, providerAccountStatus);
 
 		} catch (Exception ex) {
-			throw new NonRetryableProviderException("Failed to parse Razorpay response", ex);
+			throw new NonRetryableProviderException("Failed to parse Razorpay response", ex,Provider.RAZORPAY);
 		}
 	}
 
@@ -207,7 +207,7 @@ public class RazorpayEventParser implements ProviderEventParser{
 		else if (RazorpayValidationStatus.COMPLETED.name().equalsIgnoreCase(status))
 			return ProviderValidationStatus.COMPLETED;
 
-		throw new NonRetryableProviderException("Unknown Razorpay status: " + status);
+		throw new NonRetryableProviderException("Unknown Razorpay status: " + status,Provider.RAZORPAY);
 	}
 
 }

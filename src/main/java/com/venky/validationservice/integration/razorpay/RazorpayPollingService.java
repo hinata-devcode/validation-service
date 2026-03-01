@@ -52,7 +52,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 
 		if (request.isPollingTimedOut(Duration.ofMinutes(30), maxPollingAttempts)) {
 			request.markProviderFailed("RETRIES_EXHAUSTED");
-			validationPersistenceService.updateValidationEntity(request);
+			validationPersistenceService.saveValidationEntity(request);
 			return;
 		}
 
@@ -65,7 +65,7 @@ public class RazorpayPollingService implements ProviderPollingService {
 		eventPersistence.save(event);
 		request.setLastStatusCheckAt(Instant.now());
 
-		validationPersistenceService.updateValidationEntity(request);
+		validationPersistenceService.saveValidationEntity(request);
 	}
 
 }

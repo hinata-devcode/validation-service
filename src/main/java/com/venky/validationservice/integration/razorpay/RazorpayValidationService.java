@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class RazorpayValidationService implements ProviderValidationPort {
 
@@ -62,10 +63,15 @@ public class RazorpayValidationService implements ProviderValidationPort {
 		try {
 			parsedResponse = objectMapper.readValue(rawJson, RazorpayResponse.class);
 		} catch (JsonProcessingException e) {
-			throw new NonRetryableProviderException("parsing exception",e);
+			  log.error("Failed to parse Razorpay response for validationRequestId: {}. Raw JSON: {}", validationState.getValidationRequestId(), rawJson, e);
+			throw new NonRetryableProviderException("parsing exception",e,Provider.RAZORPAY);
 		}
 
 		validationState.setProvider(Provider.RAZORPAY);
+		
+		log.info("Razorpay successfully created FAV for validationRequestId: {}. ProviderReferenceId (FAV ID): {}", 
+		          validationState.getValidationRequestId(), parsedResponse.getValidationId());
+		
 		validationState.setProviderReferenceId(parsedResponse.getValidationId());
 		
 		String favId = parsedResponse.getValidationId();
@@ -75,7 +81,7 @@ public class RazorpayValidationService implements ProviderValidationPort {
 
 		// this is for my DB
 		validationPersistenceService.updateValidationEventWithProvderDetails(validationState.getValidationRequestId(),
-				Provider.RAZORPAY.toString(), favId);
+				Provider.RAZORPAY, favId);
 
 		// this is for my domain layer/UI return state
 		validationState.markProcessing(Provider.RAZORPAY, favId);

@@ -1,6 +1,7 @@
 package com.venky.validationservice.persistence.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -11,12 +12,13 @@ import java.util.UUID;
 import com.venky.validationservice.exception.FailureOrigin;
 import com.venky.validationservice.exception.ValidationExecutionException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.razorpay.RzpRequestFactory;
 import com.venky.validationservice.persistence.entity.*;
 import com.venky.validationservice.persistence.repository.*;
 
 @Service
-@Transactional
+//@Transactional
 public class ValidationPersistenceService {
 
 	private final ValidationRequestRepository requestRepo;
@@ -36,7 +38,7 @@ public class ValidationPersistenceService {
 		return requestRepo.findByProviderReferenceId(providerReferenceId);
 	}
 
-	public void updateValidationEntity(ValidationRequestEntity request) {
+	public void saveValidationEntity(ValidationRequestEntity request) {
 		requestRepo.save(request);
 	}
 
@@ -45,36 +47,41 @@ public class ValidationPersistenceService {
 		return requestRepo.findRequestsForPolling(processing, threshold);
 	}
 	 
-	public int markInProcessingIfInitiated(UUID id) {
-		return requestRepo.markInProcessingIfInitiated(id);
+	public int markInProcessingIfInitiated(UUID id, Instant callInitiatedAt) {
+		return requestRepo.markInProcessingIfInitiated(id,callInitiatedAt);
 	}
 
 	@Transactional(readOnly = true)
 	public Optional<ValidationRequestEntity> findByValidationRequestId(UUID validationRequestId) {
-		// TODO Auto-generated method stub
 		return requestRepo.findById(validationRequestId);
 	}
 	
-	public void markValidationRequestFailed(ValidationRequestEntity validationRequestEntity,
-			FailureOrigin failureOrigin,String message) {
+	public void markValidationRequestFailed(UUID validationRequestID,
+			FailureOrigin failureOrigin,String message,Provider provider) {
+			
+		var requestEntity= getValidationRequest(validationRequestID);
+		
+		if(provider != null)
+		requestEntity.setProvider(provider);
+		
 		if (failureOrigin.equals(FailureOrigin.INTERNAL_SYSTEM))
-			validationRequestEntity.markValidationFailure(message);
+			requestEntity.markValidationFailure(message);
 		else
-			validationRequestEntity.markProviderFailed(message);
+			requestEntity.markProviderFailed(message);
 
-		requestRepo.save(validationRequestEntity);
+		requestRepo.save(requestEntity);
 	}
 	
 	public List<Object[]> countPendingEvents(List<UUID> requestIds){
 		return requestRepo.countPendingEvents(requestIds);
 	}
 
-	public void markProviderCallTimeout(ValidationRequestEntity validationRequestEntity) {
-		validationRequestEntity.setExecutionStatus(ExecutionStatus.PROVIDER_CALL_TIMEOUT);
-		requestRepo.save(validationRequestEntity);
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void markProviderCallTimeout(UUID validationRequestID, Provider provider) {
+		requestRepo.updateExecutionStatus(validationRequestID,ExecutionStatus.PROVIDER_CALL_TIMEOUT,provider);
 	}
 
-	public void updateValidationEventWithProvderDetails(UUID validationRequestId, String provider, String providerReferenceId) {
+	public void updateValidationEventWithProvderDetails(UUID validationRequestId, Provider provider, String providerReferenceId) {
 		ValidationRequestEntity entity = requestRepo.findById(validationRequestId)
 				.orElseThrow(() -> new ValidationExecutionException("Validation request ID not found" + validationRequestId,
 						FailureOrigin.INTERNAL_SYSTEM));
@@ -87,5 +94,12 @@ public class ValidationPersistenceService {
 		requestRepo.save(entity);
 	}
 
+	private ValidationRequestEntity getValidationRequest(UUID uuid) {
+		Optional<ValidationRequestEntity> optRequestEntity = findByValidationRequestId(uuid);
+		if(optRequestEntity.isEmpty())
+			throw new IllegalStateException("validation_request_id is not present in DB ");
+		return optRequestEntity.get();
+	}
+	
 	
 }

@@ -1,5 +1,7 @@
 package com.venky.validationservice.integration.razorpay;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,5 +24,7 @@ public class RazorpayExternalRequest {
     
     @JsonProperty("fund_account")
     private FundAccount fundAccount;
+    
+    private Map<String, String> notes;
    
 }

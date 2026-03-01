@@ -61,7 +61,7 @@ public class PollingScheduler {
 				continue; // Skip — event already pending
 			}
 
-			Provider provider = Provider.valueOf(request.getProvider());
+			Provider provider =request.getProvider();
 
 			ProviderPollingService pollingService = pollingServiceMap.get(provider);
 

@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 
 public interface ValidationRequestRepository
@@ -45,11 +46,12 @@ public interface ValidationRequestRepository
 	@Modifying
 	@Query("""
 	UPDATE ValidationRequestEntity v
-	SET v.executionStatus = 'PROCESSING'
+	SET v.executionStatus = 'PROCESSING',
+	    v.providerCallInitiatedAt= :now
 	WHERE v.validationRequestId = :id
 	  AND v.executionStatus = 'INITIATED'
 	""")
-	int markInProcessingIfInitiated(@Param("id") UUID id);
+	int markInProcessingIfInitiated(@Param("id") UUID id, @Param("now") Instant now);
 		
 	@Query("""
 		       SELECT vr
@@ -84,5 +86,14 @@ public interface ValidationRequestRepository
 			    @Param("maxAttempts") int maxAttempts,
 			    Pageable pageable 
 			);
+		
+		@Modifying
+	    @Query("""
+	        UPDATE ValidationRequestEntity v 
+	        SET v.executionStatus = :status,
+	            v.provider = :provider
+	        WHERE v.validationRequestId = :id
+	    """)
+	    int updateExecutionStatus(@Param("id") UUID id, @Param("status") ExecutionStatus status, @Param("provider")  Provider provider);
 
 	}

@@ -13,6 +13,7 @@ import com.venky.validationservice.domain.model.ValidationStatus;
 import com.venky.validationservice.exception.FailureOrigin;
 import com.venky.validationservice.exception.NonRetryableProviderException;
 import com.venky.validationservice.integration.common.ExecutionStatus;
+import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.service.UUIDCharConverter;
 
 @Entity
@@ -23,8 +24,9 @@ public class ValidationRequestEntity {
 	@Column(name = "validation_request_id", columnDefinition = "CHAR(36)",nullable = false,updatable =false)
 	private UUID validationRequestId;
 
+	@Enumerated(EnumType.STRING)
     @Column(name = "provider")
-    private String provider;
+    private Provider provider;
 
     @Column(name = "provider_reference_id")
     private String providerReferenceId;
@@ -76,7 +78,7 @@ public class ValidationRequestEntity {
         this.lastStatusCheckAt=Instant.now();
     }
 
-	public void setProvider(String provider) {
+	public void setProvider(Provider provider) {
 		this.provider=provider;
 	}
 
@@ -100,7 +102,7 @@ public class ValidationRequestEntity {
 
 		if (this.executionStatus != ExecutionStatus.PROCESSING) {
 		    throw new NonRetryableProviderException(
-		        "Validation already processed: " + this.executionStatus
+		        "Validation already processed: " + this.executionStatus,provider
 		    );
 		}
 
@@ -110,7 +112,7 @@ public class ValidationRequestEntity {
 		this.updatedAt = Instant.now();
 	}
 
-	public String getProvider() {
+	public Provider getProvider() {
 		return provider;
 	}
 

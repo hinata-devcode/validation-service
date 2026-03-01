@@ -149,5 +149,9 @@ public class ProviderValidationEventEntity {
 		this.retryCount=retry;
 	}
 
+	public void setValidationRequestId(UUID validationRequestId) {
+		this.validationRequestId = validationRequestId;
+	}
+	
 
 }

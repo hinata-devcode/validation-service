@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.repository.ValidationRequestRepository;
 
@@ -47,16 +48,16 @@ public class ReconciliationScheduler {
         }
 
         // Convert List of handlers to a Map for O(1) lookup
-        Map<String, ProviderReconciliationHandler> handlerMap = handlers.stream()
+        Map<Provider, ProviderReconciliationHandler> handlerMap = handlers.stream()
             .collect(Collectors.toMap(ProviderReconciliationHandler::getProvider, h -> h));
 
         // Group the stuck requests by Provider (e.g., all "RAZORPAY" requests together) 
         //using enums so RAZORPAY will be same for ProviderReconciliationHandler & ValidationRequestEntity
-        Map<String, List<ValidationRequestEntity>> requestsByProvider = stuckRequests.stream()
+        Map<Provider, List<ValidationRequestEntity>> requestsByProvider = stuckRequests.stream()
             .collect(Collectors.groupingBy(ValidationRequestEntity::getProvider));
 
         // Pass the batched lists to their respective handlers
-        for (Map.Entry<String, List<ValidationRequestEntity>> entry : requestsByProvider.entrySet()) {
+        for (Map.Entry<Provider, List<ValidationRequestEntity>> entry : requestsByProvider.entrySet()) {
             try {
                 ProviderReconciliationHandler handler = handlerMap.get(entry.getKey());
                 if (handler != null) {

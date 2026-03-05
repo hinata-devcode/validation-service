@@ -8,11 +8,16 @@ public class ValidationState {
     private Provider provider;
     private String providerReferenceId;
     private ExecutionStatus executionStatus;
+    private final String incomingHash;
+    private final String idempotencyKey;
 
-    public ValidationState(UUID requestId) {
+    public ValidationState(UUID requestId, String incomingHash, String idempotencyKey) {
         this.validationRequestId = requestId;
+		this.incomingHash = incomingHash;
+		this.idempotencyKey = idempotencyKey;
         this.setExecutionStatus(ExecutionStatus.INITIATED);
     }
+
 
 	public UUID getValidationRequestId() {
 		return validationRequestId;
@@ -40,6 +45,14 @@ public class ValidationState {
 
 	public void setExecutionStatus(ExecutionStatus executionStatus) {
 		this.executionStatus = executionStatus;
+	}
+
+	public String getIncomingHash() {
+		return incomingHash;
+	}
+
+	public String getIdempotencyKey() {
+		return idempotencyKey;
 	}
 
 	public void markProcessing(Provider provider, String favId) {

@@ -11,7 +11,6 @@ import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.exception.*;
 import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.Provider;
-import com.venky.validationservice.integration.common.ValidationExecutionResult;
 import com.venky.validationservice.integration.common.ValidationState;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
@@ -50,7 +49,7 @@ public class RazorpayValidationService implements ProviderValidationPort {
 	}
 
 	@Override
-	public ValidationExecutionResult validate(FundAccountDetails details, ValidationState validationState) {
+	public void validate(FundAccountDetails details, ValidationState validationState) {
 
 		Contact contact=accountDetailsFactory.createContactDetails(details);
 		FundAccount fundAccount = accountDetailsFactory.createFundAccountDetails(details,contact);
@@ -86,6 +85,5 @@ public class RazorpayValidationService implements ProviderValidationPort {
 		// this is for my domain layer/UI return state
 		validationState.markProcessing(Provider.RAZORPAY, favId);
 
-		return new ValidationExecutionResult(validationState, Optional.empty());
 	}
 }

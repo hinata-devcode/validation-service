@@ -1,5 +1,6 @@
 package com.venky.validationservice.persistence.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class ProviderValidationResultService {
 				providerReferenceId, result);
 		
 		repo.save(entity);
+	}
+	
+	public Optional<ProviderValidationResultEntity> findProviderDetailsById(UUID validationRequestId) {
+		return repo.findById(validationRequestId);
 	}
 }
 

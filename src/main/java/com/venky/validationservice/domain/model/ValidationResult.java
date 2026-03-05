@@ -11,11 +11,7 @@ public class ValidationResult {
 
 	private final ValidationStatus status;
 	private final ConfidenceLevel confidenceLevel;
-
-	private ValidationResult(ValidationStatus status, ConfidenceLevel confidenceLevel) {
-		this.status = status;
-		this.confidenceLevel = confidenceLevel;
-	}
+	 private final ProviderDetails providerDetails; 
 
 
 }

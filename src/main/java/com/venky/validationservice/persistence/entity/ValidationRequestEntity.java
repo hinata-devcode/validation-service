@@ -23,6 +23,12 @@ public class ValidationRequestEntity {
 	@Id
 	@Column(name = "validation_request_id", columnDefinition = "CHAR(36)",nullable = false,updatable =false)
 	private UUID validationRequestId;
+	
+	 @Column(name = "idempotency_key", unique = true, nullable = false, length = 36)
+	private String idempotencyKey;
+	 
+	@Column(name="payload_hash",length=64,nullable=false,updatable=false)
+	private String payloadHash;
 
 	@Enumerated(EnumType.STRING)
     @Column(name = "provider")
@@ -70,12 +76,14 @@ public class ValidationRequestEntity {
 
     protected ValidationRequestEntity() {}
 
-    public ValidationRequestEntity(UUID id, ExecutionStatus executionStatus) {
+    public ValidationRequestEntity(UUID id, ExecutionStatus executionStatus, String idempotency, String incomingHash) {
         this.validationRequestId=id;
         this.executionStatus = executionStatus;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.lastStatusCheckAt=Instant.now();
+        this.idempotencyKey=idempotency;
+        this.payloadHash=incomingHash;
     }
 
 	public void setProvider(Provider provider) {
@@ -217,6 +225,22 @@ public class ValidationRequestEntity {
 	 public int getPollAttempts() {
 			return pollAttempts;
 		}
+
+	 public String getIdempotencyKey() {
+		return idempotencyKey;
+	 }
+
+	 public void setIdempotencyKey(String idempotencyKey) {
+		this.idempotencyKey = idempotencyKey;
+	 }
+
+	 public String getPayloadHash() {
+		return payloadHash;
+	 }
+
+	 public void setPayloadHash(String payloadHash) {
+		this.payloadHash = payloadHash;
+	 }
 
 
 }

@@ -27,8 +27,8 @@ public class ValidationPersistenceService {
 		this.requestRepo = requestRepo;
 	}
 
-	public ValidationRequestEntity createValidationRequest(UUID requestId) {
-		ValidationRequestEntity entity = new ValidationRequestEntity(requestId, ExecutionStatus.INITIATED);
+	public ValidationRequestEntity createValidationRequest(UUID requestId, String rawPayload, String incomingHash) {
+		ValidationRequestEntity entity = new ValidationRequestEntity(requestId, ExecutionStatus.INITIATED,rawPayload,incomingHash);
 		requestRepo.save(entity);
 		return entity;
 	}
@@ -99,6 +99,10 @@ public class ValidationPersistenceService {
 		if(optRequestEntity.isEmpty())
 			throw new IllegalStateException("validation_request_id is not present in DB ");
 		return optRequestEntity.get();
+	}
+
+	public Optional<ValidationRequestEntity> findByIdempotencyKey(String idempotencyKey) {
+		return requestRepo.findByIdempotencyKey(idempotencyKey);
 	}
 	
 	

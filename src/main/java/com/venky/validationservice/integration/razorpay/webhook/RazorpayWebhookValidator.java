@@ -14,12 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RazorpayWebhookValidator {
 
-    private final String webhookSecret;
-
-    public RazorpayWebhookValidator(
-            @Value("${WEBHOOK_SECRET}") String webhookSecret) {
-        this.webhookSecret = webhookSecret;
-    }
+	 @Value("${razorpay.webhook-secret}")
+    private String webhookSecret;
 
     public void validate(byte[] rawBody, String receivedSignature) {
         String expectedSignature = computeHmacSha256(rawBody, webhookSecret);

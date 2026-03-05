@@ -96,4 +96,6 @@ public interface ValidationRequestRepository
 	    """)
 	    int updateExecutionStatus(@Param("id") UUID id, @Param("status") ExecutionStatus status, @Param("provider")  Provider provider);
 
+		
+		 Optional<ValidationRequestEntity> findByIdempotencyKey(String idempotencyKey);
 	}

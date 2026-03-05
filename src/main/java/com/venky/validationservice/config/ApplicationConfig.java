@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -19,5 +20,10 @@ public class ApplicationConfig {
 				.setReadTimeout(Duration.ofMillis(5000))
 				.build();
 	}
+	
+	 @Bean
+	    public AntPathMatcher antPathMatcherz() {
+	    	return new AntPathMatcher();
+	    }
 
 }

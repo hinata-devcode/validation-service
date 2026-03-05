@@ -86,13 +86,8 @@ public class ValidationApplicationService {
 	        log.info("Initiating bank account validation. valReqId={}, ifsc={}", 
 	        	    validationState.getValidationRequestId(), fundAccountdetails.getIfsc()); 
 	        
-	        domainService.validate(fundAccountdetails, validationState);
-	        
-	        return ValidationResponseDTO.builder()
-	                .validationRequestId(validationState.getValidationRequestId()) 
-	                .executionStatus(validationState.getExecutionStatus())
-	                .message("Validation initiated. Please poll for status.")
-	                .build();
+	      return  domainService.validate(fundAccountdetails, validationState);
+	            
 	    }
 
 	public ValidationResponseDTO validateVpa(@Valid VpaRequestDTO vpaDto, @Valid UserDetailsDTO userDto, String idempotencyKey) {
@@ -127,7 +122,7 @@ public class ValidationApplicationService {
 		  ValidationState validationState =
 		            new ValidationState(requestId,incomingHash,idempotencyKey);
 		  
-		  log.info("Received bank validation request. Assigned validationRequestId: {}", requestId);
+		  log.info("Received vpa validation request. Assigned validationRequestId: {}", requestId);
 		  	
 		 FundAccountDetails fundAccountdetails = FundAccountDetails.builder()
 	                .beneficiaryName(userDto.getName())
@@ -138,13 +133,8 @@ public class ValidationApplicationService {
 
 		 log.info("Initiating VPA validation. valReqId={}",  validationState.getValidationRequestId()); 
 		 
-		 domainService.validate(fundAccountdetails, validationState);
-		 
-		 return ValidationResponseDTO.builder()
-	                .validationRequestId(validationState.getValidationRequestId()) 
-	                .executionStatus(validationState.getExecutionStatus()) 
-	                .message("Validation initiated. Please poll for status.")
-	                .build();
+		return domainService.validate(fundAccountdetails, validationState);
+		 	
 	}
 
 	public ValidationQueryResponse getValidation(UUID validationRequestId) {

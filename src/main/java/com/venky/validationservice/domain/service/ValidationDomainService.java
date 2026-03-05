@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.venky.validationservice.application.ValidationResponseDTO;
+import com.venky.validationservice.asyncWorker.ProviderAsyncWorker;
 import com.venky.validationservice.domain.model.FundAccountDetails;
 import com.venky.validationservice.domain.model.ProviderDetails;
 import com.venky.validationservice.domain.model.ValidationQueryResponse;
@@ -27,24 +29,25 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ValidationDomainService {
 
-	private final ProviderValidationPort providerPort;
+	private final ProviderAsyncWorker providerAsyncWorker;
 	private final ValidationPersistenceService validationPersistenceService;
 	private final ProviderValidationResultService providerResultService;
 	private ValidationRequestEntity validationRequestEntity;
+	
 
-	public ValidationDomainService(ProviderValidationPort providerPort, ValidationPersistenceService validationPersistenceService, ProviderValidationResultService providerResultService) {
-		this.providerPort = providerPort;
+	public ValidationDomainService(ProviderAsyncWorker providerAsyncWorker, ValidationPersistenceService validationPersistenceService, ProviderValidationResultService providerResultService) {
+		this.providerAsyncWorker = providerAsyncWorker;
 		this.validationPersistenceService = validationPersistenceService;
 		this.providerResultService = providerResultService;
 	}
 
-	public void validate(FundAccountDetails details, ValidationState validationState) {
+	public ValidationResponseDTO validate(FundAccountDetails details, ValidationState validationState) {
 		try {
 
 			// Call provider
-
-			validationRequestEntity = validationPersistenceService
-					.createValidationRequest(validationState.getValidationRequestId(),validationState.getIdempotencyKey(),validationState.getIncomingHash());
+			validationRequestEntity = validationPersistenceService.createValidationRequest(
+					validationState.getValidationRequestId(), validationState.getIdempotencyKey(),
+					validationState.getIncomingHash(),providerAsyncWorker.getActiveProvider());
 
 			Instant callInitiatedAt = Instant.now();
 
@@ -61,33 +64,41 @@ public class ValidationDomainService {
 
 			log.info("Successfully locked validationRequestId: {} for processing. Initiating provider call.",
 					validationState.getValidationRequestId());
-			
+
 			validationState.setExecutionStatus(ExecutionStatus.PROCESSING);
 
-			providerPort.validate(details, validationState);
+			providerAsyncWorker.executeProviderValidation(details, validationState);
+
+			return ValidationResponseDTO.builder().validationRequestId(validationState.getValidationRequestId())
+					.executionStatus(validationState.getExecutionStatus())
+					.message("Validation initiated. Please poll for status.").build();
 		}
 
-		catch (ProviderCallTimeoutException ex) {
-			var provider = ex.getProvider();
-			log.warn("Provider call timed out for validationRequestId: {}, Provider: {}",
-					validationRequestEntity.getValidationRequestId(), provider, ex);
-			validationPersistenceService.markProviderCallTimeout(validationRequestEntity.getValidationRequestId(),
-					provider);
-			throw new ValidationExecutionException("Provider call uncertain", FailureOrigin.EXTERNAL_PROVIDER, ex, validationRequestEntity.getValidationRequestId());
-		} catch (ThirdpartyProviderException ex) {
-			log.error("Provider rejected validationRequestId: {}. Provider: {}",
-					validationRequestEntity.getValidationRequestId(), ex.getProvider(), ex);
-			validationPersistenceService.markValidationRequestFailed(validationRequestEntity.getValidationRequestId(),
-					FailureOrigin.EXTERNAL_PROVIDER, "PROVIDER_ERROR", ex.getProvider());
-			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
-					ex,validationRequestEntity.getValidationRequestId());
+//		catch (ProviderCallTimeoutException ex) {
+//			var provider = ex.getProvider();
+//			log.warn("Provider call timed out for validationRequestId: {}, Provider: {}",
+//					validationRequestEntity.getValidationRequestId(), provider, ex);
+//			validationPersistenceService.markProviderCallTimeout(validationRequestEntity.getValidationRequestId(),
+//					provider);
+//			throw new ValidationExecutionException("Provider call uncertain", FailureOrigin.EXTERNAL_PROVIDER, ex, validationRequestEntity.getValidationRequestId());
+//		}
+//		catch (ThirdpartyProviderException ex) {
+//			log.error("Provider rejected validationRequestId: {}. Provider: {}",
+//					validationRequestEntity.getValidationRequestId(), ex.getProvider(), ex);
+//			validationPersistenceService.markValidationRequestFailed(validationRequestEntity.getValidationRequestId(),
+//					FailureOrigin.EXTERNAL_PROVIDER, "PROVIDER_ERROR", ex.getProvider());
+//			throw new ValidationExecutionException("Validation could not be initiated", FailureOrigin.EXTERNAL_PROVIDER,
+//					ex,validationRequestEntity.getValidationRequestId());
+//
+//		} 
 
-		} catch (RuntimeException ex) {
+		catch (RuntimeException ex) {
 			log.error("Internal validation error for validationRequestId: {}",
 					validationRequestEntity.getValidationRequestId(), ex);
 			validationPersistenceService.markValidationRequestFailed(validationRequestEntity.getValidationRequestId(),
 					FailureOrigin.INTERNAL_SYSTEM, "INTERNAL_ERROR", validationRequestEntity.getProvider());
-			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex,validationRequestEntity.getValidationRequestId());
+			throw new ValidationExecutionException("Internal validation error", FailureOrigin.INTERNAL_SYSTEM, ex,
+					validationRequestEntity.getValidationRequestId());
 		}
 	}
 

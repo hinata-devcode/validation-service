@@ -1,585 +1,406 @@
-2026-03-05 00:45:00.358 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 4208 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:45:00.368 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:45:02.090 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:45:02.215 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 110 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:48:13.064 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 28084 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:48:13.067 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:48:14.055 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:48:14.163 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 100 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:48:15.160 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:48:15.182 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:48:15.182 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:48:15.275 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:48:15.275 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2156 ms
-2026-03-05 00:48:15.717 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:48:16.255 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1186374c
-2026-03-05 00:48:16.258 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:48:16.379 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:48:16.548 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 11 migrations (execution time 00:00.084s)
-2026-03-05 00:48:16.572 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
-2026-03-05 00:48:16.590 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema `validation_service` to version "11 - add idempotency and hash"
-2026-03-05 00:48:16.790 [main] ERROR o.f.core.internal.command.DbMigrate - Migration of schema `validation_service` to version "11 - add idempotency and hash" failed! Please restore backups and roll back database and code!
-2026-03-05 00:48:16.820 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Migration V11__add_idempotency_and_hash.sql failed
---------------------------------------------------
-SQL State  : 23000
-Error Code : 1062
-Message    : Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-Location   : db/migration/V11__add_idempotency_and_hash.sql (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes\db\migration\V11__add_idempotency_and_hash.sql)
-Line       : 5
-Statement  : ALTER TABLE validation_request 
-ADD CONSTRAINT uk_validation_request_idempotency UNIQUE (idempotency_key)
-
-2026-03-05 00:48:16.821 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 00:48:16.851 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-03-05 00:48:16.853 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2026-03-05 00:48:16.871 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-03-05 00:48:16.903 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Migration V11__add_idempotency_and_hash.sql failed
---------------------------------------------------
-SQL State  : 23000
-Error Code : 1062
-Message    : Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-Location   : db/migration/V11__add_idempotency_and_hash.sql (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes\db\migration\V11__add_idempotency_and_hash.sql)
-Line       : 5
-Statement  : ALTER TABLE validation_request 
-ADD CONSTRAINT uk_validation_request_idempotency UNIQUE (idempotency_key)
-
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
-	at com.venky.validationservice.ValidationserviceApplication.main(ValidationserviceApplication.java:12)
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Migration V11__add_idempotency_and_hash.sql failed
---------------------------------------------------
-SQL State  : 23000
-Error Code : 1062
-Message    : Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-Location   : db/migration/V11__add_idempotency_and_hash.sql (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes\db\migration\V11__add_idempotency_and_hash.sql)
-Line       : 5
-Statement  : ALTER TABLE validation_request 
-ADD CONSTRAINT uk_validation_request_idempotency UNIQUE (idempotency_key)
-
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.internal.command.DbMigrate$FlywayMigrateException: Migration V11__add_idempotency_and_hash.sql failed
---------------------------------------------------
-SQL State  : 23000
-Error Code : 1062
-Message    : Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-Location   : db/migration/V11__add_idempotency_and_hash.sql (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes\db\migration\V11__add_idempotency_and_hash.sql)
-Line       : 5
-Statement  : ALTER TABLE validation_request 
-ADD CONSTRAINT uk_validation_request_idempotency UNIQUE (idempotency_key)
-
-	at org.flywaydb.core.internal.command.DbMigrate.doMigrateGroup(DbMigrate.java:382)
-	at org.flywaydb.core.internal.command.DbMigrate.lambda$applyMigrations$1(DbMigrate.java:272)
-	at org.flywaydb.core.internal.jdbc.TransactionalExecutionTemplate.execute(TransactionalExecutionTemplate.java:55)
-	at org.flywaydb.core.internal.command.DbMigrate.applyMigrations(DbMigrate.java:271)
-	at org.flywaydb.core.internal.command.DbMigrate.migrateGroup(DbMigrate.java:244)
-	at org.flywaydb.core.internal.command.DbMigrate.lambda$migrateAll$0(DbMigrate.java:139)
-	at org.flywaydb.database.mysql.MySQLNamedLockTemplate.execute(MySQLNamedLockTemplate.java:58)
-	at org.flywaydb.database.mysql.MySQLConnection.lock(MySQLConnection.java:150)
-	at org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory.lock(JdbcTableSchemaHistory.java:145)
-	at org.flywaydb.core.internal.command.DbMigrate.migrateAll(DbMigrate.java:139)
-	at org.flywaydb.core.internal.command.DbMigrate.migrate(DbMigrate.java:97)
-	at org.flywaydb.core.Flyway.lambda$migrate$0(Flyway.java:202)
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:205)
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147)
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
-	... 17 common frames omitted
-Caused by: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Migration V11__add_idempotency_and_hash.sql failed
---------------------------------------------------
-SQL State  : 23000
-Error Code : 1062
-Message    : Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-Location   : db/migration/V11__add_idempotency_and_hash.sql (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes\db\migration\V11__add_idempotency_and_hash.sql)
-Line       : 5
-Statement  : ALTER TABLE validation_request 
-ADD CONSTRAINT uk_validation_request_idempotency UNIQUE (idempotency_key)
-
-	at org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor.handleException(DefaultSqlScriptExecutor.java:252)
-	at org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor.executeStatement(DefaultSqlScriptExecutor.java:214)
-	at org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor.execute(DefaultSqlScriptExecutor.java:133)
-	at org.flywaydb.core.internal.resolver.sql.SqlMigrationExecutor.executeOnce(SqlMigrationExecutor.java:65)
-	at org.flywaydb.core.internal.resolver.sql.SqlMigrationExecutor.lambda$execute$0(SqlMigrationExecutor.java:57)
-	at org.flywaydb.core.internal.database.DefaultExecutionStrategy.execute(DefaultExecutionStrategy.java:27)
-	at org.flywaydb.core.internal.resolver.sql.SqlMigrationExecutor.execute(SqlMigrationExecutor.java:56)
-	at org.flywaydb.core.internal.command.DbMigrate.doMigrateGroup(DbMigrate.java:374)
-	... 33 common frames omitted
-Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '' for key 'validation_request.uk_validation_request_idempotency'
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:118)
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
-	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:770)
-	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:653)
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
-	at org.flywaydb.core.internal.jdbc.JdbcTemplate.executeStatement(JdbcTemplate.java:210)
-	at org.flywaydb.core.internal.sqlscript.ParsedSqlStatement.execute(ParsedSqlStatement.java:89)
-	at org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor.executeStatement(DefaultSqlScriptExecutor.java:206)
-	... 39 common frames omitted
-2026-03-05 00:50:41.272 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 28708 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:50:41.275 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:50:42.137 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:50:42.227 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 80 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:50:42.951 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:50:42.965 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:50:42.965 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:50:43.027 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:50:43.027 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1706 ms
-2026-03-05 00:50:43.298 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:50:43.592 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@21090c88
-2026-03-05 00:50:43.594 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:50:43.662 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:50:43.776 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-2026-03-05 00:50:43.777 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 00:50:43.835 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-03-05 00:50:43.837 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2026-03-05 00:50:43.849 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-03-05 00:50:43.866 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
-	at com.venky.validationservice.ValidationserviceApplication.main(ValidationserviceApplication.java:12)
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.api.exception.FlywayValidateException: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.flywaydb.core.Flyway.lambda$migrate$0(Flyway.java:160)
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:205)
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147)
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
-	... 17 common frames omitted
-2026-03-05 00:52:05.216 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 26980 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:52:05.219 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:52:06.138 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:52:06.224 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 78 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:52:06.978 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:52:06.990 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:52:06.991 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:52:07.060 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:52:07.060 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1796 ms
-2026-03-05 00:52:07.326 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:52:07.599 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@456aa471
-2026-03-05 00:52:07.600 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:52:07.656 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:52:07.753 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-2026-03-05 00:52:07.754 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 00:52:07.774 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-03-05 00:52:07.776 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2026-03-05 00:52:07.787 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-03-05 00:52:07.803 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
-	at com.venky.validationservice.ValidationserviceApplication.main(ValidationserviceApplication.java:12)
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.api.exception.FlywayValidateException: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.flywaydb.core.Flyway.lambda$migrate$0(Flyway.java:160)
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:205)
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147)
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
-	... 17 common frames omitted
-2026-03-05 00:52:53.700 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 10364 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:52:53.703 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:52:54.595 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:52:54.687 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 83 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:52:55.428 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:52:55.441 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:52:55.442 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:52:55.502 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:52:55.503 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1749 ms
-2026-03-05 00:52:55.770 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:52:56.050 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3ef2b8e5
-2026-03-05 00:52:56.052 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:52:56.141 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:52:56.248 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-2026-03-05 00:52:56.249 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 00:52:56.278 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-03-05 00:52:56.281 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2026-03-05 00:52:56.293 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-03-05 00:52:56.311 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
-	at com.venky.validationservice.ValidationserviceApplication.main(ValidationserviceApplication.java:12)
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.api.exception.FlywayValidateException: Validate failed: Migrations have failed validation
-Detected failed migration to version 11 (add idempotency and hash).
-Please remove any half-completed changes then run repair to fix the schema history.
-Need more flexibility with validation rules? Learn more: https://rd.gt/3AbJUZE
-	at org.flywaydb.core.Flyway.lambda$migrate$0(Flyway.java:160)
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:205)
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147)
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
-	... 17 common frames omitted
-2026-03-05 00:53:51.079 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 16180 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:53:51.082 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:53:51.977 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:53:52.074 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 87 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:53:52.790 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:53:52.803 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:53:52.803 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:53:52.863 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:53:52.863 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1726 ms
-2026-03-05 00:53:53.134 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:53:53.410 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4276ad40
-2026-03-05 00:53:53.412 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:53:53.480 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:53:53.566 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.047s)
-2026-03-05 00:53:53.585 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
-2026-03-05 00:53:53.592 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
-2026-03-05 00:53:53.720 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-03-05 00:53:53.822 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-03-05 00:53:53.875 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2026-03-05 00:53:54.358 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-05 00:53:54.446 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-03-05 00:53:54.483 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 00:53:54.832 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 00:53:55.774 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-05 00:53:55.831 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 00:53:56.186 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-05 00:53:57.398 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-03-05 00:53:57.452 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-05 00:53:58.234 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2026-03-05 00:53:58.244 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 7.589 seconds (process running for 8.579)
-2026-03-05 00:54:07.305 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-05 00:54:07.305 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-03-05 00:54:07.307 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2026-03-05 00:54:07.339 [http-nio-8080-exec-1] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /api/v1/validation/vpa
-2026-03-05 00:54:23.483 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingRequestHeaderException: Required request header 'Idempotency-Key' for method parameter type String is not present]
-2026-03-05 00:56:20.223 [RMI TCP Connection(12)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
-2026-03-05 00:56:20.530 [RMI TCP Connection(12)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 00:56:20.533 [RMI TCP Connection(12)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 00:56:20.544 [RMI TCP Connection(12)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-03-05 00:56:26.167 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 29584 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 00:56:26.170 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 00:56:27.299 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 00:56:27.409 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 100 ms. Found 4 JPA repository interfaces.
-2026-03-05 00:56:28.370 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 00:56:28.389 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 00:56:28.389 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 00:56:28.473 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 00:56:28.473 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2247 ms
-2026-03-05 00:56:28.857 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 00:56:29.325 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4f8659d0
-2026-03-05 00:56:29.329 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 00:56:29.389 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 00:56:29.492 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.058s)
-2026-03-05 00:56:29.517 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
-2026-03-05 00:56:29.522 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
-2026-03-05 00:56:29.739 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-03-05 00:56:29.970 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-03-05 00:56:30.094 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2026-03-05 00:56:31.157 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-05 00:56:31.281 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-03-05 00:56:31.329 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 00:56:31.829 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 00:56:32.983 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-05 00:56:33.042 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 00:56:33.404 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-05 00:56:34.599 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-03-05 00:56:34.665 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-05 00:56:35.406 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2026-03-05 00:56:35.420 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 9.788 seconds (process running for 11.18)
-2026-03-05 00:56:47.530 [http-nio-8080-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-05 00:56:47.531 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-03-05 00:56:47.533 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2026-03-05 00:56:47.660 [http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingRequestHeaderException: Required request header 'Idempotency-Key' for method parameter type String is not present]
-2026-03-05 00:57:02.868 [http-nio-8080-exec-4] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingRequestHeaderException: Required request header 'Idempotency-Key' for method parameter type String is not present]
-2026-03-05 01:01:53.263 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 2636 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 01:01:53.266 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 01:01:54.357 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 01:01:54.469 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 101 ms. Found 4 JPA repository interfaces.
-2026-03-05 01:01:55.489 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 01:01:55.510 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 01:01:55.511 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 01:01:55.596 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 01:01:55.597 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2271 ms
-2026-03-05 01:01:55.961 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 01:01:56.444 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1182d1df
-2026-03-05 01:01:56.447 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 01:01:56.544 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 01:01:56.705 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.075s)
-2026-03-05 01:01:56.730 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
-2026-03-05 01:01:56.736 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
-2026-03-05 01:01:56.865 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-03-05 01:01:56.983 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-03-05 01:01:57.054 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2026-03-05 01:01:57.624 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-05 01:01:57.748 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-03-05 01:01:57.792 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 01:01:58.225 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 01:01:59.281 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-05 01:01:59.347 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 01:01:59.706 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-05 01:02:01.089 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-03-05 01:02:01.201 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-05 01:02:01.988 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2026-03-05 01:02:02.003 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 9.326 seconds (process running for 10.733)
-2026-03-05 01:02:05.043 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-05 01:02:05.044 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-03-05 01:02:05.046 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2026-03-05 01:02:05.190 [http-nio-8080-exec-1] WARN  c.v.v.e.GlobalExceptionHandler - Bad Request: Required HTTP header is missing: Idempotency-Key
-2026-03-05 01:02:42.816 [http-nio-8080-exec-2] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 46d016eb-4f17-4e01-b2a5-ddfcad989ad6
-2026-03-05 01:02:42.819 [http-nio-8080-exec-2] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6
-2026-03-05 01:02:43.373 [http-nio-8080-exec-2] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 46d016eb-4f17-4e01-b2a5-ddfcad989ad6 for processing. Initiating provider call.
-2026-03-05 01:02:47.541 [http-nio-8080-exec-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 4137ms
-2026-03-05 01:02:47.542 [http-nio-8080-exec-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 4140ms
-2026-03-05 01:02:47.584 [http-nio-8080-exec-2] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 46d016eb-4f17-4e01-b2a5-ddfcad989ad6. ProviderReferenceId (FAV ID): fav_SNGVFqU4gsvFUV
-2026-03-05 01:02:47.781 [http-nio-8080-exec-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 4407ms
-2026-03-05 01:02:47.782 [http-nio-8080-exec-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationApplicationService.validateVpa() took 5085ms
-2026-03-05 01:02:47.782 [http-nio-8080-exec-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationController.validateVpa() took 12345ms
-2026-03-05 01:02:56.546 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=148, valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV, eventType=API_RESPONSE
-2026-03-05 01:03:27.680 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
-2026-03-05 01:03:27.703 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV
-2026-03-05 01:03:27.704 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV
-2026-03-05 01:03:28.216 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 511ms
-2026-03-05 01:03:28.217 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 512ms
-2026-03-05 01:03:28.217 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV, executionTime=512ms, status={}
-2026-03-05 01:03:28.222 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
-2026-03-05 01:03:28.226 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-04T19:33:28.223061800Z
-2026-03-05 01:03:28.226 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 522ms
-2026-03-05 01:03:28.234 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 560ms
-2026-03-05 01:03:32.673 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=149, valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV, eventType=API_RESPONSE
-2026-03-05 01:03:32.691 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV, status=INVALID, confidence=0
-2026-03-05 01:03:32.710 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=46d016eb-4f17-4e01-b2a5-ddfcad989ad6, providerRefId=fav_SNGVFqU4gsvFUV, finalStatus=COMPLETED
-2026-03-05 01:03:47.279 [http-nio-8080-exec-6] INFO  c.v.v.c.ValidationController - Received validation status request for id=46d016eb-4f17-4e01-b2a5-ddfcad989ad6
-2026-03-05 01:43:02.708 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 25496 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
-2026-03-05 01:43:02.712 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
-2026-03-05 01:43:04.887 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-05 01:43:05.111 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 203 ms. Found 4 JPA repository interfaces.
-2026-03-05 01:43:06.559 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
-2026-03-05 01:43:06.579 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-03-05 01:43:06.580 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-03-05 01:43:06.668 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-03-05 01:43:06.668 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3879 ms
-2026-03-05 01:43:07.063 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-05 01:43:07.748 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a19a0fe
-2026-03-05 01:43:07.752 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-05 01:43:07.918 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
-2026-03-05 01:43:08.220 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.125s)
-2026-03-05 01:43:08.247 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
-2026-03-05 01:43:08.259 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
-2026-03-05 01:43:08.447 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-03-05 01:43:08.599 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-03-05 01:43:08.687 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2026-03-05 01:43:09.366 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-05 01:43:09.492 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-03-05 01:43:09.529 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 01:43:10.018 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
-2026-03-05 01:43:11.237 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-05 01:43:11.314 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 01:43:11.784 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-03-05 01:43:13.256 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-03-05 01:43:13.320 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-03-05 01:43:14.216 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2026-03-05 01:43:14.228 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 12.312 seconds (process running for 13.557)
-2026-03-05 01:43:23.740 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-05 01:43:23.741 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-03-05 01:43:23.741 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
-2026-03-05 01:43:23.777 [http-nio-8080-exec-1] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /api/v1/validation/vpa
-2026-03-05 01:43:37.055 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Idempotent retry detected for Client Key: 26513061-8608-41ab-8453-c1c19777237b
-2026-03-05 01:44:10.938 [http-nio-8080-exec-5] INFO  c.v.v.c.ValidationController - Received validation status request for id=46d016eb-4f17-4e01-b2a5-ddfcad989ad6
-2026-03-05 01:44:24.318 [http-nio-8080-exec-4] WARN  c.v.v.a.ValidationApplicationService - Idempotency conflict! Client Key 26513061-8608-41ab-8453-c1c19777237b used with different payload.
-2026-03-05 01:44:24.320 [http-nio-8080-exec-4] WARN  c.v.v.e.GlobalExceptionHandler - Idempotency Conflict: This Idempotency-Key was already used for a different request.
-2026-03-05 01:44:30.671 [http-nio-8080-exec-7] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:44:30.673 [http-nio-8080-exec-7] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:44:30.783 [http-nio-8080-exec-7] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 3bc1477b-7765-4ad8-9542-e3318ab66955 for processing. Initiating provider call.
-2026-03-05 01:44:32.112 [http-nio-8080-exec-7] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1318ms
-2026-03-05 01:44:32.112 [http-nio-8080-exec-7] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1319ms
-2026-03-05 01:44:32.118 [http-nio-8080-exec-7] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 3bc1477b-7765-4ad8-9542-e3318ab66955. ProviderReferenceId (FAV ID): fav_SNHDM2YDJR0MKT
-2026-03-05 01:44:32.164 [http-nio-8080-exec-7] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1381ms
-2026-03-05 01:44:32.165 [http-nio-8080-exec-7] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationApplicationService.validateVpa() took 1498ms
-2026-03-05 01:44:32.165 [http-nio-8080-exec-7] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationController.validateVpa() took 1498ms
-2026-03-05 01:44:35.565 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=150, valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT, eventType=API_RESPONSE
-2026-03-05 01:44:44.577 [http-nio-8080-exec-8] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:44:49.463 [http-nio-8080-exec-6] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:44:53.199 [http-nio-8080-exec-9] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:45:04.920 [http-nio-8080-exec-10] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:45:06.994 [http-nio-8080-exec-1] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:45:09.696 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
-2026-03-05 01:45:09.708 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT
-2026-03-05 01:45:09.709 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT
-2026-03-05 01:45:10.257 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 547ms
-2026-03-05 01:45:10.258 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 548ms
-2026-03-05 01:45:10.258 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT, executionTime=548ms, status={}
-2026-03-05 01:45:10.262 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
-2026-03-05 01:45:10.266 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-04T20:15:10.262665300Z
-2026-03-05 01:45:10.266 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 557ms
-2026-03-05 01:45:10.272 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 582ms
-2026-03-05 01:45:11.671 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=151, valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT, eventType=API_RESPONSE
-2026-03-05 01:45:11.689 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT, status=INVALID, confidence=0
-2026-03-05 01:45:11.707 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=3bc1477b-7765-4ad8-9542-e3318ab66955, providerRefId=fav_SNHDM2YDJR0MKT, finalStatus=COMPLETED
-2026-03-05 01:45:25.732 [http-nio-8080-exec-2] INFO  c.v.v.c.ValidationController - Received validation status request for id=3bc1477b-7765-4ad8-9542-e3318ab66955
-2026-03-05 01:46:00.229 [http-nio-8080-exec-3] WARN  c.v.v.a.ValidationApplicationService - Idempotency conflict! Client Key 26513061-8608-41ab-8453-c1c19777237 used with different payload.
-2026-03-05 01:46:00.230 [http-nio-8080-exec-3] WARN  c.v.v.e.GlobalExceptionHandler - Idempotency Conflict: This Idempotency-Key was already used for a different request.
-2026-03-05 01:46:07.701 [http-nio-8080-exec-5] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:07.701 [http-nio-8080-exec-5] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:07.718 [http-nio-8080-exec-5] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 014b694c-c1ab-4b90-aca9-3eea4fdfb6c7 for processing. Initiating provider call.
-2026-03-05 01:46:08.872 [http-nio-8080-exec-5] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1154ms
-2026-03-05 01:46:08.872 [http-nio-8080-exec-5] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1154ms
-2026-03-05 01:46:08.873 [http-nio-8080-exec-5] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 014b694c-c1ab-4b90-aca9-3eea4fdfb6c7. ProviderReferenceId (FAV ID): fav_SNHF3ayrKjZQi4
-2026-03-05 01:46:08.891 [http-nio-8080-exec-5] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1173ms
-2026-03-05 01:46:08.891 [http-nio-8080-exec-5] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationApplicationService.validateVpa() took 1194ms
-2026-03-05 01:46:08.891 [http-nio-8080-exec-5] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationController.validateVpa() took 1194ms
-2026-03-05 01:46:14.838 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=152, valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4, eventType=API_RESPONSE
-2026-03-05 01:46:32.026 [http-nio-8080-exec-4] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:39.357 [http-nio-8080-exec-7] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:41.002 [http-nio-8080-exec-8] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:45.537 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
-2026-03-05 01:46:45.541 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4
-2026-03-05 01:46:45.542 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4
-2026-03-05 01:46:46.067 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 524ms
-2026-03-05 01:46:46.067 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 524ms
-2026-03-05 01:46:46.067 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4, executionTime=524ms, status={}
-2026-03-05 01:46:46.071 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
-2026-03-05 01:46:46.073 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-04T20:16:46.071172800Z
-2026-03-05 01:46:46.073 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 531ms
-2026-03-05 01:46:46.081 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 550ms
-2026-03-05 01:46:46.259 [http-nio-8080-exec-6] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:49.516 [http-nio-8080-exec-9] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:46:50.937 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=153, valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4, eventType=API_RESPONSE
-2026-03-05 01:46:50.951 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4, status=INVALID, confidence=0
-2026-03-05 01:46:50.966 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7, providerRefId=fav_SNHF3ayrKjZQi4, finalStatus=COMPLETED
-2026-03-05 01:46:54.001 [http-nio-8080-exec-10] INFO  c.v.v.c.ValidationController - Received validation status request for id=014b694c-c1ab-4b90-aca9-3eea4fdfb6c7
-2026-03-05 01:47:35.989 [http-nio-8080-exec-1] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: dbadfee5-6760-4fb2-8f1e-3801f08614ba
-2026-03-05 01:47:35.989 [http-nio-8080-exec-1] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba
-2026-03-05 01:47:36.006 [http-nio-8080-exec-1] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: dbadfee5-6760-4fb2-8f1e-3801f08614ba for processing. Initiating provider call.
-2026-03-05 01:47:37.206 [http-nio-8080-exec-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1199ms
-2026-03-05 01:47:37.206 [http-nio-8080-exec-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1199ms
-2026-03-05 01:47:37.207 [http-nio-8080-exec-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: dbadfee5-6760-4fb2-8f1e-3801f08614ba. ProviderReferenceId (FAV ID): fav_SNHGc6OqwMZ1iM
-2026-03-05 01:47:37.224 [http-nio-8080-exec-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1217ms
-2026-03-05 01:47:37.224 [http-nio-8080-exec-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationApplicationService.validateVpa() took 1239ms
-2026-03-05 01:47:37.224 [http-nio-8080-exec-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationController.validateVpa() took 1239ms
-2026-03-05 01:47:45.057 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=154, valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM, eventType=API_RESPONSE
-2026-03-05 01:48:10.663 [http-nio-8080-exec-2] INFO  c.v.v.c.ValidationController - Received validation status request for id=dbadfee5-6760-4fb2-8f1e-3801f08614ba
-2026-03-05 01:48:13.107 [http-nio-8080-exec-3] INFO  c.v.v.c.ValidationController - Received validation status request for id=dbadfee5-6760-4fb2-8f1e-3801f08614ba
-2026-03-05 01:48:16.322 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
-2026-03-05 01:48:16.332 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM
-2026-03-05 01:48:16.333 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM
-2026-03-05 01:48:16.835 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 501ms
-2026-03-05 01:48:16.835 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 501ms
-2026-03-05 01:48:16.835 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM, executionTime=501ms, status={}
-2026-03-05 01:48:16.838 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
-2026-03-05 01:48:16.840 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-04T20:18:16.838171900Z
-2026-03-05 01:48:16.840 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 507ms
-2026-03-05 01:48:16.845 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 529ms
-2026-03-05 01:48:21.153 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=155, valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM, eventType=API_RESPONSE
-2026-03-05 01:48:21.174 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM, status=VALID, confidence=45
-2026-03-05 01:48:21.191 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=dbadfee5-6760-4fb2-8f1e-3801f08614ba, providerRefId=fav_SNHGc6OqwMZ1iM, finalStatus=COMPLETED
-2026-03-05 01:48:24.341 [http-nio-8080-exec-5] INFO  c.v.v.c.ValidationController - Received validation status request for id=dbadfee5-6760-4fb2-8f1e-3801f08614ba
-2026-03-05 01:49:00.513 [RMI TCP Connection(15)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
-2026-03-05 01:49:00.824 [RMI TCP Connection(15)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-03-05 01:49:00.827 [RMI TCP Connection(15)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-05 01:49:00.840 [RMI TCP Connection(15)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-06 01:27:55.930 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 18884 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 01:27:55.938 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 01:27:57.582 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 01:27:57.754 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 151 ms. Found 4 JPA repository interfaces.
+2026-03-06 01:27:59.389 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 01:27:59.417 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 01:27:59.418 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 01:27:59.552 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 01:27:59.552 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3534 ms
+2026-03-06 01:28:00.146 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 01:28:00.940 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3a88f6fb
+2026-03-06 01:28:00.946 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 01:28:01.103 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 01:28:01.338 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.111s)
+2026-03-06 01:28:01.372 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 01:28:01.382 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 01:28:01.595 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 01:28:01.771 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 01:28:01.869 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 01:28:02.623 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 01:28:02.779 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 01:28:02.831 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 01:28:03.407 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 01:28:04.953 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 01:28:05.052 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 01:28:05.679 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 01:28:07.536 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 01:28:07.711 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 01:28:08.712 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 01:28:08.737 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 13.728 seconds (process running for 16.041)
+2026-03-06 01:28:14.772 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 6025ms
+2026-03-06 01:40:19.318 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 21760 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 01:40:19.328 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 01:40:20.912 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 01:40:21.081 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 149 ms. Found 4 JPA repository interfaces.
+2026-03-06 01:40:22.736 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 01:40:22.765 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 01:40:22.766 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 01:40:22.916 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 01:40:22.917 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3511 ms
+2026-03-06 01:40:23.545 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 01:40:24.247 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@266da047
+2026-03-06 01:40:24.254 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 01:40:24.370 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 01:40:24.545 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.087s)
+2026-03-06 01:40:24.576 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 01:40:24.586 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 01:40:24.786 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 01:40:24.988 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 01:40:25.074 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 01:40:25.748 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 01:40:25.883 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 01:40:25.929 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 01:40:26.408 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 01:40:27.610 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 01:40:27.678 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 01:40:28.089 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 01:40:29.485 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 01:40:29.565 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 01:40:30.444 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 01:40:30.467 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 11.926 seconds (process running for 13.776)
+2026-03-06 01:40:38.893 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06 01:40:38.894 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-06 01:40:38.899 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2026-03-06 01:41:03.936 [http-nio-8080-exec-2] WARN  c.v.v.e.GlobalExceptionHandler - Bad Request: Required HTTP header is missing: Idempotency-Key
+2026-03-06 01:41:58.113 [http-nio-8080-exec-5] WARN  c.v.v.a.ValidationApplicationService - Idempotency conflict! Client Key 263061-8608-41ab-8453-c1c1977723 used with different payload.
+2026-03-06 01:41:58.115 [http-nio-8080-exec-5] WARN  c.v.v.e.GlobalExceptionHandler - Idempotency Conflict: This Idempotency-Key was already used for a different request.
+2026-03-06 01:42:12.820 [http-nio-8080-exec-4] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 3fb09267-6ce6-4bdc-9676-2279b3b3ad32
+2026-03-06 01:42:12.822 [http-nio-8080-exec-4] INFO  c.v.v.a.ValidationApplicationService - Initiating bank account validation. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, ifsc=UBIN0533131
+2026-03-06 01:42:13.038 [http-nio-8080-exec-4] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 3fb09267-6ce6-4bdc-9676-2279b3b3ad32 for processing. Initiating provider call.
+2026-03-06 01:43:26.083 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: 3fb09267-6ce6-4bdc-9676-2279b3b3ad32
+2026-03-06 01:43:30.825 [scheduling-1] INFO  c.v.v.r.ReconciliationScheduler - ReconciliationScheduler woke up. Found 1 requests in PROVIDER_CALL_TIMEOUT state.
+2026-03-06 01:43:30.827 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+java.lang.NullPointerException: element cannot be mapped to a null key
+	at java.base/java.util.Objects.requireNonNull(Objects.java:233)
+	at java.base/java.util.stream.Collectors.lambda$groupingBy$53(Collectors.java:1142)
+	at java.base/java.util.stream.ReduceOps$3ReducingSink.accept(ReduceOps.java:169)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+	at com.venky.validationservice.reconciliation.ReconciliationScheduler.reconcileTimedOutRequests(ReconciliationScheduler.java:63)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.runInternal(ScheduledMethodRunnable.java:130)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.lambda$run$2(ScheduledMethodRunnable.java:124)
+	at io.micrometer.observation.Observation.observe(Observation.java:499)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:124)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-03-06 01:43:56.354 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 3696ms
+2026-03-06 01:43:56.355 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 3698ms
+2026-03-06 01:43:56.362 [ThirdPartyProvider-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 3fb09267-6ce6-4bdc-9676-2279b3b3ad32. ProviderReferenceId (FAV ID): fav_SNfjqB8FnoSz7z
+2026-03-06 01:43:56.458 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 3824ms
+2026-03-06 01:43:56.459 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: 3fb09267-6ce6-4bdc-9676-2279b3b3ad32
+2026-03-06 01:43:56.470 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 01:43:58.153 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=156, valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z, eventType=API_RESPONSE
+2026-03-06 01:43:59.317 [http-nio-8080-exec-4] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationApplicationService.validateBankAccount() took 106509ms
+2026-03-06 01:43:59.317 [http-nio-8080-exec-4] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: ValidationController.validateBank() took 106510ms
+2026-03-06 01:44:31.624 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 01:44:31.630 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z
+2026-03-06 01:44:31.634 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z
+2026-03-06 01:44:32.184 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 549ms
+2026-03-06 01:44:32.184 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 550ms
+2026-03-06 01:44:32.185 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z, executionTime=551ms, status={}
+2026-03-06 01:44:32.200 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
+2026-03-06 01:44:32.206 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-05T20:14:32.201389600Z
+2026-03-06 01:44:32.206 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 573ms
+2026-03-06 01:44:32.215 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 600ms
+2026-03-06 01:44:34.292 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=157, valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z, eventType=API_RESPONSE
+2026-03-06 01:44:34.319 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z, status=VALID, confidence=62
+2026-03-06 01:44:34.354 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=3fb09267-6ce6-4bdc-9676-2279b3b3ad32, providerRefId=fav_SNfjqB8FnoSz7z, finalStatus=COMPLETED
+2026-03-06 01:45:10.004 [http-nio-8080-exec-7] INFO  c.v.v.c.ValidationController - Received validation status request for id=3fb09267-6ce6-4bdc-9676-2279b3b3ad32
+2026-03-06 02:33:07.774 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 20572 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 02:33:07.778 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 02:33:09.383 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 02:33:09.520 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 123 ms. Found 4 JPA repository interfaces.
+2026-03-06 02:33:10.869 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 02:33:10.898 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 02:33:10.899 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 02:33:11.028 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 02:33:11.029 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3167 ms
+2026-03-06 02:33:11.503 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 02:33:12.166 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1f45db49
+2026-03-06 02:33:12.172 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 02:33:12.320 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 02:33:12.494 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.083s)
+2026-03-06 02:33:12.525 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 02:33:12.534 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 02:33:12.700 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 02:33:12.855 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 02:33:12.936 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 02:33:13.570 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 02:33:13.719 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 02:33:13.774 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:33:14.258 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:33:15.658 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 02:33:15.743 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:33:16.241 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 02:33:17.542 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 02:33:17.619 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 02:33:18.386 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 02:33:18.399 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 11.304 seconds (process running for 13.031)
+2026-03-06 02:33:27.254 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06 02:33:27.255 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-06 02:33:27.259 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-03-06 02:33:27.312 [http-nio-8080-exec-1] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /api/v1/validation/bank-account
+2026-03-06 02:33:40.316 [http-nio-8080-exec-4] WARN  c.v.v.a.ValidationApplicationService - Idempotency conflict! Client Key 2630618-41ab-8453-c1c1977723 used with different payload.
+2026-03-06 02:33:40.320 [http-nio-8080-exec-4] WARN  c.v.v.e.GlobalExceptionHandler - Idempotency Conflict: This Idempotency-Key was already used for a different request.
+2026-03-06 02:33:48.066 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 82e3eefa-efe2-424d-82eb-40ab34fc06c9
+2026-03-06 02:33:48.069 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Initiating bank account validation. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, ifsc=UBIN0533131
+2026-03-06 02:33:48.234 [http-nio-8080-exec-3] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 82e3eefa-efe2-424d-82eb-40ab34fc06c9 for processing. Initiating provider call.
+2026-03-06 02:33:48.238 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: 82e3eefa-efe2-424d-82eb-40ab34fc06c9
+2026-03-06 02:33:49.776 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1523ms
+2026-03-06 02:33:49.778 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1526ms
+2026-03-06 02:33:49.786 [ThirdPartyProvider-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 82e3eefa-efe2-424d-82eb-40ab34fc06c9. ProviderReferenceId (FAV ID): fav_SNgaY1hUhLG8e7
+2026-03-06 02:33:49.869 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1630ms
+2026-03-06 02:33:49.870 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: 82e3eefa-efe2-424d-82eb-40ab34fc06c9
+2026-03-06 02:33:54.643 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=158, valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7, eventType=API_RESPONSE
+2026-03-06 02:34:28.805 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 02:34:28.834 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7
+2026-03-06 02:34:28.837 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7
+2026-03-06 02:34:29.657 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 819ms
+2026-03-06 02:34:29.658 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 821ms
+2026-03-06 02:34:29.658 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7, executionTime=821ms, status={}
+2026-03-06 02:34:29.665 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
+2026-03-06 02:34:29.670 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-05T21:04:29.666548300Z
+2026-03-06 02:34:29.670 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 833ms
+2026-03-06 02:34:29.681 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 889ms
+2026-03-06 02:34:30.782 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=159, valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7, eventType=API_RESPONSE
+2026-03-06 02:34:30.804 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7, status=INVALID, confidence=null
+2026-03-06 02:34:30.833 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=82e3eefa-efe2-424d-82eb-40ab34fc06c9, providerRefId=fav_SNgaY1hUhLG8e7, finalStatus=COMPLETED
+2026-03-06 02:34:59.953 [http-nio-8080-exec-6] INFO  c.v.v.c.ValidationController - Received validation status request for id=82e3eefa-efe2-424d-82eb-040ab34fc06c
+2026-03-06 02:35:16.403 [http-nio-8080-exec-8] INFO  c.v.v.c.ValidationController - Received validation status request for id=82e3eefa-efe2-424d-82eb-40ab34fc06c9
+2026-03-06 02:35:59.619 [http-nio-8080-exec-7] INFO  c.v.v.a.ValidationApplicationService - Idempotent retry detected for Client Key: 263061-8608-41ab-8453-c1c1977723
+2026-03-06 02:37:34.220 [http-nio-8080-exec-10] INFO  c.v.v.c.ValidationController - Received validation status request for id=dbadfee5-6760-4fb2-8f1e-3801f08614ba
+2026-03-06 02:38:15.429 [RMI TCP Connection(12)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2026-03-06 02:38:16.036 [RMI TCP Connection(12)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:38:16.048 [RMI TCP Connection(12)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-06 02:38:16.066 [RMI TCP Connection(12)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-06 02:43:45.645 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 4796 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 02:43:45.649 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 02:43:46.930 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 02:43:47.078 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 133 ms. Found 4 JPA repository interfaces.
+2026-03-06 02:43:48.373 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 02:43:48.399 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 02:43:48.399 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 02:43:48.540 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 02:43:48.541 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2815 ms
+2026-03-06 02:43:49.014 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 02:43:49.633 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@720a1fd0
+2026-03-06 02:43:49.638 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 02:43:49.724 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 02:43:49.923 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.100s)
+2026-03-06 02:43:49.951 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 02:43:49.959 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 02:43:50.122 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 02:43:50.269 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 02:43:50.361 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 02:43:50.956 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 02:43:51.082 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 02:43:51.131 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:43:51.673 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:43:53.085 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 02:43:53.154 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:43:53.610 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 02:43:55.192 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 02:43:55.274 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 02:43:56.107 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 02:43:56.122 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 11.176 seconds (process running for 12.821)
+2026-03-06 02:44:13.416 [http-nio-8080-exec-5] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06 02:44:13.417 [http-nio-8080-exec-5] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-06 02:44:13.419 [http-nio-8080-exec-5] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-03-06 02:44:13.783 [http-nio-8080-exec-5] INFO  c.v.v.a.ValidationApplicationService - Idempotent retry detected for Client Key: 263061-8608-41ab-8453-c1c1977723
+2026-03-06 02:44:56.346 [http-nio-8080-exec-2] INFO  c.v.v.a.ValidationApplicationService - Received vpa validation request. Assigned validationRequestId: 1e30f04b-488a-49ac-b564-c1c97a951463
+2026-03-06 02:44:56.348 [http-nio-8080-exec-2] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463
+2026-03-06 02:44:56.495 [http-nio-8080-exec-2] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 1e30f04b-488a-49ac-b564-c1c97a951463 for processing. Initiating provider call.
+2026-03-06 02:44:56.497 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: 1e30f04b-488a-49ac-b564-c1c97a951463
+2026-03-06 02:44:58.829 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 2319ms
+2026-03-06 02:44:58.830 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 2320ms
+2026-03-06 02:44:58.845 [ThirdPartyProvider-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 1e30f04b-488a-49ac-b564-c1c97a951463. ProviderReferenceId (FAV ID): fav_SNgmJhEY8Q8qsQ
+2026-03-06 02:44:58.934 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 2435ms
+2026-03-06 02:44:58.935 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: 1e30f04b-488a-49ac-b564-c1c97a951463
+2026-03-06 02:44:59.439 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=160, valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ, eventType=API_RESPONSE
+2026-03-06 02:45:31.576 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 02:45:31.604 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ
+2026-03-06 02:45:31.606 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ
+2026-03-06 02:45:32.104 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ, executionTime=498ms, status={}
+2026-03-06 02:45:32.112 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
+2026-03-06 02:45:32.117 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-05T21:15:32.112747300Z
+2026-03-06 02:45:32.119 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 513ms
+2026-03-06 02:45:32.131 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 564ms
+2026-03-06 02:45:35.591 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=161, valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ, eventType=API_RESPONSE
+2026-03-06 02:45:35.628 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ, status=VALID, confidence=45
+2026-03-06 02:45:35.654 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=1e30f04b-488a-49ac-b564-c1c97a951463, providerRefId=fav_SNgmJhEY8Q8qsQ, finalStatus=COMPLETED
+2026-03-06 02:46:09.862 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Received vpa validation request. Assigned validationRequestId: f855a788-3433-4301-8b92-1b8a8d71729f
+2026-03-06 02:46:09.863 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f
+2026-03-06 02:46:09.889 [http-nio-8080-exec-3] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: f855a788-3433-4301-8b92-1b8a8d71729f for processing. Initiating provider call.
+2026-03-06 02:46:09.892 [ThirdPartyProvider-2] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: f855a788-3433-4301-8b92-1b8a8d71729f
+2026-03-06 02:46:11.520 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1627ms
+2026-03-06 02:46:11.520 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1627ms
+2026-03-06 02:46:11.521 [ThirdPartyProvider-2] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: f855a788-3433-4301-8b92-1b8a8d71729f. ProviderReferenceId (FAV ID): fav_SNgnbNIOCGZgj2
+2026-03-06 02:46:11.556 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1664ms
+2026-03-06 02:46:11.557 [ThirdPartyProvider-2] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: f855a788-3433-4301-8b92-1b8a8d71729f
+2026-03-06 02:46:11.793 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=162, valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2, eventType=API_RESPONSE
+2026-03-06 02:46:42.356 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 02:46:42.361 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2
+2026-03-06 02:46:42.363 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2
+2026-03-06 02:46:42.962 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 598ms
+2026-03-06 02:46:42.962 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 598ms
+2026-03-06 02:46:42.962 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2, executionTime=598ms, status={}
+2026-03-06 02:46:42.974 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
+2026-03-06 02:46:42.979 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-05T21:16:42.975822900Z
+2026-03-06 02:46:42.980 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 617ms
+2026-03-06 02:46:42.987 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 640ms
+2026-03-06 02:46:47.913 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=163, valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2, eventType=API_RESPONSE
+2026-03-06 02:46:47.936 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2, status=INVALID, confidence=0
+2026-03-06 02:46:47.961 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=f855a788-3433-4301-8b92-1b8a8d71729f, providerRefId=fav_SNgnbNIOCGZgj2, finalStatus=COMPLETED
+2026-03-06 02:51:35.039 [http-nio-8080-exec-4] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:52:32.128 [RMI TCP Connection(19)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2026-03-06 02:52:32.772 [RMI TCP Connection(19)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:52:32.784 [RMI TCP Connection(19)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-06 02:52:32.817 [RMI TCP Connection(19)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-06 02:54:51.616 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 17984 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 02:54:51.621 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 02:54:53.015 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 02:54:53.153 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 123 ms. Found 4 JPA repository interfaces.
+2026-03-06 02:54:54.403 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 02:54:54.426 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 02:54:54.426 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 02:54:54.533 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 02:54:54.534 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2843 ms
+2026-03-06 02:54:54.981 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 02:54:55.561 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74c7522c
+2026-03-06 02:54:55.565 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 02:54:55.673 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 02:54:55.800 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.074s)
+2026-03-06 02:54:55.828 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 02:54:55.836 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 02:54:55.986 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 02:54:56.138 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 02:54:56.220 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 02:54:56.779 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 02:54:56.904 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 02:54:56.951 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:54:57.406 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 02:54:58.701 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 02:54:58.773 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:54:59.313 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 02:55:00.796 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 02:55:00.880 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 02:55:01.667 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 02:55:01.681 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 10.739 seconds (process running for 12.269)
+2026-03-06 02:55:16.232 [http-nio-8080-exec-4] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06 02:55:16.233 [http-nio-8080-exec-4] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-06 02:55:16.236 [http-nio-8080-exec-4] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-03-06 02:55:22.525 [http-nio-8080-exec-2] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:55:39.646 [http-nio-8080-exec-1] INFO  c.v.v.a.ValidationApplicationService - Received bank validation request. Assigned validationRequestId: 06462e41-eae9-453e-be72-3f461b6037fb
+2026-03-06 02:55:39.647 [http-nio-8080-exec-1] INFO  c.v.v.a.ValidationApplicationService - Initiating bank account validation. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, ifsc=UBIN0533131
+2026-03-06 02:55:39.805 [http-nio-8080-exec-1] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 06462e41-eae9-453e-be72-3f461b6037fb for processing. Initiating provider call.
+2026-03-06 02:55:39.810 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: 06462e41-eae9-453e-be72-3f461b6037fb
+2026-03-06 02:55:42.022 [http-nio-8080-exec-3] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:55:42.043 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 2220ms
+2026-03-06 02:55:42.044 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 2221ms
+2026-03-06 02:55:42.052 [ThirdPartyProvider-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 06462e41-eae9-453e-be72-3f461b6037fb. ProviderReferenceId (FAV ID): fav_SNgxeLN1d53hyA
+2026-03-06 02:55:42.135 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 2324ms
+2026-03-06 02:55:42.136 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: 06462e41-eae9-453e-be72-3f461b6037fb
+2026-03-06 02:55:42.526 [http-nio-8080-exec-5] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:55:46.922 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=164, valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA, eventType=API_RESPONSE
+2026-03-06 02:55:49.800 [http-nio-8080-exec-6] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:56:02.116 [http-nio-8080-exec-8] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:56:17.097 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - PollingScheduler found 1 pending validation requests. Initiating poll.
+2026-03-06 02:56:17.115 [scheduling-1] INFO  c.v.v.a.polling.PollingScheduler - Polling provider for status update. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA
+2026-03-06 02:56:17.117 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Polling Razorpay for validation status. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA
+2026-03-06 02:56:17.856 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 737ms
+2026-03-06 02:56:17.857 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.fetchStatus() took 740ms
+2026-03-06 02:56:17.857 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - Razorpay polling successful. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA, executionTime=740ms, status={}
+2026-03-06 02:56:17.866 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - raw api respponse is directly inserted into provider_validation_event DB call
+2026-03-06 02:56:17.871 [scheduling-1] INFO  c.v.v.i.r.RazorpayPollingService - validation request entity is updated wih lastStatusCheckAt 2026-03-05T21:26:17.866142300Z
+2026-03-06 02:56:17.872 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayPollingService.poll() took 754ms
+2026-03-06 02:56:17.881 [scheduling-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: PollingScheduler.triggerPolling() took 794ms
+2026-03-06 02:56:23.058 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=165, valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA, eventType=API_RESPONSE
+2026-03-06 02:56:23.085 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA, status=INVALID, confidence=null
+2026-03-06 02:56:23.114 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=06462e41-eae9-453e-be72-3f461b6037fb, providerRefId=fav_SNgxeLN1d53hyA, finalStatus=COMPLETED
+2026-03-06 02:56:24.493 [http-nio-8080-exec-10] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:56:57.603 [http-nio-8080-exec-3] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:57:05.888 [http-nio-8080-exec-6] WARN  c.v.v.s.CustomAuthenticationEntryPoint - Unauthorized access attempt to URL: /webhooks/razorpay
+2026-03-06 02:57:09.646 [RMI TCP Connection(11)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2026-03-06 02:57:10.247 [RMI TCP Connection(11)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 02:57:10.251 [RMI TCP Connection(11)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-06 02:57:10.274 [RMI TCP Connection(11)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-06 03:02:35.832 [main] INFO  c.v.v.ValidationserviceApplication - Starting ValidationserviceApplication using Java 17.0.11 with PID 2856 (C:\Users\VENKATESH\Desktop\Valdation-project\validationservice\target\classes started by VENKATESH in C:\Users\VENKATESH\Desktop\Valdation-project\validationservice)
+2026-03-06 03:02:35.836 [main] INFO  c.v.v.ValidationserviceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-06 03:02:37.415 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06 03:02:37.683 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 230 ms. Found 4 JPA repository interfaces.
+2026-03-06 03:02:39.543 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-06 03:02:39.572 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-06 03:02:39.573 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-03-06 03:02:39.708 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-06 03:02:39.708 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3794 ms
+2026-03-06 03:02:40.310 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-06 03:02:41.045 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6d7b2319
+2026-03-06 03:02:41.050 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-06 03:02:41.141 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/validation_service (MySQL 8.0)
+2026-03-06 03:02:41.271 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 10 migrations (execution time 00:00.070s)
+2026-03-06 03:02:41.302 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema `validation_service`: 10
+2026-03-06 03:02:41.311 [main] INFO  o.f.core.internal.command.DbMigrate - Schema `validation_service` is up to date. No migration necessary.
+2026-03-06 03:02:41.470 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-06 03:02:41.610 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-03-06 03:02:41.688 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-06 03:02:42.176 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06 03:02:42.285 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-06 03:02:42.323 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 03:02:42.779 [main] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2026-03-06 03:02:43.947 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06 03:02:44.007 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 03:02:44.427 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06 03:02:45.928 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-03-06 03:02:46.017 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-06 03:02:46.872 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-06 03:02:46.888 [main] INFO  c.v.v.ValidationserviceApplication - Started ValidationserviceApplication in 11.779 seconds (process running for 13.282)
+2026-03-06 03:03:10.150 [http-nio-8080-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06 03:03:10.151 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-06 03:03:10.155 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2026-03-06 03:03:10.515 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Received vpa validation request. Assigned validationRequestId: 6489047f-2e76-4190-a188-6c3cf86ea38a
+2026-03-06 03:03:10.517 [http-nio-8080-exec-3] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=6489047f-2e76-4190-a188-6c3cf86ea38a
+2026-03-06 03:03:10.706 [http-nio-8080-exec-3] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: 6489047f-2e76-4190-a188-6c3cf86ea38a for processing. Initiating provider call.
+2026-03-06 03:03:10.710 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: 6489047f-2e76-4190-a188-6c3cf86ea38a
+2026-03-06 03:03:12.536 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1812ms
+2026-03-06 03:03:12.537 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1814ms
+2026-03-06 03:03:12.548 [ThirdPartyProvider-1] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: 6489047f-2e76-4190-a188-6c3cf86ea38a. ProviderReferenceId (FAV ID): fav_SNh5Zzw0o1tgoZ
+2026-03-06 03:03:12.642 [ThirdPartyProvider-1] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1931ms
+2026-03-06 03:03:12.642 [ThirdPartyProvider-1] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: 6489047f-2e76-4190-a188-6c3cf86ea38a
+2026-03-06 03:03:13.031 [http-nio-8080-exec-1] INFO  c.v.v.i.r.w.RazorpayWebhookController - Received Razorpay webhook. providerRefId=fav_SNh5Zzw0o1tgoZ
+2026-03-06 03:03:14.186 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=166, valReqId=6489047f-2e76-4190-a188-6c3cf86ea38a, providerRefId=fav_SNh5Zzw0o1tgoZ, eventType=API_RESPONSE
+2026-03-06 03:03:23.288 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=167, valReqId=null, providerRefId=fav_SNh5Zzw0o1tgoZ, eventType=WEBHOOK
+2026-03-06 03:03:23.320 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=null, providerRefId=fav_SNh5Zzw0o1tgoZ, status=VALID, confidence=45
+2026-03-06 03:03:23.346 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=6489047f-2e76-4190-a188-6c3cf86ea38a, providerRefId=fav_SNh5Zzw0o1tgoZ, finalStatus=COMPLETED
+2026-03-06 03:03:53.152 [http-nio-8080-exec-4] INFO  c.v.v.a.ValidationApplicationService - Received vpa validation request. Assigned validationRequestId: bdb91f64-eaae-478f-a6c1-31c9c0ee3547
+2026-03-06 03:03:53.152 [http-nio-8080-exec-4] INFO  c.v.v.a.ValidationApplicationService - Initiating VPA validation. valReqId=bdb91f64-eaae-478f-a6c1-31c9c0ee3547
+2026-03-06 03:03:53.183 [http-nio-8080-exec-4] INFO  c.v.v.d.s.ValidationDomainService - Successfully locked validationRequestId: bdb91f64-eaae-478f-a6c1-31c9c0ee3547 for processing. Initiating provider call.
+2026-03-06 03:03:53.185 [ThirdPartyProvider-2] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker starting provider call for validationRequestId: bdb91f64-eaae-478f-a6c1-31c9c0ee3547
+2026-03-06 03:03:54.539 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RetryExecutor.execute() took 1353ms
+2026-03-06 03:03:54.540 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayClient.validateFundAccount() took 1354ms
+2026-03-06 03:03:54.540 [ThirdPartyProvider-2] INFO  c.v.v.i.r.RazorpayValidationService - Razorpay successfully created FAV for validationRequestId: bdb91f64-eaae-478f-a6c1-31c9c0ee3547. ProviderReferenceId (FAV ID): fav_SNh6Ji5cCMbQaP
+2026-03-06 03:03:54.589 [ThirdPartyProvider-2] WARN  c.v.v.l.PerformanceLoggingAspect -  SLOW EXECUTION: RazorpayValidationService.validate() took 1403ms
+2026-03-06 03:03:54.590 [ThirdPartyProvider-2] INFO  c.v.v.a.ProviderAsyncWorker - Background Worker completed provider call successfully for validationRequestId: bdb91f64-eaae-478f-a6c1-31c9c0ee3547
+2026-03-06 03:03:55.920 [http-nio-8080-exec-2] INFO  c.v.v.i.r.w.RazorpayWebhookController - Received Razorpay webhook. providerRefId=fav_SNh6Ji5cCMbQaP
+2026-03-06 03:03:59.483 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=168, valReqId=bdb91f64-eaae-478f-a6c1-31c9c0ee3547, providerRefId=fav_SNh6Ji5cCMbQaP, eventType=API_RESPONSE
+2026-03-06 03:04:08.558 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Worker picked up validation event. eventId=169, valReqId=null, providerRefId=fav_SNh6Ji5cCMbQaP, eventType=WEBHOOK
+2026-03-06 03:04:08.587 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Validation decision determined. valReqId=null, providerRefId=fav_SNh6Ji5cCMbQaP, status=INVALID, confidence=null
+2026-03-06 03:04:08.625 [scheduling-1] INFO  c.v.v.application.worker.EventWorker - Successfully persisted final validation result. valReqId=bdb91f64-eaae-478f-a6c1-31c9c0ee3547, providerRefId=fav_SNh6Ji5cCMbQaP, finalStatus=COMPLETED
+2026-03-06 03:04:25.617 [http-nio-8080-exec-6] INFO  c.v.v.c.ValidationController - Received validation status request for id=bdb91f64-eaae-478f-a6c1-31c9c0ee3547
+2026-03-06 03:04:30.153 [RMI TCP Connection(9)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2026-03-06 03:04:30.715 [RMI TCP Connection(9)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06 03:04:30.723 [RMI TCP Connection(9)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-06 03:04:30.742 [RMI TCP Connection(9)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

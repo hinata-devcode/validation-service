@@ -47,6 +47,11 @@ public class RazorpayValidationService implements ProviderValidationPort {
 		this.validationPersistenceService = validationPersistenceService;
 		this.objectMapper = objectMapper;
 	}
+	
+	@Override
+    public Provider getProviderName() {
+        return Provider.RAZORPAY;
+    }
 
 	@Override
 	public void validate(FundAccountDetails details, ValidationState validationState) {

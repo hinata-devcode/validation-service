@@ -27,8 +27,8 @@ public class ValidationPersistenceService {
 		this.requestRepo = requestRepo;
 	}
 
-	public ValidationRequestEntity createValidationRequest(UUID requestId, String rawPayload, String incomingHash) {
-		ValidationRequestEntity entity = new ValidationRequestEntity(requestId, ExecutionStatus.INITIATED,rawPayload,incomingHash);
+	public ValidationRequestEntity createValidationRequest(UUID requestId, String rawPayload, String incomingHash,Provider provider) {
+		ValidationRequestEntity entity = new ValidationRequestEntity(requestId, ExecutionStatus.INITIATED,rawPayload,incomingHash,provider);
 		requestRepo.save(entity);
 		return entity;
 	}

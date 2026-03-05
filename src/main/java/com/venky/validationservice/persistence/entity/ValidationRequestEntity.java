@@ -76,7 +76,7 @@ public class ValidationRequestEntity {
 
     protected ValidationRequestEntity() {}
 
-    public ValidationRequestEntity(UUID id, ExecutionStatus executionStatus, String idempotency, String incomingHash) {
+    public ValidationRequestEntity(UUID id, ExecutionStatus executionStatus, String idempotency, String incomingHash,Provider provider) {
         this.validationRequestId=id;
         this.executionStatus = executionStatus;
         this.createdAt = Instant.now();
@@ -84,6 +84,7 @@ public class ValidationRequestEntity {
         this.lastStatusCheckAt=Instant.now();
         this.idempotencyKey=idempotency;
         this.payloadHash=incomingHash;
+        this.provider=provider;
     }
 
 	public void setProvider(Provider provider) {

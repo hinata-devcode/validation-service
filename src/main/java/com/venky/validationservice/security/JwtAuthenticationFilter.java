@@ -55,8 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// 2. If no token found, just move to the next filter (Spring will block it
 		// later if needed)
 		if (token == null) {
-			filterChain.doFilter(request, response);
-			return;
+			String authHeader = request.getHeader("Authorization");
+			// Standard OAuth2 format expects the header to look like: "Bearer eyJhbGci..."
+			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+				// Extract the token by cutting off the first 7 characters ("Bearer ")
+				token = authHeader.substring(7);
+			} else {
+				filterChain.doFilter(request, response);
+				return;
+			}
 		}
 
 		try {

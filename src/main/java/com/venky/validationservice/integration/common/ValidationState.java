@@ -11,13 +11,12 @@ public class ValidationState {
     private final String incomingHash;
     private final String idempotencyKey;
 
-    public ValidationState(UUID requestId, String incomingHash, String idempotencyKey) {
+    public ValidationState(UUID requestId, String incomingHash, String idempotencyKey,ExecutionStatus executionStatus) {
         this.validationRequestId = requestId;
 		this.incomingHash = incomingHash;
 		this.idempotencyKey = idempotencyKey;
-        this.setExecutionStatus(ExecutionStatus.INITIATED);
+        this.executionStatus=executionStatus;
     }
-
 
 	public UUID getValidationRequestId() {
 		return validationRequestId;

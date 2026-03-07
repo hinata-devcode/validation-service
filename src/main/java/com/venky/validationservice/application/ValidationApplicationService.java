@@ -14,6 +14,7 @@ import com.venky.validationservice.domain.model.ValidationResult;
 import com.venky.validationservice.domain.service.ProviderValidationPort;
 import com.venky.validationservice.domain.service.ValidationDomainService;
 import com.venky.validationservice.exception.IdempotencyConflictException;
+import com.venky.validationservice.integration.common.ExecutionStatus;
 import com.venky.validationservice.integration.common.ValidationState;
 import com.venky.validationservice.integration.utils.HashUtil;
 import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
@@ -56,7 +57,7 @@ public class ValidationApplicationService {
 		        if (savedEntity.getPayloadHash().equals(incomingHash)) {
 		            log.info("Idempotent retry detected for Client Key: {}", idempotencyKey);
 		            
-		            ValidationState validationState = new ValidationState(savedEntity.getValidationRequestId(),savedEntity.getPayloadHash(),savedEntity.getIdempotencyKey());
+		            ValidationState validationState = new ValidationState(savedEntity.getValidationRequestId(),savedEntity.getPayloadHash(),savedEntity.getIdempotencyKey(),savedEntity.getExecutionStatus());
 		            return ValidationResponseDTO.builder()
 			                .validationRequestId(validationState.getValidationRequestId()) 
 			                .executionStatus(validationState.getExecutionStatus())
@@ -70,7 +71,7 @@ public class ValidationApplicationService {
 		  UUID requestId = uuidGenerator.generate();
 		  
 		  ValidationState validationState =
-		            new ValidationState(requestId,incomingHash,idempotencyKey);
+		            new ValidationState(requestId,incomingHash,idempotencyKey,ExecutionStatus.INITIATED);
 		  
 		  log.info("Received bank validation request. Assigned validationRequestId: {}", requestId);
 		  
@@ -105,7 +106,7 @@ public class ValidationApplicationService {
 		        if (savedEntity.getPayloadHash().equals(incomingHash)) {
 		            log.info("Idempotent retry detected for Client Key: {}", idempotencyKey);
 		            
-		            ValidationState validationState = new ValidationState(savedEntity.getValidationRequestId(),savedEntity.getPayloadHash(),savedEntity.getIdempotencyKey());
+		            ValidationState validationState = new ValidationState(savedEntity.getValidationRequestId(),savedEntity.getPayloadHash(),savedEntity.getIdempotencyKey(),savedEntity.getExecutionStatus());
 		            validationState.setProvider(savedEntity.getProvider());
 		            return ValidationResponseDTO.builder()
 			                .validationRequestId(validationState.getValidationRequestId()) 
@@ -120,7 +121,7 @@ public class ValidationApplicationService {
 		 UUID requestId = uuidGenerator.generate();
 		  
 		  ValidationState validationState =
-		            new ValidationState(requestId,incomingHash,idempotencyKey);
+		            new ValidationState(requestId,incomingHash,idempotencyKey,ExecutionStatus.INITIATED);
 		  
 		  log.info("Received vpa validation request. Assigned validationRequestId: {}", requestId);
 		  	

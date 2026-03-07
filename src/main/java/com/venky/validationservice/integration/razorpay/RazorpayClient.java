@@ -65,7 +65,7 @@ public class RazorpayClient {
 			HttpEntity<RazorpayExternalRequest> entity = createHttpEntity(request);
 
 			String url = properties.getBaseUrl() + "/v1/fund_accounts/validations";
-
+//
 //			SimpleClientHttpRequestFactory factory =
 //		            new SimpleClientHttpRequestFactory();
 //
@@ -73,7 +73,7 @@ public class RazorpayClient {
 //		    factory.setReadTimeout(200);
 //
 //		    RestTemplate restTemplate= new RestTemplate(factory);
-//		    code tested for timed out cases
+//		  //  code tested for timed out cases
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
@@ -82,7 +82,7 @@ public class RazorpayClient {
 			String errorBody = ex.getResponseBodyAsString();
 			HttpStatusCode status = ex.getStatusCode();
 
-			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex);
+			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex.getMessage());
 
 			throw new NonRetryableProviderException(
 					String.format("Razorpay client error: status=%s body=%s", status, errorBody), ex,
@@ -90,12 +90,12 @@ public class RazorpayClient {
 
 		} catch (HttpServerErrorException ex) {
 			log.error("Razorpay HTTP Server Error (5xx). Status: {}, Body: {}", ex.getStatusCode(),
-					ex.getResponseBodyAsString(), ex);
+					ex.getResponseBodyAsString(), ex.getMessage());
 
 			throw new RetryableProviderException("Razorpay server error", ex, Provider.RAZORPAY);
 
 		} catch (ResourceAccessException ex) {
-			log.warn("Network access exception while calling Razorpay", ex);
+			log.warn("Network access exception while calling Razorpay", ex.getMessage());
 			throw classifyNetworkException(ex);
 		}
 	}
@@ -115,16 +115,16 @@ public class RazorpayClient {
 		} catch (HttpClientErrorException ex) {
 			String errorBody = ex.getResponseBodyAsString();
 			HttpStatusCode status = ex.getStatusCode();
-			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex);
+			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex.getMessage());
 			throw new NonRetryableProviderException("Razorpay client error " + ex.getMessage(), ex, Provider.RAZORPAY);
 
 		} catch (HttpServerErrorException ex) {
 			log.error("Razorpay HTTP Server Error (5xx). Status: {}, Body: {}", ex.getStatusCode(),
-					ex.getResponseBodyAsString(), ex);
+					ex.getResponseBodyAsString(), ex.getMessage());
 			throw new RetryableProviderException("Razorpay server error " + ex.getMessage(), ex, Provider.RAZORPAY);
 
 		} catch (ResourceAccessException ex) {
-			log.warn("Network access exception while calling Razorpay", ex);
+			log.warn("Network access exception while calling Razorpay", ex.getMessage());
 			throw classifyNetworkException(ex);
 		}
 	}
@@ -177,16 +177,16 @@ public class RazorpayClient {
 		} catch (HttpClientErrorException ex) {
 			String errorBody = ex.getResponseBodyAsString();
 			HttpStatusCode status = ex.getStatusCode();
-			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex);
+			log.error("Razorpay HTTP Client Error (4xx). Status: {}, Body: {}", status, errorBody, ex.getMessage());
 			throw new NonRetryableProviderException("Razorpay client error " + ex.getMessage(), ex, Provider.RAZORPAY);
 
 		} catch (HttpServerErrorException ex) {
 			log.error("Razorpay HTTP Server Error (5xx). Status: {}, Body: {}", ex.getStatusCode(),
-					ex.getResponseBodyAsString(), ex);
+					ex.getResponseBodyAsString(), ex.getMessage());
 			throw new RetryableProviderException("Razorpay server error " + ex.getMessage(), ex, Provider.RAZORPAY);
 
 		} catch (ResourceAccessException ex) {
-			log.warn("Network access exception while calling Razorpay", ex);
+			log.warn("Network access exception while calling Razorpay", ex.getMessage());
 			throw classifyNetworkException(ex);
 		}
 	}

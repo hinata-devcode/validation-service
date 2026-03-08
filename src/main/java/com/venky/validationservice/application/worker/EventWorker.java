@@ -103,7 +103,12 @@ public class EventWorker {
 				eventFailureService.markDeadLetter(event, "No parser found for provider");
 				return;
 			}
-
+			
+			if(event.getValidationRequestId() == null) {
+				//For provider timed out & webhook cases where event don't have validation-requestIds  
+				event.setValidationRequestId(request.getValidationRequestId());
+			}
+							
 			ProviderResult providerResult;
 
 			if (event.getEventType() == ProviderEventType.WEBHOOK) {

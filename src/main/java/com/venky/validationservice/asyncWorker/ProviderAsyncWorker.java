@@ -46,19 +46,19 @@ public class ProviderAsyncWorker {
 
         } catch (ProviderCallTimeoutException ex) {
             log.warn("Provider call timed out for validationRequestId: {}, Provider: {}", 
-                    requestId, ex.getProvider(), ex);
+                    requestId, ex.getProvider(), ex.getMessage());
             
             persistenceService.markProviderCallTimeout(requestId, ex.getProvider());
         } catch (ThirdpartyProviderException ex) {
             log.error("Provider rejected validationRequestId: {}. Provider: {}", 
-                    requestId, ex.getProvider(), ex);
+                    requestId, ex.getProvider(), ex.getMessage());
             
             persistenceService.markValidationRequestFailed(requestId, 
                     FailureOrigin.EXTERNAL_PROVIDER, "PROVIDER_ERROR", ex.getProvider());
 
         } catch (RuntimeException ex) {
             log.error("Internal validation error during async processing for validationRequestId: {}", 
-                    requestId, ex);
+                    requestId, ex.getMessage());
             persistenceService.markValidationRequestFailed(requestId, 
                     FailureOrigin.INTERNAL_SYSTEM, "INTERNAL_ERROR", validationState.getProvider());
         }

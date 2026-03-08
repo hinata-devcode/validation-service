@@ -78,7 +78,7 @@ public class ValidationController {
 	    public ResponseEntity<ValidationQueryResponse> getValidation(
 				@PathVariable UUID validationRequestId) {
 
-			log.info("Received validation status request for id={}", validationRequestId);
+			log.info("Received validation status request for polling id={}", validationRequestId);
 
 			ValidationQueryResponse response = validationService.getValidation(validationRequestId);
 

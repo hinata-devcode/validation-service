@@ -1,0 +1,4 @@
+ALTER TABLE provider_validation_attributes
+ADD CONSTRAINT fk_provider_validation_attributes_result
+FOREIGN KEY (validation_request_id)
+REFERENCES provider_validation_result(validation_request_id);

@@ -1,0 +1,64 @@
+**Role:** You are an Expert Frontend Engineer. Build a complete, production-ready React Single Page Application (SPA) using Vite, React Router, TailwindCSS, and Axios.
+
+**Application Overview:**
+This is a Bank Account and VPA (Virtual Payment Address) Validation Dashboard. The backend is an asynchronous, event-driven Spring Boot system.
+
+**1. API Configuration & Ngrok Bypass (CRITICAL):**
+
+* Set the global Axios `baseURL` to strictly use: `https://omissive-rectricial-tonita.ngrok-free.dev`. Do NOT use localhost or the app will crash.
+* **Ngrok Bypass:** Configure the global Axios instance to send the header `"ngrok-skip-browser-warning": "69420"` on EVERY request. This is mandatory to bypass the ngrok free-tier HTML warning screen.
+* **Authentication:** The backend uses `HttpOnly` cookies for JWT. Set `withCredentials: true` on the Axios instance so the browser automatically sends the cookie. DO NOT save tokens to `localStorage`.
+
+**2. Application Routing:**
+
+* `/signup` - Signup form (Username/Password).
+* `/login` - Login form.
+* `/dashboard` - Protected route. Contains a tabbed interface to choose between "Bank Account Validation" and "VPA Validation". If any API returns a 401 Unauthorized, redirect the user back to `/login`.
+
+**3. API Contracts**
+
+* **Signup:** `POST /api/v1/auth/signup`
+* Payload: `{ "username": "", "password": "" }`
+
+
+* **Login:** `POST /api/v1/auth/login`
+* Payload: `{ "username": "", "password": "" }`
+* Upon success, redirect to `/dashboard`.
+
+
+* **Logout:** `POST /logout`. Clears the cookie. Redirect to `/login`.
+
+**4. Validation Form Logic & Idempotency:**
+
+* Every validation POST request MUST include an `Idempotency-Key` header with a UUID (max 36 chars).
+* Generate a new UUID when the form mounts, and generate a *new* UUID after every successful or failed validation cycle so the user can submit again.
+* If the API returns a `400` with code `IDEMPOTENCY_CONFLICT`, display the message: "This Idempotency-Key was already used".
+
+**5. The Asynchronous Polling Flow (The Core Feature):**
+
+* **Bank Account API:** `POST /api/v1/validation/bank-account`
+* Payload: `{ "bank_account": { "account_number": "...", "ifsc": "..." }, "user_details": { "name": "...", "email": "...", "phone": "..." } }`
+
+
+* **VPA API:** `POST /api/v1/validation/vpa`
+* Payload: `{ "vpa": { "vpa_address": "..." }, "user_details": { "name": "...", "email": "...", "phone": "..." } }`
+
+
+* **Initial Response:** Will return `202 ACCEPTED` with `executionStatus: "PROCESSING"` and a `validationRequestId`.
+* **The Polling Loop:** When "PROCESSING" is received, immediately show a loading spinner and start a `setInterval` or recursive timeout to call the Fetch API every 3 seconds.
+* **Fetch API:** `GET /api/v1/validation/{validationRequestId}`.
+
+**6. Rendering the Final Results:**
+
+* Stop polling when `executionStatus` becomes `"COMPLETED"`.
+* Display a visually distinct Success/Error card based on `result.status` (`"VALID"` or `"INVALID"`).
+* Display the `confidenceLevel` (`"LOW"`, `"MEDIUM"`, `"HIGH"`, or `"NOT_APPLICABLE"`).
+* If `providerDetails` is not null, display the `registeredName` and `nameMatchScore`.
+* If `bankDetailsJson` is present (for VPA), display the `bank_name`, `account_type`, and `account_number`.
+* If `executionStatus` is `"FAILED"` or `"PROVIDER_CALL_TIMEOUT"`, stop polling and show a red error alert saying "Bank network is currently down, please try again later."
+
+**Design Requirements:** Use TailwindCSS to make the dashboard look like a modern, professional fintech application (e.g., Stripe or Razorpay dashboard). Use smooth transitions for the polling spinner.
+
+---
+
+You are completely clear to fire this off! Let me know if the AI agent hits any snags.

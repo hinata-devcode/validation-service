@@ -1,6 +1,7 @@
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-Backend-green)
 ![Architecture](https://img.shields.io/badge/Architecture-Async-blue)
+![Status](https://img.shields.io/badge/Project-Backend%20Architecture-brown)
 
 # Financial Validation Engine
 

@@ -2,37 +2,63 @@
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-Backend-green)
 ![Architecture](https://img.shields.io/badge/Architecture-Async-blue)
 
-
 # Financial Validation Engine
 
-A **fault-tolerant validation system** built using **Java and Spring Boot** to validate bank accounts or VPAs through external payment providers.
+A **fault-tolerant financial validation system** built using **Java + Spring Boot** that validates **bank accounts or VPAs** through external payment providers.
 
-The system is designed to handle **asynchronous workflows, webhook callbacks, retries, and failure recovery**, similar to real financial backend systems.
-
----
-
-# Project Demo
-
-This video demonstrates the complete validation lifecycle including request submission, async processing, provider integration, webhook handling, and final UI response.
-
-Click the image below to watch the demo:
-
-[![Watch Demo](images/demo-thumbnail.png)](PASTE_YOUR_GOOGLE_DRIVE_VIDEO_LINK_HERE)
-
-The demo shows the full lifecycle:
-
-1. User login
-2. Validation request submission
-3. Async worker processing
-4. Provider API integration
-5. Webhook callback handling
-6. Final validation result in UI
+The project demonstrates how **real financial backend systems handle asynchronous processing, provider integrations, and failure recovery.**
 
 ---
 
-# System Architecture
+## 🚀 Project Overview
 
-![Architecture Diagram](images/architecture.png)
+| Feature | Description |
+|------|-------------|
+| Architecture | Asynchronous validation pipeline |
+| Backend | Java + Spring Boot |
+| Security | JWT Authentication + HMAC Webhook Validation |
+| Processing | Background Worker Processing |
+| Integration | External Payment Provider APIs |
+| Reliability | Retry + Scheduler Recovery |
+| Database | MySQL |
+
+---
+
+## 📑 Table of Contents
+
+- [Project Demo](#project-demo)
+- [System Architecture](#system-architecture)
+- [Validation Lifecycle](#validation-lifecycle)
+- [Request Processing Flow](#request-processing-flow)
+- [Failure Handling](#failure-handling)
+- [Security](#security)
+- [UI Screenshots](#ui-screenshots)
+- [Tech Stack](#tech-stack)
+- [Backend Concepts Demonstrated](#backend-concepts-demonstrated)
+- [Future Improvements](#future-improvements)
+
+---
+
+## Project Demo
+
+🎥 **Watch the System Demo**
+
+👉 [Watch Demo Video](PASTE_YOUR_GOOGLE_DRIVE_LINK_HERE)
+
+The demo shows:
+
+1. User login  
+2. Validation request submission  
+3. Async worker processing  
+4. Provider API integration  
+5. Webhook callback handling  
+6. Final validation result in UI  
+
+---
+
+## System Architecture
+
+![System Architecture](images/System_Architecture.png)
 
 ### High Level Flow
 
@@ -56,11 +82,11 @@ Database
 UI Polling Result
 ```
 
-The system processes validation requests **asynchronously**, ensuring that the user interface remains responsive while external provider validations are completed.
+The system processes validations **asynchronously**, ensuring the UI remains responsive while external validations are completed.
 
 ---
 
-# Validation Lifecycle
+## Validation Lifecycle
 
 Each validation request moves through defined states.
 
@@ -72,11 +98,11 @@ PROCESSING
 COMPLETED / FAILED / PROVIDER_CALL_TIMEOUT
 ```
 
-This state-based design ensures safe retries and prevents duplicate processing.
+This **state-driven design** prevents duplicate processing and supports safe retries.
 
 ---
 
-# Request Processing Flow
+## Request Processing Flow
 
 ```
 User Request
@@ -100,18 +126,18 @@ Database Updated
 UI Polling Returns Final Status
 ```
 
-This architecture allows the system to handle **long-running validations without blocking the user request.**
+This architecture ensures **non-blocking request processing**.
 
 ---
 
-# Reliability & Failure Handling
+## Failure Handling
 
-External provider integrations are unpredictable.
-The system includes multiple fallback mechanisms.
+External provider integrations can fail or respond slowly.  
+The system includes **automatic recovery mechanisms**.
 
-### Webhook Failure Recovery
+### Webhook Recovery
 
-If a webhook is delayed or missed:
+If a webhook is delayed or not received:
 
 ```
 Polling Scheduler
@@ -121,11 +147,9 @@ Check validation status
 Update database
 ```
 
----
-
 ### Provider Timeout Recovery
 
-If a provider call fails or times out:
+If a provider call fails:
 
 ```
 Reconciliation Scheduler
@@ -135,125 +159,92 @@ Retry pending validations
 Update final status
 ```
 
-These mechanisms ensure **eventual consistency** and reliable validation results.
+These mechanisms ensure **eventual consistency**.
 
 ---
 
-# Security
+## Security
 
-The system includes multiple security layers.
+### Authentication
 
-**Authentication**
+- Spring Security
+- JWT Authentication
 
-* Spring Security
-* JWT based authentication
+### Webhook Protection
 
-**Webhook Protection**
-
-* HMAC signature verification
-* Ensures callbacks originate from trusted providers
+- HMAC Signature Verification
+- Ensures callbacks originate from trusted providers
 
 ---
 
-# Observability
+## UI Screenshots
 
-The system includes structured logging to trace the full lifecycle of validation requests.
+### Dashboard
 
-Logs include:
+![Dashboard](images/dashboard.png)
 
-* validation request creation
-* worker processing
-* provider API calls
-* webhook events
-* final validation persistence
+### Validation Result (Valid)
 
-This allows developers to **trace each validation request from start to finish.**
+![Validation Success Valid Fund Account Details](images/validation_valid_details.png)
 
----
+### Validation Result (Invalid)
 
-# Example UI Responses
-
-### Successful Validation
-
-(Add screenshot here)
+![Validation Success Invalid Fund Account Details](images/validation_invalid_details.png)
 
 ---
 
-### Invalid Input Handling
+## Tech Stack
 
-(Add screenshot here)
+### Backend
 
-Examples include:
+- Java 17
+- Spring Boot
+- Spring Security
+- JPA / Hibernate
 
-* Invalid VPA format
-* Invalid account number
-* Missing required fields
+### Database
 
----
+- MySQL
 
-# Tech Stack
+### Integration
 
-Backend
+- External Payment Provider APIs
+- Webhook callbacks
 
-* Java
-* Spring Boot
-* Spring Security
-* JPA / Hibernate
+### Async Processing
 
-Database
-
-* MySQL
-
-Integration
-
-* External Payment Provider API
-* Webhook Callbacks
-
-Async Processing
-
-* Background Workers
-* Scheduler Jobs
+- Background workers
+- Scheduler jobs
 
 ---
 
-# Backend Engineering Concepts Demonstrated
+## Backend Concepts Demonstrated
 
-This project demonstrates several real-world backend patterns:
+This project demonstrates several **real-world backend engineering patterns**:
 
-* Asynchronous request processing
-* Webhook driven architecture
-* Background worker processing
-* Scheduler based failure recovery
-* Idempotent validation handling
-* API security using JWT
-* Event-driven validation lifecycle
-
----
-
-# Failure Scenarios & System Handling
-
-| Scenario                | System Handling                             |
-| ----------------------- | ------------------------------------------- |
-| Provider API timeout    | Reconciliation scheduler retries validation |
-| Webhook not received    | Polling scheduler fetches status            |
-| Duplicate request       | Database locking prevents race conditions   |
-| Invalid validation data | API validation prevents processing          |
+- Asynchronous request processing
+- Webhook-driven architecture
+- Background worker processing
+- Scheduler-based failure recovery
+- Idempotent validation handling
+- Secure API authentication using JWT
+- Event-driven validation lifecycle
 
 ---
 
-# Future Improvements
+## Future Improvements
 
-Possible enhancements for production environments:
+Possible production enhancements:
 
-* Message queues (Kafka / RabbitMQ)
-* Distributed worker scaling
-* Circuit breaker for provider APIs
-* Monitoring dashboards
-* Rate limiting for API protection
+- Message queues (Kafka / RabbitMQ)
+- Distributed worker scaling
+- Circuit breaker for provider APIs
+- Monitoring dashboards
+- API rate limiting
 
 ---
 
-# Author
+## Author
 
-Venkatesh
+**Venkatesh**  
 Backend Developer

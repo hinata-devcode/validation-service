@@ -13,8 +13,11 @@ The system is designed to handle **asynchronous workflows, webhook callbacks, re
 
 # Project Demo
 
-🎥 **Demo Video**
-(Add your video link here)
+This video demonstrates the complete validation lifecycle including request submission, async processing, provider integration, webhook handling, and final UI response.
+
+Click the image below to watch the demo:
+
+[![Watch Demo](images/demo-thumbnail.png)](PASTE_YOUR_GOOGLE_DRIVE_VIDEO_LINK_HERE)
 
 The demo shows the full lifecycle:
 

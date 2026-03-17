@@ -73,6 +73,8 @@ public class ValidationApplicationService {
 		  ValidationState validationState =
 		            new ValidationState(requestId,incomingHash,idempotencyKey,ExecutionStatus.INITIATED);
 		  
+		  log.info("\n");
+		  
 		  log.info("Received bank validation request. Assigned validationRequestId: {}", requestId);
 		  
 	        // Build domain input

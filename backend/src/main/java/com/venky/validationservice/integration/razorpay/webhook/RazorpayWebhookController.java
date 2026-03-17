@@ -2,6 +2,7 @@ package com.venky.validationservice.integration.razorpay.webhook;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,29 +39,35 @@ public class RazorpayWebhookController {
     @PostMapping
     public ResponseEntity<Void> consumeWebhook(
             @RequestHeader("X-Razorpay-Signature") String signature,
-            @RequestBody byte[] rawBody) {
+			@RequestBody byte[] rawBody) {
 
-         //1️⃣ Validate signature (NO parsing yet)
-        validator.validate(rawBody, signature);
+		try {
+			
+			log.info("Received Razorpay webhook");
 
-        // 2️⃣ Convert to String only AFTER validation
-        String payload = new String(rawBody, StandardCharsets.UTF_8);
+			// 1️⃣ Validate signature (NO parsing yet)
+			validator.validate(rawBody, signature);
 
-        // 3️⃣ Extract provider reference id (fav_xxx)
-        String providerReferenceId = extractor.extractValidationId(payload);
+			// 2️⃣ Convert to String only AFTER validation
+			String payload = new String(rawBody, StandardCharsets.UTF_8);
 
-        // 4️⃣ Sanitize payload (PII-safe)
-       // String sanitizedPayload = sanitizer.sanitize(payload);
-        
-		log.info("Received Razorpay webhook. providerRefId={}", providerReferenceId);
+			// 3️⃣ Extract provider reference id (fav_xxx)
+			String providerReferenceId = extractor.extractValidationId(payload);
 
-        // 5️⃣ Persist event (NO domain logic)
-        eventService.recordWebhookEvent(
-                Provider.RAZORPAY,
-                providerReferenceId,
-                payload
-        );
+			// 4️⃣ Sanitize payload (PII-safe)
+			// String sanitizedPayload = sanitizer.sanitize(payload);
 
-        return ResponseEntity.ok().build();
-    }
+			log.info(" Razorpay webhook signature verified. providerRefId={}", providerReferenceId);
+
+			// 5️⃣ Persist event (NO domain logic)
+			eventService.recordWebhookEvent(Provider.RAZORPAY, providerReferenceId, payload);
+
+			return ResponseEntity.ok().build();
+		} catch (SecurityException ex) {
+
+			log.warn("Invalid Razorpay webhook signature. Possible spoofed request ");
+
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
 }

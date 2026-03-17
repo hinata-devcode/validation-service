@@ -72,6 +72,8 @@ public class AuthController {
 
 		// 4. Attach it to the response headers
 		response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
+		
+		log.info("User [{}]  JWT Token generation successful.",userDetails.getUsername());
 
 		return ResponseEntity.ok(Map.of("message", "Login successful"));
 	}

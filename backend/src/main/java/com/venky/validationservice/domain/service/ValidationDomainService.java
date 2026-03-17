@@ -47,23 +47,7 @@ public class ValidationDomainService {
 			// Call provider
 			validationRequestEntity = validationPersistenceService.createValidationRequest(
 					validationState.getValidationRequestId(), validationState.getIdempotencyKey(),
-					validationState.getIncomingHash(),providerAsyncWorker.getActiveProvider());
-
-			Instant callInitiatedAt = Instant.now();
-
-			// ATOMIC UPDATE IN CASE OF MUTIPLE INSTACNES OR TWO THREADS TRYING TO UPDATE
-			// SAME REQUEST & UPDATING PROVIDER CALL INITIATED AT
-			int updated = validationPersistenceService
-					.markInProcessingIfInitiated(validationState.getValidationRequestId(), callInitiatedAt);
-
-			if (updated == 0) {
-				log.warn("Concurrent update attempt blocked for validationRequestId: {}",
-						validationState.getValidationRequestId());
-				throw new IllegalStateException("Request already processing");
-			}
-
-			log.info("Successfully locked validationRequestId: {} for processing. Initiating provider call.",
-					validationState.getValidationRequestId());
+					validationState.getIncomingHash(), providerAsyncWorker.getActiveProvider());
 
 			validationState.setExecutionStatus(ExecutionStatus.PROCESSING);
 

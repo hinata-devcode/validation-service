@@ -29,6 +29,7 @@ import com.venky.validationservice.exception.RetryableProviderException;
 import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.utils.RetryExecutor;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,6 +48,7 @@ public class RazorpayClient {
 		this.retryExecutor = retryExecutor;
 	}
 
+	@CircuitBreaker(name = "razorpay")
 	public String validateFundAccount(RazorpayExternalRequest request) {
 		return retryExecutor.execute(() -> createValidationRequest(request), maxAttempts, Duration.ofSeconds(initialDelay));
 	}

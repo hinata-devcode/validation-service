@@ -15,6 +15,7 @@ import com.venky.validationservice.integration.common.Provider;
 import com.venky.validationservice.integration.common.ValidationState;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,7 +64,12 @@ public class ProviderAsyncWorker {
 			// Note: Assuming providerPort.validate() handles updating the DB to COMPLETED
 			// internally upon success.
 
-		} catch (ProviderCallTimeoutException ex) {
+		} catch (CallNotPermittedException ex) {
+			log.error("CIRCUIT BREAKER OPEN: Fast-failing validationRequestId: {}. Provider: Razorpay", requestId);
+			persistenceService.markValidationRequestFailed(requestId, FailureOrigin.EXTERNAL_PROVIDER,
+					"FAST_FAILED_CIRCUIT_OPEN", validationState.getProvider());
+		}
+		catch (ProviderCallTimeoutException ex) {
 			log.warn("Provider call timed out for validationRequestId: {}, Provider: {}", requestId, ex.getProvider(),
 					ex.getMessage());
 

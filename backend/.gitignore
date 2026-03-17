@@ -12,3 +12,7 @@ target/
 # Ignore OS files
 .DS_Store
 Thumbs.db
+
+*.log
+backend/logs/
+**/logs/

@@ -61,6 +61,8 @@ public class ValidationPersistenceService {
 			
 		var requestEntity= getValidationRequest(validationRequestID);
 		
+		requestEntity.setExecutionStatus(ExecutionStatus.FAILED);
+		
 		if(provider != null)
 		requestEntity.setProvider(provider);
 		

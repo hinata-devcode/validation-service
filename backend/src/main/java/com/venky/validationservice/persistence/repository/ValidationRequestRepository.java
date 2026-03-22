@@ -53,16 +53,6 @@ public interface ValidationRequestRepository
 	""")
 	int markInProcessingIfInitiated(@Param("id") UUID id, @Param("now") Instant now);
 		
-	@Query("""
-		       SELECT vr
-		       FROM ValidationRequestEntity vr
-		       WHERE vr.executionStatus = 'PENDING'
-		       AND vr.providerReferenceId IS NULL
-		       AND vr.updatedAt < :cutoff
-		       """)
-		List<ValidationRequestEntity> findStuckProcessing(
-		        @Param("cutoff") LocalDateTime cutoff);
-	
 		@Query("""
 				   SELECT e.validationRequestId, COUNT(e)
 				   FROM ProviderValidationEventEntity e

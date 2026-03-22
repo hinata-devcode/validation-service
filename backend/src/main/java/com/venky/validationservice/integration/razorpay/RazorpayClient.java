@@ -53,10 +53,12 @@ public class RazorpayClient {
 		return retryExecutor.execute(() -> createValidationRequest(request), maxAttempts, Duration.ofSeconds(initialDelay));
 	}
 
+	@CircuitBreaker(name = "razorpay")
 	public String fetchStatus(String providerReferenceId) {
 		return retryExecutor.execute(() -> fetchValidationStatus(providerReferenceId), 3, Duration.ofSeconds(2));
 	}
 	
+	@CircuitBreaker(name = "razorpay")
 	public RazorpayValidationCollectionResponse fetchValidations(long from, long to, int count, int skip) {
 		return retryExecutor.execute(() -> fetchValidationCollection(from, to, count, skip), 3, Duration.ofSeconds(2));
 	}

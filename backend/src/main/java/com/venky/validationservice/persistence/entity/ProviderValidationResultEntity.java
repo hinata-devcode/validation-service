@@ -49,11 +49,11 @@ public class ProviderValidationResultEntity {
     @Column(name = "provider_account_active")
     private Boolean providerAccountActive;
     
-    @Column(name = "provider_bank_details_json", columnDefinition = "LONGTEXT")
+    @Column(name = "provider_bank_details_json", columnDefinition = "json")
     private String bankDetailsJson;
 
     @Lob
-    @Column(name = "sanitized_payload", columnDefinition = "LONGTEXT")
+    @Column(name = "sanitized_payload", columnDefinition = "json")
     private String sanitizedPayload;
 
     @ElementCollection

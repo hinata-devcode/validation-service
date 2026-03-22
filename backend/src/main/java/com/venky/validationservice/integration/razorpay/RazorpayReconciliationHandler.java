@@ -11,6 +11,7 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.repository.ValidationRequestRepository;
 import com.venky.validationservice.reconciliation.ProviderReconciliationHandler;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
@@ -90,7 +91,11 @@ public class RazorpayReconciliationHandler implements ProviderReconciliationHand
 				skip += PAGE_COUNT;
 			}
 
-		} catch (NonRetryableProviderException ex) {
+		}catch (CallNotPermittedException ex) {	 
+			log.warn("Circuit Breaker is OPEN. Skipping polling for this cycle. Will retry next schedule.");
+			return;
+		}
+		catch (NonRetryableProviderException ex) {
 			log.error("Fatal API error during batch fetch for Razorpay FAV transactions: " + ex.getMessage());
 			apiFetchSuccessful = false;
 			handleBatchFailure(requests, false, FailureOrigin.EXTERNAL_PROVIDER, now);

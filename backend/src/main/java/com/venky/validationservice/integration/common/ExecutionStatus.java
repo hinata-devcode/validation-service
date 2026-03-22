@@ -5,7 +5,6 @@ public enum ExecutionStatus {
 	PROCESSING,              //When provider_reference_id is received
 	PROVIDER_CALL_TIMEOUT,  // Call uncertain (read timeout)
 	COMPLETED,              // Final success
-	FAILED,                  // Final failure
-	FAST_FAILED
+	FAILED                 // Final failure
 }
 

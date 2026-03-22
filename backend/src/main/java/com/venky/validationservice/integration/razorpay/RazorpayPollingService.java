@@ -15,6 +15,7 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ProviderValidationEventPersistenceService;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,7 +53,17 @@ public class RazorpayPollingService implements ProviderPollingService {
 				request.getValidationRequestId(), request.getProviderReferenceId());
 		long startTime = System.currentTimeMillis();
 		
-		String apiResponse = razorpayClient.fetchStatus(request.getProviderReferenceId());
+		String apiResponse;
+		try {
+			apiResponse = razorpayClient.fetchStatus(request.getProviderReferenceId());
+		} catch (CallNotPermittedException ex) {	
+			log.warn("Circuit Breaker is OPEN. Skipping polling for valReqId={} this cycle. Will retry next schedule.", 
+					request.getValidationRequestId());
+			return;
+		} catch (Exception ex) {
+            log.error("Error polling Razorpay for valReqId={}: {}", request.getValidationRequestId(), ex.getMessage());
+            return;
+        }
 		
 		 long executionTime = System.currentTimeMillis() - startTime;
 		 	 

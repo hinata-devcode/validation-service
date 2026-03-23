@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.venky.validationservice.application.worker.ProviderResult;
 
 import jakarta.persistence.CollectionTable;
@@ -49,10 +52,11 @@ public class ProviderValidationResultEntity {
     @Column(name = "provider_account_active")
     private Boolean providerAccountActive;
     
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "provider_bank_details_json", columnDefinition = "json")
     private String bankDetailsJson;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "sanitized_payload", columnDefinition = "json")
     private String sanitizedPayload;
 

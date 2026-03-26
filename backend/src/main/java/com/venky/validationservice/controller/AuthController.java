@@ -85,7 +85,7 @@ public class AuthController {
         // but we set its life (Max-Age) to ZERO seconds.
     	ResponseCookie deleteCookie = ResponseCookie.from("access_token", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(jwtProperties.isCookieSecure())
                 .path("/")
                 .maxAge(0)          // <--- THIS IS THE "KILL" COMMAND [cite: 62]
                 .sameSite("None")   // Must match the login cookie's SameSite policy

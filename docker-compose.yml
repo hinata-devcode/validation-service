@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------
+  # Container 1: The Database
+  # ----------------------------------------
+  mysql-db:
+    image: mysql:8.0.30
+    container_name: mysql-database
+    environment:
+      MYSQL_DATABASE: validation_service
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} 
+      # NEW: Docker automatically creates this user and password on boot!
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_USER_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # The health check strictly uses the root user to verify the core engine is running
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ----------------------------------------
+  # Container 2: Your Spring Boot Backend
+  # ----------------------------------------
+  backend-app:
+    build:
+      context: ./backend        # Tells Docker where to find your Java Dockerfile
+      dockerfile: Dockerfile
+    image: validation-service:v1
+    container_name: spring-backend
+    ports:
+      - "8080:8080" 
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/validation_service?useSSL=false&allowPublicKeyRetrieval=true
+      # NEW: Spring Boot now logs in exclusively as the restricted tenant user
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_USER_PASSWORD}
+      
+      - JWT_SECRET=${JWT_SECRET}
+      - RAZORPAY_KEY=${RAZORPAY_KEY}
+      - RAZORPAY_SECRET=${RAZORPAY_SECRET}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  # ----------------------------------------
+  # Container 3: The React Frontend (Vite + Nginx)
+  # ----------------------------------------
+  react-frontend:
+    build:
+      context: ./frontend       # Tells Docker where to find your Vite Dockerfile
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    ports:
+      - "80:80"                 # Exposes the Nginx web server to your browser
+    depends_on:
+      - backend-app             # Ensures the API is running before the UI boots
+
+volumes:
+  mysql_data:

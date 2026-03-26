@@ -8,6 +8,7 @@ target/
 .settings/
 .classpath/
 .project/
+.factorypath
 
 # Ignore OS files
 .DS_Store
@@ -16,3 +17,7 @@ Thumbs.db
 *.log
 backend/logs/
 **/logs/
+
+# Environment files
+.env
+*.env

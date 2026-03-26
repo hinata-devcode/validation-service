@@ -2,9 +2,9 @@ import axios from 'axios';
 
 // Create a custom axios instance per requirements
 export const apiClient = axios.create({
-  baseURL: "https://omissive-rectricial-tonita.ngrok-free.dev",
+  // Nginx catches requests starting at the root and routes them based on the path
+  baseURL: '/', 
   headers: {
-    "ngrok-skip-browser-warning": "69420",
     "Content-Type": "application/json",
   },
   withCredentials: true,

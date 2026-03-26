@@ -32,7 +32,8 @@ export const api = {
     },
     logout: {
       method: 'POST' as const,
-      path: '/logout' as const,
+      // FIXED: Added the full path to match your Spring Boot RequestMapping
+      path: '/api/v1/auth/logout' as const, 
       responses: {
         200: z.any(),
       }

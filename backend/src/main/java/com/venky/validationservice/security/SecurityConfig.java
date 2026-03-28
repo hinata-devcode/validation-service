@@ -45,7 +45,7 @@ public class SecurityConfig {
             .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(customAuthenticationEntryPoint))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**","/error").permitAll() // Let anyone Signup/Login
-                .requestMatchers("/webhooks/**").permitAll()
+                .requestMatchers("/api/webhooks/**").permitAll()
                 .anyRequest().authenticated() // Block EVERYTHING else
             )
             // Tell Spring: "Don't create sessions in the DB/Memory. We use JWT!"

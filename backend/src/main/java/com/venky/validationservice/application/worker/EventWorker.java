@@ -8,8 +8,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.venky.validationservice.domain.model.ConfidenceLevel;
 import com.venky.validationservice.domain.model.DomainDecision;
@@ -32,13 +35,14 @@ import com.venky.validationservice.persistence.service.ProviderValidationEventPe
 import com.venky.validationservice.persistence.service.ProviderValidationResultService;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class EventWorker {
 	
+	@Value("${server.port:default-port}")
+    private String instancePort;
 	private final ValidationPersistenceService validationPersistence;
 	private final ValidationDecisionService validationDecisionService;
 	private final ProviderValidationResultService providerValidationResultService;
@@ -62,19 +66,18 @@ public class EventWorker {
 	}
 
 	@Scheduled(fixedDelay = 9000)
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void processNextEvent() {
 		Optional<ProviderValidationEventEntity> eventOpt = eventPersistenceService.fetchUnprocessedEvents(Instant.now());
 		eventOpt.ifPresent(this::processSingleEvent);
 	}
 
-
-	@Transactional
 	private void processSingleEvent(ProviderValidationEventEntity event) {
 
 		try {
 			
-			log.info("Worker picked up validation event. eventId={}, valReqId={}, providerRefId={}, eventType={}", 
-				    event.getId(), event.getValidationRequestId(), event.getProviderReferenceId(), event.getEventType());
+			log.info("[Instance-{}] Worker picked up validation event. eventId={}, valReqId={}, providerRefId={}, eventType={}", 
+			        instancePort, event.getId(), event.getValidationRequestId(), event.getProviderReferenceId(), event.getEventType());
 			
 			event.markProcessing();
 			eventPersistenceService.save(event);
@@ -172,8 +175,10 @@ public class EventWorker {
 		}
 
 		catch (NonRetryableProviderException ex) {
+			log.error("Exception occured in event worker "+ex.getMessage());
 			eventFailureService.markDeadLetter(event, "non retryable error in event worker");
 		} catch (Exception ex) {
+			log.error("Exception occured in event worker "+ex.getMessage());
 			eventFailureService.handleFailure(event, ex);
 		}
 

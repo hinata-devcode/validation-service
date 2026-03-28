@@ -24,7 +24,7 @@ public class EventFailureService {
 		this.retryPolicyResolver = retryPolicyResolver;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public void handleFailure(ProviderValidationEventEntity event, Exception ex) {
 
 		int retry = event.getRetryCount() + 1;
@@ -43,14 +43,14 @@ public class EventFailureService {
 		eventPersistenceService.save(event);
 	}
 
-	 @Transactional(propagation = Propagation.REQUIRES_NEW)
+	 @Transactional
 	public void markDeadLetter(ProviderValidationEventEntity event, String reason) {
 		event.setLastError(safeErrorMessage(reason));
 		event.markDeadLetter();
 		eventPersistenceService.save(event);
 	}
 
-	 @Transactional(propagation = Propagation.REQUIRES_NEW)
+	 @Transactional
 	public void scheduleRetry(ProviderValidationEventEntity event, String reason) {
 		 RetryPolicy policy = retryPolicyResolver.resolve(event.getEventType());
 		 

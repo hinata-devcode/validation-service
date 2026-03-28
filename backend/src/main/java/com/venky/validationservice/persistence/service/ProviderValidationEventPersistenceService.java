@@ -45,15 +45,8 @@ public class ProviderValidationEventPersistenceService {
 
 	@Transactional
 	public Optional<ProviderValidationEventEntity> fetchUnprocessedEvents(Instant now) {
-
-	    Pageable limitOne = PageRequest.of(0, 1);
-
-	    List<ProviderValidationEventEntity> events =
-	        repository.findNextProcessableEvents(now,limitOne);
-	    
-	    return events.stream().findFirst();
+		return repository.findNextProcessableEventWithSkipLocked(now);
 	}
-
 
 	public void save(ProviderValidationEventEntity event) {
 		repository.save(event);

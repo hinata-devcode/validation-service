@@ -1,6 +1,7 @@
 package com.venky.validationservice.persistence.repository;
 
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -38,7 +39,7 @@ public interface ValidationRequestRepository
 		""")
 		List<ValidationRequestEntity> findRequestsForPolling(
 		        @Param("status") ExecutionStatus processing,
-		        @Param("threshold") Instant threshold
+		        @Param("threshold") Instant threshold, PageRequest pageRequest
 		);
 	
 	

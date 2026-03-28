@@ -1,5 +1,6 @@
 package com.venky.validationservice.persistence.service;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class ValidationPersistenceService {
 
 	 @Transactional(readOnly = true)
 	public List<ValidationRequestEntity> findRequestsForPolling(ExecutionStatus processing, Instant threshold) {
-		return requestRepo.findRequestsForPolling(processing, threshold);
+		return requestRepo.findRequestsForPolling(processing, threshold,PageRequest.of(0, 100));
 	}
 	
 	public int markInProcessingIfInitiated(UUID id, Instant callInitiatedAt) {

@@ -22,19 +22,16 @@ public interface ProviderValidationEventRepository
 		extends JpaRepository<ProviderValidationEventEntity, Long> {
 
 	// pessimistic lock is if tomorrow mutiple instances picks same row to update
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@Query("""
-	    SELECT e
-	    FROM ProviderValidationEventEntity e
-	    WHERE e.status IN (
-	        com.venky.validationservice.persistence.entity.EventExecutionStatus.PENDING,
-	        com.venky.validationservice.persistence.entity.EventExecutionStatus.RETRY_SCHEDULED
-	    )
-	    AND (e.nextRetryAt IS NULL OR e.nextRetryAt <= :now)
-	    ORDER BY e.createdAt
-	""")
-	List<ProviderValidationEventEntity> findNextProcessableEvents(@Param("now") Instant now,Pageable pageable);
-	
+	@Query(value = """
+	        SELECT *
+	        FROM provider_validation_event e
+	        WHERE e.provider_status IN ('PENDING', 'RETRY_SCHEDULED')
+	        AND (e.next_retry_at IS NULL OR e.next_retry_at <= :now)
+	        ORDER BY e.created_at ASC
+	        LIMIT 1
+	        FOR UPDATE SKIP LOCKED
+	        """, nativeQuery = true)
+	Optional<ProviderValidationEventEntity> findNextProcessableEventWithSkipLocked(@Param("now") Instant now);
 	
 //	@Query(value = "SELECT * FROM provider_validation_event " + "WHERE status = 'PENDING' "
 //			+ "AND (next_retry_at IS NULL OR next_retry_at <= NOW()) " + "ORDER BY created_at "

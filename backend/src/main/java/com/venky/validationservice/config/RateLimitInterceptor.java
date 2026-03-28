@@ -52,7 +52,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         Bucket bucket = proxyManager.builder().build(bucketKey, configuration);
 
         if (bucket.tryConsume(1)) {
-        	log.info(">>>>>>>>>>>> ---- INTERCEPTOR FIRED FOR USER: " + clientId + " | TOKENS REMAINING: " + bucket.getAvailableTokens());
+        	log.info(">>>>>> ---- INTERCEPTOR FIRED FOR USER: " + clientId + " | TOKENS REMAINING: " + bucket.getAvailableTokens());
             return true; 
         }
 

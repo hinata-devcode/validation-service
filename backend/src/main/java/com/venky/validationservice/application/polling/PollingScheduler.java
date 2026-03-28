@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.venky.validationservice.persistence.entity.ValidationRequestEntity;
 import com.venky.validationservice.persistence.service.ValidationPersistenceService;
 
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Slf4j
 @Service
@@ -24,6 +26,8 @@ public class PollingScheduler {
 
     private static final int POLLING_THRESHOLD_SECONDS = 30;
 
+    @Value("${server.port:default-port}")
+    private String instancePort;
     private final ValidationPersistenceService validationPersistence;
     private final Map<Provider, ProviderPollingService> pollingServiceMap;
 
@@ -36,6 +40,7 @@ public class PollingScheduler {
 	}
 
 	@Scheduled(fixedDelay = 5000)
+	@SchedulerLock(name = "ThirdPartyPollingLock", lockAtLeastFor = "4s", lockAtMostFor = "2m")
 	public void triggerPolling() {
 
 		Instant threshold = Instant.now().minusSeconds(POLLING_THRESHOLD_SECONDS);
@@ -44,11 +49,12 @@ public class PollingScheduler {
 				.findRequestsForPolling(ExecutionStatus.PROCESSING, threshold);
 
 		if (stuckRequests.isEmpty()) {
-			 log.debug("PollingScheduler ran. No pending requests found.");
-			return;
+			log.debug("[Instance-{}] PollingScheduler ran. No pending requests found.", instancePort);
+	        return;
 		}
 
-		log.info("PollingScheduler found {} pending validation requests. Initiating poll.", stuckRequests.size());
+		log.info("[Instance-{}] PollingScheduler found {} pending validation requests. Initiating poll.", 
+	             instancePort, stuckRequests.size());
 		List<UUID> ids = stuckRequests.stream().map(ValidationRequestEntity::getValidationRequestId).toList();
 
 		Map<UUID, Long> pendingCountMap = getPendingCountMap(ids);

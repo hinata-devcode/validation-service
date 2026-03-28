@@ -1,14 +1,26 @@
-# Start with a lightweight Linux image with Java 17 installed
-FROM eclipse-temurin:17-jre-alpine
-
-# Create a directory inside the container
+# ==========================================
+# STAGE 1: Build the Java Code (Maven)
+# ==========================================
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 
-# Copy the compiled Spring Boot .jar file into the container
-COPY target/*.jar app.jar
+# Copy the pom.xml and source code
+COPY pom.xml .
+COPY src ./src
 
-# Expose port 8080
+# Compile the code and create the .jar file
+RUN mvn clean package -DskipTests
+
+# ==========================================
+# STAGE 2: Run the Application
+# ==========================================
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Copy the compiled .jar from the "build" stage above
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# The command that runs when the container starts
+# Run the app, respecting the AWS memory limits
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

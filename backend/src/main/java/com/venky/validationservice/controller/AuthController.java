@@ -67,7 +67,7 @@ public class AuthController {
 		        .secure(jwtProperties.isCookieSecure())       // CRITICAL: Must be true when using SameSite=None (Ngrok uses HTTPS, so we are good!)
 		        .path("/")
 		        .maxAge(15 * 60)    // 15 minutes
-		        .sameSite("None")   // CRITICAL: Tells the browser "Allow Replit to use this Ngrok cookie"
+		        .sameSite("Lax")   // CRITICAL: Tells the browser "Allow Replit to use this Ngrok cookie"
 		        .build();
 
 		// 4. Attach it to the response headers
@@ -88,7 +88,7 @@ public class AuthController {
                 .secure(jwtProperties.isCookieSecure())
                 .path("/")
                 .maxAge(0)          // <--- THIS IS THE "KILL" COMMAND [cite: 62]
-                .sameSite("None")   // Must match the login cookie's SameSite policy
+                .sameSite("Lax")   // Must match the login cookie's SameSite policy
                 .build();
 
         // Overwrite the existing cookie in the browser

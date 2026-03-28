@@ -51,6 +51,7 @@ services:
       - RAZORPAY_SECRET=${RAZORPAY_SECRET}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+      - SECURITY_JWT_COOKIE_SECURE=false
       
       # CRITICAL FOR AWS FREE TIER: Limits Java heap memory so it doesn't starve MySQL
       - JAVA_OPTS=-Xmx300m -Xms300m
